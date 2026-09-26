@@ -1,0 +1,1983 @@
+```html
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>আমার খাতা</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f4f6f8;
+    color:#222;
+}
+
+.header{
+    background:#075e54;
+    color:white;
+    padding:18px;
+    text-align:center;
+}
+
+.header h1{
+    font-size:25px;
+}
+
+.container{
+    max-width:900px;
+    margin:20px auto;
+    padding:15px;
+}
+
+.card{
+    background:white;
+    padding:18px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.login{
+    max-width:420px;
+    margin:70px auto;
+}
+
+.login h2{
+    margin-bottom:20px;
+    text-align:center;
+}
+
+input,select,textarea{
+    width:100%;
+    padding:12px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    margin-top:7px;
+    margin-bottom:12px;
+    font-size:15px;
+}
+
+button{
+    border:none;
+    padding:10px 14px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:14px;
+    margin:3px;
+}
+
+.primary{
+    background:#075e54;
+    color:white;
+}
+
+.green{
+    background:#25d366;
+    color:white;
+}
+
+.blue{
+    background:#168de2;
+    color:white;
+}
+
+.red{
+    background:#e53935;
+    color:white;
+}
+
+.gray{
+    background:#eee;
+}
+
+.full{
+    width:100%;
+}
+
+.hidden{
+    display:none!important;
+}
+
+.summary{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+    margin-bottom:15px;
+}
+
+.summary .card{
+    text-align:center;
+}
+
+.summary h3{
+    color:#666;
+    font-size:14px;
+    margin-bottom:8px;
+}
+
+.summary p{
+    font-size:22px;
+    font-weight:bold;
+}
+
+.toolbar{
+    background:white;
+    padding:15px;
+    border-radius:12px;
+    margin-bottom:15px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.customer{
+    background:white;
+    padding:17px;
+    border-radius:12px;
+    margin-bottom:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+    cursor:pointer;
+}
+
+.customer:hover{
+    background:#fafafa;
+}
+
+.customer-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.customer-name{
+    font-size:19px;
+    font-weight:bold;
+}
+
+.receive{
+    color:#d32f2f;
+}
+
+.pay{
+    color:#1976d2;
+}
+
+.profile{
+    background:white;
+    padding:18px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.profile-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+}
+
+.profile-name{
+    font-size:23px;
+    font-weight:bold;
+}
+
+.transaction{
+    border-top:1px solid #eee;
+    padding:14px 0;
+}
+
+.transaction-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.amount{
+    font-size:18px;
+    font-weight:bold;
+}
+
+.small{
+    color:#777;
+    font-size:13px;
+    margin-top:5px;
+}
+
+.empty{
+    text-align:center;
+    color:#777;
+    padding:30px;
+}
+
+.message{
+    text-align:center;
+    margin-top:12px;
+    color:#d32f2f;
+}
+
+.userbar{
+    background:#064c44;
+    color:white;
+    padding:8px 15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:13px;
+}
+
+@media(max-width:600px){
+
+    .summary{
+        grid-template-columns:1fr;
+    }
+
+    .customer-top,
+    .profile-header,
+    .transaction-top{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:8px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+
+<!-- ================= LOGIN ================= -->
+
+<div id="loginPage">
+
+    <div class="card login">
+
+        <h2>📒 আমার খাতা</h2>
+
+        <input
+            id="email"
+            type="email"
+            placeholder="Email"
+        >
+
+        <input
+            id="password"
+            type="password"
+            placeholder="Password"
+        >
+
+        <button
+            class="primary full"
+            onclick="login()">
+
+            🔐 Login
+
+        </button>
+
+        <button
+            class="gray full"
+            onclick="signup()">
+
+            নতুন Account তৈরি
+
+        </button>
+
+        <div
+            id="loginMessage"
+            class="message">
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= APP ================= -->
+
+<div id="app" class="hidden">
+
+    <div class="header">
+
+        <h1>📒 আমার খাতা</h1>
+
+        <p>Personal হিসাব</p>
+
+    </div>
+
+
+    <div class="userbar">
+
+        <span id="userEmail"></span>
+
+        <button
+            class="gray"
+            onclick="logout()">
+
+            Logout
+
+        </button>
+
+    </div>
+
+
+    <div class="container">
+
+
+        <!-- SUMMARY -->
+
+        <div class="summary">
+
+            <div class="card">
+
+                <h3>মোট পাবো</h3>
+
+                <p id="totalReceive">
+                    ৳ 0
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>মোট দেবো</h3>
+
+                <p id="totalPay">
+                    ৳ 0
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>Customer</h3>
+
+                <p id="customerCount">
+                    0
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- CUSTOMER PAGE -->
+
+        <div id="customerPage">
+
+            <div class="toolbar">
+
+                <input
+                    id="customerSearch"
+                    placeholder="🔎 Customer খুঁজুন..."
+                    oninput="renderCustomers()"
+                >
+
+
+                <button
+                    class="primary"
+                    onclick="showAddTransaction()">
+
+                    ➕ নতুন লেনদেন
+
+                </button>
+
+            </div>
+
+
+            <div id="customerList"></div>
+
+        </div>
+
+
+        <!-- ADD TRANSACTION -->
+
+        <div
+            id="addPage"
+            class="hidden">
+
+            <div class="card">
+
+                <button
+                    class="gray"
+                    onclick="showCustomers()">
+
+                    ← Back
+
+                </button>
+
+                <br><br>
+
+                <h2>নতুন লেনদেন</h2>
+
+                <br>
+
+
+                <label>Customer-এর নাম</label>
+
+                <input
+                    id="customerName"
+                    placeholder="যেমন: Rahim"
+                >
+
+
+                <label>Amount</label>
+
+                <input
+                    id="amount"
+                    type="number"
+                    placeholder="যেমন: 500"
+                >
+
+
+                <label>লেনদেনের ধরন</label>
+
+                <select id="type">
+
+                    <option value="receive">
+                        আমি পাবো
+                    </option>
+
+                    <option value="pay">
+                        আমি দেবো
+                    </option>
+
+                </select>
+
+
+                <label>তারিখ</label>
+
+                <input
+                    id="date"
+                    type="date"
+                >
+
+
+                <label>Note</label>
+
+                <textarea
+                    id="note"
+                    rows="3"
+                    placeholder="যেমন: বাজারের টাকা">
+                </textarea>
+
+
+                <button
+                    class="primary full"
+                    onclick="addTransaction()">
+
+                    ➕ লেনদেন যোগ করুন
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- PROFILE -->
+
+        <div
+            id="profilePage"
+            class="hidden">
+
+            <div class="profile">
+
+                <button
+                    class="gray"
+                    onclick="showCustomers()">
+
+                    ← Customer List
+
+                </button>
+
+                <br><br>
+
+
+                <div class="profile-header">
+
+                    <div>
+
+                        <div
+                            id="profileName"
+                            class="profile-name">
+                        </div>
+
+                        <div
+                            id="profileBalance">
+                        </div>
+
+                    </div>
+
+
+                    <div>
+
+                        <button
+                            class="green"
+                            onclick="shareWhatsApp()">
+
+                            WhatsApp
+
+                        </button>
+
+
+                        <button
+                            class="blue"
+                            onclick="shareOther()">
+
+                            IMO / Share
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FILTER -->
+
+                <div class="toolbar">
+
+                    <input
+                        id="transactionSearch"
+                        placeholder="🔎 Note / Amount search"
+                        oninput="renderProfile()"
+                    >
+
+
+                    <label>
+                        শুরু তারিখ
+                    </label>
+
+                    <input
+                        id="dateFrom"
+                        type="date"
+                        onchange="renderProfile()"
+                    >
+
+
+                    <label>
+                        শেষ তারিখ
+                    </label>
+
+                    <input
+                        id="dateTo"
+                        type="date"
+                        onchange="renderProfile()"
+                    >
+
+
+                    <button
+                        class="gray"
+                        onclick="clearFilters()">
+
+                        Filter Clear
+
+                    </button>
+
+                </div>
+
+
+                <div id="transactionList"></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+/* ==========================================
+   SUPABASE
+========================================== */
+
+
+const SUPABASE_URL =
+    "https://paqfvtvbojngpmspjuun.supabase.co";
+
+
+const SUPABASE_KEY =
+    "sb_publishable_OYoRSxVznMR3UyStGEmZZw_5vOFmtMY";
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+/* ==========================================
+   GLOBAL
+========================================== */
+
+
+let transactions=[];
+
+let currentCustomer=null;
+
+
+/* ==========================================
+   LOGIN
+========================================== */
+
+
+async function login(){
+
+    const email=
+        document.getElementById("email")
+        .value
+        .trim();
+
+
+    const password=
+        document.getElementById("password")
+        .value;
+
+
+    if(!email || !password){
+
+        showLoginMessage(
+            "Email এবং password দিন"
+        );
+
+        return;
+
+    }
+
+
+    const {error}=
+
+        await supabaseClient.auth
+        .signInWithPassword({
+
+            email:email,
+
+            password:password
+
+        });
+
+
+    if(error){
+
+        showLoginMessage(
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    await startApp();
+
+}
+
+
+async function signup(){
+
+    const email=
+        document.getElementById("email")
+        .value
+        .trim();
+
+
+    const password=
+        document.getElementById("password")
+        .value;
+
+
+    if(!email || !password){
+
+        showLoginMessage(
+            "Email এবং password দিন"
+        );
+
+        return;
+
+    }
+
+
+    if(password.length<6){
+
+        showLoginMessage(
+            "Password কমপক্ষে ৬ অক্ষরের হতে হবে"
+        );
+
+        return;
+
+    }
+
+
+    const {error}=
+
+        await supabaseClient.auth
+        .signUp({
+
+            email:email,
+
+            password:password
+
+        });
+
+
+    if(error){
+
+        showLoginMessage(
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    showLoginMessage(
+        "Account তৈরি হয়েছে। Email verification চাইলে email check করুন।",
+        true
+    );
+
+}
+
+
+function showLoginMessage(text,success=false){
+
+    const el=
+        document.getElementById("loginMessage");
+
+
+    el.innerText=text;
+
+    el.style.color=
+        success
+        ? "#075e54"
+        : "#d32f2f";
+
+}
+
+
+/* ==========================================
+   LOGOUT
+========================================== */
+
+
+async function logout(){
+
+    await supabaseClient.auth.signOut();
+
+    transactions=[];
+
+    document
+        .getElementById("app")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("loginPage")
+        .classList.remove("hidden");
+
+}
+
+
+/* ==========================================
+   START APP
+========================================== */
+
+
+async function startApp(){
+
+    const {
+        data:{
+            user
+        }
+    } =
+        await supabaseClient
+        .auth
+        .getUser();
+
+
+    if(!user){
+
+        return;
+
+    }
+
+
+    document
+        .getElementById("loginPage")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("app")
+        .classList.remove("hidden");
+
+
+    document
+        .getElementById("userEmail")
+        .innerText=user.email;
+
+
+    await loadTransactions();
+
+}
+
+
+/* ==========================================
+   LOAD DATABASE
+========================================== */
+
+
+async function loadTransactions(){
+
+    const {
+        data,
+        error
+    } =
+
+        await supabaseClient
+        .from("transactions")
+        .select("*")
+        .order(
+            "transaction_date",
+            {
+                ascending:false
+            }
+        );
+
+
+    if(error){
+
+        alert(
+            "Database load error: "+
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    transactions=data || [];
+
+    renderCustomers();
+
+}
+
+
+/* ==========================================
+   ADD TRANSACTION
+========================================== */
+
+
+async function addTransaction(){
+
+    const {
+        data:{
+            user
+        }
+    } =
+        await supabaseClient
+        .auth
+        .getUser();
+
+
+    if(!user){
+
+        alert("আগে login করুন");
+
+        return;
+
+    }
+
+
+    const customerName=
+        document
+        .getElementById("customerName")
+        .value
+        .trim();
+
+
+    const amount=
+        Number(
+            document
+            .getElementById("amount")
+            .value
+        );
+
+
+    const type=
+        document
+        .getElementById("type")
+        .value;
+
+
+    const date=
+        document
+        .getElementById("date")
+        .value;
+
+
+    const note=
+        document
+        .getElementById("note")
+        .value
+        .trim();
+
+
+    if(!customerName){
+
+        alert(
+            "Customer-এর নাম দিন"
+        );
+
+        return;
+
+    }
+
+
+    if(!amount || amount<=0){
+
+        alert(
+            "সঠিক amount দিন"
+        );
+
+        return;
+
+    }
+
+
+    if(!date){
+
+        alert(
+            "তারিখ নির্বাচন করুন"
+        );
+
+        return;
+
+    }
+
+
+    const {
+        error
+    } =
+
+        await supabaseClient
+        .from("transactions")
+        .insert({
+
+            user_id:user.id,
+
+            customer_name:customerName,
+
+            amount:amount,
+
+            type:type,
+
+            transaction_date:date,
+
+            note:note
+
+        });
+
+
+    if(error){
+
+        alert(
+            "Save হয়নি: "+
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    alert(
+        "লেনদেন সফলভাবে যোগ হয়েছে"
+    );
+
+
+    document
+        .getElementById("customerName")
+        .value="";
+
+
+    document
+        .getElementById("amount")
+        .value="";
+
+
+    document
+        .getElementById("note")
+        .value="";
+
+
+    await loadTransactions();
+
+    showCustomers();
+
+}
+
+
+/* ==========================================
+   CUSTOMER LIST
+========================================== */
+
+
+function getCustomers(){
+
+    const map={};
+
+
+    transactions.forEach(t=>{
+
+        if(!map[t.customer_name]){
+
+            map[t.customer_name]=[];
+
+        }
+
+        map[t.customer_name].push(t);
+
+    });
+
+
+    return map;
+
+}
+
+
+function renderCustomers(){
+
+    const list=
+        document
+        .getElementById("customerList");
+
+
+    const search=
+        document
+        .getElementById("customerSearch")
+        .value
+        .toLowerCase()
+        .trim();
+
+
+    const customers=
+        getCustomers();
+
+
+    let names=
+        Object.keys(customers);
+
+
+    names=
+        names.filter(
+            name=>
+            name
+            .toLowerCase()
+            .includes(search)
+        );
+
+
+    let totalReceive=0;
+
+    let totalPay=0;
+
+
+    transactions.forEach(t=>{
+
+        if(t.type==="receive"){
+
+            totalReceive+=Number(t.amount);
+
+        }else{
+
+            totalPay+=Number(t.amount);
+
+        }
+
+    });
+
+
+    document
+        .getElementById("totalReceive")
+        .innerText=
+        "৳ "+totalReceive;
+
+
+    document
+        .getElementById("totalPay")
+        .innerText=
+        "৳ "+totalPay;
+
+
+    document
+        .getElementById("customerCount")
+        .innerText=
+        Object.keys(customers).length;
+
+
+    list.innerHTML="";
+
+
+    if(names.length===0){
+
+        list.innerHTML=
+        `<div class="empty">
+            কোনো Customer পাওয়া যায়নি।
+        </div>`;
+
+        return;
+
+    }
+
+
+    names.forEach(name=>{
+
+        let balance=0;
+
+
+        customers[name].forEach(t=>{
+
+            if(t.type==="receive"){
+
+                balance+=Number(t.amount);
+
+            }else{
+
+                balance-=Number(t.amount);
+
+            }
+
+        });
+
+
+        let balanceHTML;
+
+
+        if(balance>0){
+
+            balanceHTML=
+            `<span class="receive">
+                পাবো: ৳${balance}
+            </span>`;
+
+        }else if(balance<0){
+
+            balanceHTML=
+            `<span class="pay">
+                দেবো: ৳${Math.abs(balance)}
+            </span>`;
+
+        }else{
+
+            balanceHTML=
+            "হিসাব সমান";
+
+        }
+
+
+        list.innerHTML+=`
+
+        <div
+            class="customer"
+            onclick='openProfile(${JSON.stringify(name)})'>
+
+            <div class="customer-top">
+
+                <div>
+
+                    <div class="customer-name">
+                        👤 ${escapeHTML(name)}
+                    </div>
+
+                    <div class="small">
+                        ${customers[name].length}
+                        টি লেনদেন
+                    </div>
+
+                </div>
+
+
+                <div>
+                    ${balanceHTML}
+                </div>
+
+            </div>
+
+        </div>
+
+        `;
+
+    });
+
+}
+
+
+/* ==========================================
+   PROFILE
+========================================== */
+
+
+function openProfile(name){
+
+    currentCustomer=name;
+
+
+    document
+        .getElementById("customerPage")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("addPage")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("profilePage")
+        .classList.remove("hidden");
+
+
+    document
+        .getElementById("profileName")
+        .innerText=
+        "👤 "+name;
+
+
+    document
+        .getElementById("transactionSearch")
+        .value="";
+
+
+    document
+        .getElementById("dateFrom")
+        .value="";
+
+
+    document
+        .getElementById("dateTo")
+        .value="";
+
+
+    renderProfile();
+
+}
+
+
+function renderProfile(){
+
+    if(!currentCustomer){
+
+        return;
+
+    }
+
+
+    const list=
+        document
+        .getElementById("transactionList");
+
+
+    const search=
+        document
+        .getElementById("transactionSearch")
+        .value
+        .toLowerCase()
+        .trim();
+
+
+    const from=
+        document
+        .getElementById("dateFrom")
+        .value;
+
+
+    const to=
+        document
+        .getElementById("dateTo")
+        .value;
+
+
+    let personTransactions=
+        transactions.filter(
+            t=>
+            t.customer_name===
+            currentCustomer
+        );
+
+
+    let balance=0;
+
+
+    personTransactions.forEach(t=>{
+
+        if(t.type==="receive"){
+
+            balance+=Number(t.amount);
+
+        }else{
+
+            balance-=Number(t.amount);
+
+        }
+
+    });
+
+
+    if(balance>0){
+
+        document
+        .getElementById("profileBalance")
+        .innerHTML=
+        `<span class="receive">
+            মোট পাবো: ৳${balance}
+        </span>`;
+
+    }else if(balance<0){
+
+        document
+        .getElementById("profileBalance")
+        .innerHTML=
+        `<span class="pay">
+            মোট দেবো: ৳${Math.abs(balance)}
+        </span>`;
+
+    }else{
+
+        document
+        .getElementById("profileBalance")
+        .innerText=
+        "হিসাব সমান";
+
+    }
+
+
+    personTransactions=
+        personTransactions.filter(t=>{
+
+            const matchesSearch=
+
+                !search ||
+
+                String(t.amount)
+                .includes(search) ||
+
+                (t.note || "")
+                .toLowerCase()
+                .includes(search);
+
+
+            const matchesFrom=
+                !from ||
+                t.transaction_date>=from;
+
+
+            const matchesTo=
+                !to ||
+                t.transaction_date<=to;
+
+
+            return (
+                matchesSearch &&
+                matchesFrom &&
+                matchesTo
+            );
+
+        });
+
+
+    personTransactions.sort(
+        (a,b)=>
+        b.transaction_date
+        .localeCompare(
+            a.transaction_date
+        )
+    );
+
+
+    list.innerHTML="";
+
+
+    if(personTransactions.length===0){
+
+        list.innerHTML=
+        `<div class="empty">
+            কোনো লেনদেন পাওয়া যায়নি।
+        </div>`;
+
+        return;
+
+    }
+
+
+    personTransactions.forEach(t=>{
+
+        list.innerHTML+=`
+
+        <div class="transaction">
+
+            <div class="transaction-top">
+
+                <div
+                    class="amount ${
+                        t.type==="receive"
+                        ? "receive"
+                        : "pay"
+                    }">
+
+                    ${
+                        t.type==="receive"
+                        ? "➕ পাবো"
+                        : "➖ দেবো"
+                    }
+
+                    ৳${Number(t.amount)}
+
+                </div>
+
+
+                <div>
+
+                    <button
+                        class="primary"
+                        onclick="editTransaction('${t.id}')">
+
+                        ✏️ Edit
+
+                    </button>
+
+
+                    <button
+                        class="red"
+                        onclick="deleteTransaction('${t.id}')">
+
+                        🗑️ Delete
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            ${
+                t.note
+                ? `<div class="small">
+                    📝 ${escapeHTML(t.note)}
+                   </div>`
+                : ""
+            }
+
+
+            <div class="small">
+
+                📅 ${formatDate(
+                    t.transaction_date
+                )}
+
+            </div>
+
+        </div>
+
+        `;
+
+    });
+
+}
+
+
+/* ==========================================
+   EDIT
+========================================== */
+
+
+async function editTransaction(id){
+
+    const t=
+        transactions.find(
+            x=>String(x.id)===String(id)
+        );
+
+
+    if(!t){
+
+        return;
+
+    }
+
+
+    const amount=
+        prompt(
+            "Amount:",
+            t.amount
+        );
+
+
+    if(amount===null){
+
+        return;
+
+    }
+
+
+    const type=
+        prompt(
+            "receive = পাবো | pay = দেবো",
+            t.type
+        );
+
+
+    if(
+        type!=="receive" &&
+        type!=="pay"
+    ){
+
+        alert(
+            "receive অথবা pay লিখুন"
+        );
+
+        return;
+
+    }
+
+
+    const date=
+        prompt(
+            "Date (YYYY-MM-DD):",
+            t.transaction_date
+        );
+
+
+    if(!date){
+
+        return;
+
+    }
+
+
+    const note=
+        prompt(
+            "Note:",
+            t.note || ""
+        );
+
+
+    const {
+        error
+    } =
+        await supabaseClient
+        .from("transactions")
+        .update({
+
+            amount:Number(amount),
+
+            type:type,
+
+            transaction_date:date,
+
+            note:note || ""
+
+        })
+        .eq(
+            "id",
+            id
+        );
+
+
+    if(error){
+
+        alert(
+            "Update হয়নি: "+
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    await loadTransactions();
+
+    openProfile(currentCustomer);
+
+}
+
+
+/* ==========================================
+   DELETE
+========================================== */
+
+
+async function deleteTransaction(id){
+
+    if(
+        !confirm(
+            "এই লেনদেনটি delete করতে চান?"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    const {
+        error
+    } =
+        await supabaseClient
+        .from("transactions")
+        .delete()
+        .eq(
+            "id",
+            id
+        );
+
+
+    if(error){
+
+        alert(
+            "Delete হয়নি: "+
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    await loadTransactions();
+
+    openProfile(currentCustomer);
+
+}
+
+
+/* ==========================================
+   NAVIGATION
+========================================== */
+
+
+function showCustomers(){
+
+    document
+        .getElementById("customerPage")
+        .classList.remove("hidden");
+
+
+    document
+        .getElementById("addPage")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("profilePage")
+        .classList.add("hidden");
+
+
+    currentCustomer=null;
+
+    renderCustomers();
+
+}
+
+
+function showAddTransaction(){
+
+    document
+        .getElementById("customerPage")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("profilePage")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("addPage")
+        .classList.remove("hidden");
+
+
+    document
+        .getElementById("date")
+        .value=
+        new Date()
+        .toISOString()
+        .split("T")[0];
+
+}
+
+
+/* ==========================================
+   FILTER
+========================================== */
+
+
+function clearFilters(){
+
+    document
+        .getElementById("transactionSearch")
+        .value="";
+
+
+    document
+        .getElementById("dateFrom")
+        .value="";
+
+
+    document
+        .getElementById("dateTo")
+        .value="";
+
+
+    renderProfile();
+
+}
+
+
+/* ==========================================
+   SHARE MESSAGE
+========================================== */
+
+
+function createShareMessage(){
+
+    const list=
+        transactions.filter(
+            t=>
+            t.customer_name===
+            currentCustomer
+        );
+
+
+    let balance=0;
+
+
+    let message=
+        "📒 হিসাবের আপডেট\n\n";
+
+
+    message+=
+        "👤 নাম: "+
+        currentCustomer+
+        "\n\n";
+
+
+    list.forEach(t=>{
+
+        if(t.type==="receive"){
+
+            balance+=Number(t.amount);
+
+            message+=
+                "➕ পাবো: ৳"+
+                t.amount+
+                "\n";
+
+        }else{
+
+            balance-=Number(t.amount);
+
+            message+=
+                "➖ দেবো: ৳"+
+                t.amount+
+                "\n";
+
+        }
+
+
+        if(t.note){
+
+            message+=
+                "📝 "+
+                t.note+
+                "\n";
+
+        }
+
+
+        message+=
+            "📅 "+
+            formatDate(t.transaction_date)+
+            "\n\n";
+
+    });
+
+
+    message+=
+        "--------------------\n";
+
+
+    if(balance>0){
+
+        message+=
+            "💰 মোট পাবো: ৳"+
+            balance;
+
+    }else if(balance<0){
+
+        message+=
+            "💸 মোট দেবো: ৳"+
+            Math.abs(balance);
+
+    }else{
+
+        message+=
+            "✅ হিসাব সমান";
+
+    }
+
+
+    return message;
+
+}
+
+
+function shareWhatsApp(){
+
+    const message=
+        createShareMessage();
+
+
+    window.open(
+        "https://wa.me/?text="+
+        encodeURIComponent(message),
+        "_blank"
+    );
+
+}
+
+
+async function shareOther(){
+
+    const message=
+        createShareMessage();
+
+
+    if(navigator.share){
+
+        try{
+
+            await navigator.share({
+
+                title:"হিসাবের আপডেট",
+
+                text:message
+
+            });
+
+        }catch(e){}
+
+    }else{
+
+        await navigator
+            .clipboard
+            .writeText(message);
+
+
+        alert(
+            "Message copy হয়েছে। এখন IMO-তে paste করুন।"
+        );
+
+    }
+
+}
+
+
+/* ==========================================
+   HELPERS
+========================================== */
+
+
+function formatDate(date){
+
+    if(!date){
+
+        return "";
+
+    }
+
+
+    const p=date.split("-");
+
+
+    if(p.length!==3){
+
+        return date;
+
+    }
+
+
+    return(
+        p[2]+"/"+
+        p[1]+"/"+
+        p[0]
+    );
+
+}
+
+
+function escapeHTML(text){
+
+    return String(text)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* ==========================================
+   SESSION CHECK
+========================================== */
+
+
+async function init(){
+
+    const {
+        data:{
+            session
+        }
+    } =
+        await supabaseClient
+        .auth
+        .getSession();
+
+
+    if(session){
+
+        await startApp();
+
+    }
+
+}
+
+
+init();
+
+
+</script>
+
+</body>
+</html>
+```
