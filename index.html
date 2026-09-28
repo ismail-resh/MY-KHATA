@@ -118,11 +118,27 @@
       <div class="card">
         <button class="gray" onclick="showCustomers()">← Back</button>
         <br><br>
-        <h2>নতুন লেনদেন</h2><br>
+        <div class="form-title">
+  নতুন লেনদেন
+</div>
+
+<div class="form-subtitle">
+  Customer-এর হিসাবের নতুন লেনদেন যোগ করুন
+</div>
         <label>Customer-এর নাম</label>
-        <input id="customerName" placeholder="যেমন: Rahim">
-        <label>Amount</label>
-        <input id="amount" type="number" placeholder="যেমন: 500">
+<input id="customerName" placeholder="যেমন: Rahim">
+
+<label>মোবাইল নম্বর</label>
+<input
+  id="customerPhone"
+  type="tel"
+  placeholder="যেমন: 01712345678"
+  inputmode="numeric"
+  autocomplete="tel"
+>
+
+<label>Amount</label>
+<input id="amount" type="number" placeholder="যেমন: 500">
         <label>লেনদেনের ধরন</label>
         <select id="type">
           <option value="receive">আমি পাবো</option>
@@ -143,13 +159,42 @@
 
         <div class="profile-header">
           <div>
-            <div id="profileName" class="profile-name"></div>
-            <div id="profileBalance"></div>
-          </div>
-          <div>
-            <button class="green" onclick="shareWhatsApp()">WhatsApp</button>
-            <button class="blue" onclick="shareOther()">IMO / Share</button>
-          </div>
+  <div id="profileName" class="profile-name"></div>
+
+  <div
+    id="profilePhone"
+    class="customer-phone">
+  </div>
+
+  <div id="profileBalance"></div>
+</div>
+          <div class="profile-actions">
+
+  <button
+    class="primary"
+    onclick="showEditCustomer()">
+    Edit Customer
+  </button>
+
+  <button
+    class="red"
+    onclick="deleteCustomer()">
+    Delete
+  </button>
+
+  <button
+    class="green"
+    onclick="shareWhatsApp()">
+    WhatsApp
+  </button>
+
+  <button
+    class="blue"
+    onclick="shareOther()">
+    IMO / Share
+  </button>
+
+</div>
         </div>
 
         <div class="toolbar">
@@ -166,7 +211,77 @@
     </div>
   </div>
 </div>
+<!-- EDIT CUSTOMER MODAL -->
 
+<div
+  id="editCustomerModal"
+  class="modal hidden">
+
+  <div class="modal-box">
+
+    <div class="modal-title">
+      Customer Edit
+    </div>
+
+    <div class="modal-subtitle">
+      Customer-এর তথ্য পরিবর্তন করুন
+    </div>
+
+    <div class="input-group">
+
+      <label>
+        Customer-এর নাম
+      </label>
+
+      <input
+        id="editCustomerName"
+        type="text"
+        placeholder="Customer-এর নাম">
+
+    </div>
+
+
+    <div class="input-group">
+
+      <label>
+        মোবাইল নম্বর
+      </label>
+
+      <input
+        id="editCustomerPhone"
+        type="tel"
+        placeholder="01712345678"
+        inputmode="numeric"
+        autocomplete="tel">
+
+    </div>
+
+
+    <div
+      id="customerEditMessage"
+      class="message">
+    </div>
+
+
+    <div class="modal-buttons">
+
+      <button
+        class="gray"
+        onclick="closeEditCustomer()">
+        Cancel
+      </button>
+
+      <button
+        class="primary"
+        onclick="saveCustomerEdit()">
+        Save Changes
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
 <script src="js/config.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/auth.js"></script>
