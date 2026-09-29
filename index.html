@@ -197,6 +197,29 @@
 </div>
         </div>
 
+        <div class="profile-ledger-form">
+          <div class="ledger-form-title">নতুন লেনদেন</div>
+          <div class="ledger-type-buttons">
+            <button id="profileDilamBtn" class="ledger-type-btn dilam selected" onclick="setProfileTransactionType('receive')">↑ দিলাম</button>
+            <button id="profilePelamBtn" class="ledger-type-btn pelam" onclick="setProfileTransactionType('pay')">↓ পেলাম</button>
+          </div>
+
+          <div class="ledger-form-grid">
+            <div>
+              <label>Amount</label>
+              <input id="profileAmount" type="number" min="0" step="0.01" placeholder="যেমন: 100">
+            </div>
+            <div>
+              <label>তারিখ</label>
+              <input id="profileDate" type="date">
+            </div>
+          </div>
+
+          <label>Note</label>
+          <input id="profileNote" type="text" placeholder="যেমন: আজকের বাজারের টাকা">
+          <button class="primary full" onclick="addProfileTransaction()">➕ লেনদেন যোগ করুন</button>
+        </div>
+
         <div class="toolbar">
           <input id="transactionSearch" placeholder="🔎 Note / Amount search" oninput="renderProfile()">
           <label>শুরু তারিখ</label>
@@ -211,6 +234,41 @@
     </div>
   </div>
 </div>
+
+<!-- TRANSACTION SUCCESS OVERLAY -->
+<div id="transactionSuccessOverlay" class="success-overlay hidden">
+  <button class="success-close" onclick="closeTransactionSuccess()" aria-label="Close">×</button>
+  <div class="success-content">
+    <div class="success-check">✓</div>
+    <h2>লেনদেনটি রেকর্ড করা হয়েছে।</h2>
+
+    <div class="success-summary-card">
+      <div class="success-customer-row">
+        <div id="successAvatar" class="success-avatar">IS</div>
+        <div>
+          <div id="successCustomerName" class="success-customer-name">Customer</div>
+          <div id="successCustomerPhone" class="success-customer-phone"></div>
+        </div>
+      </div>
+
+      <div class="success-divider"></div>
+      <div class="success-row"><span>পূর্বের পাওনা</span><strong id="successPrevious">৳0.00</strong></div>
+      <div class="success-row"><span id="successTypeLabel">দিলাম</span><strong id="successAmount">৳0.00</strong></div>
+      <div class="success-row"><span>পেলাম</span><strong id="successPaid">৳0.00</strong></div>
+      <div class="success-divider"></div>
+      <div class="success-row current"><span id="successCurrentLabel">বর্তমান পাওনা</span><strong id="successCurrent">৳0.00</strong></div>
+    </div>
+
+    <div class="success-share-title"><span></span><b>লেনদেন রেকর্ড শেয়ার করি</b><span></span></div>
+    <div class="success-share-buttons">
+      <button class="share-tile whatsapp" onclick="shareSuccessWhatsApp()"><span>🟢</span><small>হোয়াটসঅ্যাপ</small></button>
+      <button class="share-tile tally" onclick="shareSuccessOther()"><span>🧾</span><small>টালি-মেসেজ</small></button>
+      <button class="share-tile sms" onclick="shareSuccessSMS()"><span>💬</span><small>এসএমএস</small></button>
+      <button class="share-tile messenger" onclick="shareSuccessMessenger()"><span>🔵</span><small>মেসেঞ্জার</small></button>
+    </div>
+  </div>
+</div>
+
 <!-- EDIT CUSTOMER MODAL -->
 
 <div
@@ -316,11 +374,11 @@
       <select id="editType">
 
         <option value="receive">
-          আমি পাবো
+          দিলাম
         </option>
 
         <option value="pay">
-          আমি দেবো
+          পেলাম
         </option>
 
       </select>
