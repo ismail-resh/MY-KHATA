@@ -9,7 +9,17 @@
 </head>
 <body>
 
-<div id="loginPage" class="auth-page">
+<!-- Startup loader: prevents the login page from flashing while Supabase checks the saved session -->
+<div id="bootLoader" class="boot-loader" aria-live="polite">
+  <div class="boot-card">
+    <div class="boot-logo">📒</div>
+    <div class="boot-title">আমার খাতা</div>
+    <div class="boot-subtitle">লোড হচ্ছে...</div>
+    <div class="boot-spinner"></div>
+  </div>
+</div>
+
+<div id="loginPage" class="auth-page hidden" class="auth-page">
   <div class="auth-box">
 <div class="logo">📒</div>
     <h1 class="auth-title">আমার খাতা</h1>
@@ -34,6 +44,8 @@
     <div class="divider">অথবা</div>
 
     <button class="btn signup-btn" onclick="showSignup()">নতুন Account তৈরি</button>
+    <button class="btn guest-btn" onclick="guestLogin()">👤 Guest হিসেবে ব্যবহার করুন</button>
+    <div class="guest-note">Guest mode-এ email/password লাগবে না। এই browser-এই আপনার হিসাব থাকবে।</div>
     <div id="loginMessage" class="message"></div>
   </div>
 </div>
@@ -88,6 +100,48 @@
   </div>
 </div>
 
+<div id="guestUpgradeModal" class="modal hidden">
+  <div class="modal-box">
+    <div class="modal-title">✨ আপনার Account তৈরি করুন</div>
+    <div class="modal-subtitle">আপনার Guest-এর সব customer ও transaction ঠিক থাকবে।</div>
+
+    <label>Email</label>
+    <input id="guestUpgradeEmail" type="email" placeholder="আপনার email" autocomplete="email">
+
+    <label>Password</label>
+    <input id="guestUpgradePassword" type="password" placeholder="কমপক্ষে ৬ অক্ষর" autocomplete="new-password">
+
+    <label>Password আবার লিখুন</label>
+    <input id="guestUpgradeConfirm" type="password" placeholder="Password আবার লিখুন" autocomplete="new-password">
+
+    <div id="guestUpgradeMessage" class="message"></div>
+
+    <div class="modal-buttons">
+      <button class="gray" onclick="closeGuestUpgrade()">Cancel</button>
+      <button id="guestUpgradeSubmit" class="primary" onclick="upgradeGuestAccount()">Account তৈরি করুন</button>
+    </div>
+  </div>
+</div>
+
+<div id="guestPasswordModal" class="modal hidden">
+  <div class="modal-box">
+    <div class="modal-title">🔐 Password সেট করুন</div>
+    <div class="modal-subtitle">আপনার email verify হয়েছে। এখন account-এর password সেট করুন।</div>
+
+    <label>Password</label>
+    <input id="guestFinalPassword" type="password" placeholder="কমপক্ষে ৬ অক্ষর" autocomplete="new-password">
+
+    <label>Password আবার লিখুন</label>
+    <input id="guestFinalConfirm" type="password" placeholder="Password আবার লিখুন" autocomplete="new-password">
+
+    <div id="guestPasswordMessage" class="message"></div>
+
+    <div class="modal-buttons">
+      <button id="guestPasswordSubmit" class="primary" onclick="finishGuestUpgrade()">Password সেট করুন</button>
+    </div>
+  </div>
+</div>
+
 <div id="app" class="hidden">
   <div class="header">
     <h1>📒 আমার খাতা</h1>
@@ -96,7 +150,10 @@
 
   <div class="userbar">
     <span id="userEmail"></span>
-    <button class="gray" onclick="logout()">Logout</button>
+    <div class="userbar-actions">
+      <button id="upgradeGuestBtn" class="primary hidden" onclick="openGuestUpgrade()">✨ Account তৈরি করুন</button>
+      <button class="gray" onclick="logout()">Logout</button>
+    </div>
   </div>
 
   <div class="container">
