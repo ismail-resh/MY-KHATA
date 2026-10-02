@@ -57,6 +57,11 @@
     <p class="auth-subtitle">আপনার নিজের খাতা তৈরি করুন</p>
 
     <div class="input-group">
+      <label>আপনার নাম</label>
+      <input id="signupName" type="text" placeholder="যেমন: Ismail Hossain" autocomplete="name">
+    </div>
+
+    <div class="input-group">
       <label>Email</label>
       <input id="signupEmail" type="email" placeholder="আপনার email" autocomplete="email">
     </div>
@@ -144,8 +149,18 @@
 
 <div id="app" class="hidden">
   <div class="header">
-    <h1>📒 আমার খাতা</h1>
-    <p>ব্যক্তিগত হিসাব</p>
+    <button id="myProfileHeader" class="my-profile-header" type="button" onclick="openMyProfile()" aria-label="My Profile">
+      <span id="headerAvatar" class="header-avatar">U</span>
+      <span class="header-profile-text">
+        <strong id="headerUserName">User</strong>
+        <small>My Profile</small>
+      </span>
+    </button>
+    <div class="header-brand">
+      <h1>📒 আমার খাতা</h1>
+      <p>ব্যক্তিগত হিসাব</p>
+    </div>
+    <div class="header-spacer" aria-hidden="true"></div>
   </div>
 
   <div class="userbar">
@@ -289,6 +304,36 @@
         <div id="transactionList"></div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- MY PROFILE MODAL -->
+<div id="myProfileModal" class="profile-modal hidden">
+  <div class="profile-modal-box">
+    <button class="profile-modal-close" type="button" onclick="closeMyProfile()" aria-label="Close">×</button>
+    <div class="profile-modal-title">My Profile</div>
+    <div class="profile-modal-subtitle">আপনার account-এর তথ্য</div>
+
+    <div class="my-profile-photo-wrap">
+      <div id="myProfileAvatar" class="my-profile-avatar">U</div>
+      <label id="changeProfilePhotoLabel" class="change-profile-photo" for="profilePhotoInput">📷 ছবি পরিবর্তন</label>
+      <input id="profilePhotoInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+      <div id="profilePhotoHint" class="profile-photo-hint">সর্বোচ্চ 2MB • JPG, PNG বা WebP</div>
+    </div>
+
+    <div class="profile-input-group">
+      <label for="myProfileName">নাম</label>
+      <input id="myProfileName" type="text" maxlength="80" placeholder="আপনার নাম">
+    </div>
+
+    <div class="profile-input-group">
+      <label for="myProfileEmail">Email</label>
+      <input id="myProfileEmail" type="email" disabled>
+    </div>
+
+    <div id="myProfileMessage" class="message"></div>
+
+    <button id="saveMyProfileBtn" class="primary full" type="button" onclick="saveMyProfile()">💾 Save Changes</button>
   </div>
 </div>
 
