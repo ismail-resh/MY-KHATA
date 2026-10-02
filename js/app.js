@@ -31,6 +31,7 @@ async function startApp(session = null){
   if(userEmailEl){
     userEmailEl.innerText = user.is_anonymous ? "👤 Guest Mode" : (user.email || "");
   }
+  if(typeof updateMyProfileUI === "function") updateMyProfileUI(user);
   if(typeof showGuestUpgradeButton === "function") showGuestUpgradeButton(!!user.is_anonymous);
 
   // Show the main UI immediately. Customer/transaction data can load just after it appears.

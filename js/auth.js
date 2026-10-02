@@ -70,10 +70,12 @@ async function guestLogin(){
 
 async function signup(){
   clearMessage("signupMessage");
+  const name = document.getElementById("signupName")?.value.trim() || "";
   const email = document.getElementById("signupEmail").value.trim();
   const password = document.getElementById("signupPassword").value;
   const confirm = document.getElementById("signupConfirm").value;
 
+  if(!name) return showMessage("signupMessage","আপনার নাম লিখুন।",false);
   if(!email) return showMessage("signupMessage","Email দিন।",false);
   if(password.length < 6) return showMessage("signupMessage","Password কমপক্ষে ৬ অক্ষরের হতে হবে।",false);
   if(password !== confirm) return showMessage("signupMessage","দুইটি Password একই নয়।",false);
@@ -81,7 +83,12 @@ async function signup(){
   const {data,error} = await supabaseClient.auth.signUp({
     email,
     password,
-    options:{emailRedirectTo:"https://ismail-resh.github.io/MY-KHATA/"}
+    options:{
+      emailRedirectTo:"https://ismail-resh.github.io/MY-KHATA/",
+      data:{
+        full_name:name
+      }
+    }
   });
 
   if(error){
