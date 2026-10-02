@@ -36,10 +36,54 @@ async function renderCustomers(){
 
   let names = Object.keys(map).filter(n => n.toLowerCase().includes(search));
 
-  let receive=0,pay=0;
-  transactions.forEach(t => t.type === "receive" ? receive += Number(t.amount) : pay += Number(t.amount));
-  document.getElementById("totalReceive").innerText = "৳ " + formatMoney(receive);
-  document.getElementById("totalPay").innerText = "৳ " + formatMoney(pay);
+  // Dashboard total: প্রতিটি customer-এর NET balance হিসাব করা হবে
+let totalReceive = 0;
+let totalPay = 0;
+
+// Customer অনুযায়ী transaction আলাদা করা
+const customerBalances = {};
+
+transactions.forEach(t => {
+  const customerName = (t.customer_name || "").trim();
+
+  if (!customerName) return;
+
+  if (!customerBalances[customerName]) {
+    customerBalances[customerName] = 0;
+  }
+
+  const amount = Number(t.amount) || 0;
+
+  if (t.type === "receive") {
+    // দিলাম → customer-এর কাছে আমাদের পাওনা বাড়বে
+    customerBalances[customerName] += amount;
+  } 
+  else if (t.type === "pay") {
+    // পেলাম → customer-এর কাছে আমাদের পাওনা কমবে
+    customerBalances[customerName] -= amount;
+  }
+});
+
+// সব customer-এর NET balance থেকে Dashboard total তৈরি
+Object.values(customerBalances).forEach(balance => {
+
+  if (balance > 0) {
+    // Customer-এর কাছে আমরা পাবো
+    totalReceive += balance;
+  } 
+  else if (balance < 0) {
+    // Customer-এর কাছে আমাদের দিতে হবে
+    totalPay += Math.abs(balance);
+  }
+
+});
+
+// Dashboard-এ দেখানো
+document.getElementById("totalReceive").innerText =
+  "৳ " + formatMoney(totalReceive);
+
+document.getElementById("totalPay").innerText =
+  "৳ " + formatMoney(totalPay);
   document.getElementById("customerCount").innerText = names.length;
 
   list.innerHTML="";
