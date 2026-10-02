@@ -29,8 +29,34 @@ async function startApp(session = null){
 
   const userEmailEl = document.getElementById("userEmail");
   if(userEmailEl){
-    userEmailEl.innerText = user.is_anonymous ? "👤 Guest Mode" : (user.email || "");
+
+  if(user.is_anonymous){
+
+    // Guest user
+    userEmailEl.innerText = "👤 Guest Mode";
+
+  }else{
+
+    // Account user's saved name
+    const userName =
+      user.user_metadata?.full_name?.trim();
+
+    if(userName){
+
+      // নাম দেওয়া থাকলে নাম দেখাবে
+      userEmailEl.innerText = userName;
+
+    }else{
+
+      // নাম না থাকলে email দেখাবে
+      userEmailEl.innerText =
+        user.email || "";
+
+    }
+
   }
+
+}
   if(typeof updateMyProfileUI === "function") updateMyProfileUI(user);
   if(typeof showGuestUpgradeButton === "function") showGuestUpgradeButton(!!user.is_anonymous);
 
