@@ -19,34 +19,82 @@
   </div>
 </div>
 
-<div id="loginPage" class="auth-page hidden" class="auth-page">
-  <div class="auth-box">
-<div class="logo">📒</div>
-    <h1 class="auth-title">আমার খাতা</h1>
-    <p class="auth-subtitle">আপনার ব্যক্তিগত হিসাব</p>
 
-    <div class="input-group">
-      <label>Email</label>
-      <input id="loginEmail" type="email" placeholder="আপনার email লিখুন" autocomplete="email">
+
+
+<div id="loginPage" class="auth-page hidden">
+  <div class="auth-box login-card">
+
+    <div class="login-logo">
+      <div class="logo-icon">📒</div>
     </div>
 
-    <div class="input-group">
-      <label>Password</label>
-      <div class="password-box">
-        <input id="loginPassword" type="password" placeholder="আপনার password" autocomplete="current-password">
-        <button class="show-password" onclick="togglePassword('loginPassword',this)">👁️</button>
-      </div>
+    <h1 class="auth-title">MY-KHATA</h1>
+
+    <p class="auth-subtitle">
+      সহজে রাখুন আপনার<br>
+      প্রতিদিনের হিসাব
+    </p>
+
+    <div class="login-input">
+      <span class="input-icon">✉</span>
+      <input
+        id="loginEmail"
+        type="email"
+        placeholder="ইমেইল ঠিকানা"
+        autocomplete="email">
     </div>
 
-    <button class="btn login-btn" onclick="login()">Login</button>
-    <div class="link" onclick="showForgotPassword()">Password ভুলে গেছেন?</div>
+    <div class="login-input">
+      <span class="input-icon">🔒</span>
+      <input
+        id="loginPassword"
+        type="password"
+        placeholder="পাসওয়ার্ড"
+        autocomplete="current-password">
+      <button
+        type="button"
+        class="password-eye"
+        onclick="togglePassword('loginPassword',this)"
+        aria-label="পাসওয়ার্ড দেখুন">👁️</button>
+    </div>
 
-    <div class="divider">অথবা</div>
+    <button
+      type="button"
+      class="btn login-btn login-main-btn"
+      onclick="login()">
+      লগইন করুন
+    </button>
 
-    <button class="btn signup-btn" onclick="showSignup()">নতুন Account তৈরি</button>
-    <button class="btn guest-btn" onclick="guestLogin()">👤 Guest হিসেবে ব্যবহার করুন</button>
-    <div class="guest-note">Guest mode-এ email/password লাগবে না। এই browser-এই আপনার হিসাব থাকবে।</div>
+    <div class="login-divider">
+      <span></span>
+      <b>অথবা</b>
+      <span></span>
+    </div>
+
+    <button
+      type="button"
+      class="btn guest-btn login-guest-btn"
+      onclick="guestLogin()">
+      <span>♙</span>
+      Guest হিসেবে ব্যবহার করুন
+    </button>
+
+    <div class="login-create-account">
+      নতুন ব্যবহারকারী?
+      <button type="button" onclick="showSignup()">
+        অ্যাকাউন্ট তৈরি করুন
+      </button>
+    </div>
+
+    <div
+      class="login-forgot"
+      onclick="showForgotPassword()">
+      পাসওয়ার্ড ভুলে গেছেন?
+    </div>
+
     <div id="loginMessage" class="message"></div>
+
   </div>
 </div>
 
@@ -148,163 +196,443 @@
 </div>
 
 <div id="app" class="hidden">
-  <div class="header">
-    <button id="myProfileHeader" class="my-profile-header" type="button" onclick="openMyProfile()" aria-label="My Profile">
-      <span id="headerAvatar" class="header-avatar">U</span>
-      <span class="header-profile-text">
-        <strong id="headerUserName">User</strong>
-        <small>My Profile</small>
-      </span>
-    </button>
-    <div class="header-brand">
-      <h1>📒 আমার খাতা</h1>
-      <p>ব্যক্তিগত হিসাব</p>
-    </div>
-    <div class="header-spacer" aria-hidden="true"></div>
-  </div>
 
-  <div class="userbar">
-    <span id="userEmail"></span>
-    <div class="userbar-actions">
-      <button id="upgradeGuestBtn" class="primary hidden" onclick="openGuestUpgrade()">✨ Account তৈরি করুন</button>
-      <button class="gray" onclick="logout()">Logout</button>
-    </div>
-  </div>
+    <!-- =========================
+         TOP HEADER
+         ========================= -->
+    <header class="khata-header">
 
-  <div class="container">
-    <div class="summary">
-      <div class="card"><h3>মোট পাবো</h3><p id="totalReceive">৳ 0</p></div>
-      <div class="card"><h3>মোট দেবো</h3><p id="totalPay">৳ 0</p></div>
-      <div class="card"><h3>Customer</h3><p id="customerCount">0</p></div>
+        <button
+            id="myProfileHeader"
+            class="home-profile"
+            type="button"
+            onclick="openMyProfile()"
+            aria-label="My Profile"
+        >
+
+            <span id="headerAvatar" class="home-avatar">U</span>
+
+            <span
+                id="headerUserName"
+                class="home-user-name"
+            >
+                User
+            </span>
+
+        </button>
+
+
+        <button
+            class="home-logout"
+            type="button"
+            onclick="logout()"
+        >
+            <span>↪</span>
+            <span>Logout</span>
+        </button>
+
+    </header>
+
+
+
+    <!-- =========================
+         HOME PAGE
+         ========================= -->
+    <main id="homePage" class="home-page">
+
+
+        <!-- Today's summary -->
+
+        <section class="home-section">
+
+            <h2 class="home-title">
+                আজকের হিসাব
+            </h2>
+
+
+            <div class="home-summary">
+
+    <!-- মোট দেবো -->
+
+    <div class="summary-box pay-summary">
+
+        <div class="summary-label">
+            মোট দেবো
+        </div>
+
+        <div
+            id="homeTotalPay"
+            class="summary-amount"
+        >
+            ৳ 0
+        </div>
+
+        <span class="summary-icon">
+            ↓
+        </span>
+
     </div>
 
-    <div id="customerPage">
-      <div class="toolbar">
-        <input id="customerSearch" placeholder="🔎 Customer খুঁজুন..." oninput="renderCustomers()">
-        <button class="primary" onclick="showAddTransaction()">➕ নতুন লেনদেন</button>
-      </div>
-      <div id="customerList"></div>
+
+    <!-- মোট পাবো -->
+
+    <div class="summary-box receive-summary">
+
+        <div class="summary-label">
+            মোট পাবো
+        </div>
+
+        <div
+            id="homeTotalReceive"
+            class="summary-amount"
+        >
+            ৳ 0
+        </div>
+
+        <span class="summary-icon">
+            ↑
+        </span>
+
     </div>
 
+</div>
+
+        </section>
+
+
+
+        <!-- =========================
+             DENA + PAWNA
+             ========================= -->
+
+        <section class="balance-columns">
+
+
+            <!-- DENa -->
+
+            <div class="balance-column debt-column">
+
+                <div class="column-heading debt-heading">
+
+                    <span class="heading-icon">
+                        ←
+                    </span>
+
+                    <span>
+                        দেনা
+                    </span>
+
+                </div>
+
+
+                <div
+                    id="homeDebtList"
+                    class="balance-list"
+                >
+                </div>
+
+            </div>
+
+
+
+            <!-- PAWNA -->
+
+            <div class="balance-column receive-column">
+
+                <div class="column-heading receive-heading">
+
+                    <span class="heading-icon">
+                        →
+                    </span>
+
+                    <span>
+                        পাওনা
+                    </span>
+
+                </div>
+
+
+                <div
+                    id="homeReceiveList"
+                    class="balance-list"
+                >
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             ZERO BALANCE CUSTOMERS
+             ========================= -->
+
+        <section id="homeZeroSection" class="balance-zero-section hidden">
+            <div class="zero-section-heading">
+                <span class="zero-heading-icon">✓</span>
+                <span>গ্রাহক — হিসাব সমান</span>
+            </div>
+            <div id="homeZeroList" class="balance-list"></div>
+        </section>
+
+
+        <!-- =========================
+             NEW TRANSACTION
+             ========================= -->
+
+        <button
+            class="home-new-transaction"
+            type="button"
+            onclick="showAddTransaction()"
+        >
+            <span>⊕</span>
+            নতুন লেনদেন
+        </button>
+
+
+    </main>
+
+
+
+    <!-- =========================
+         CUSTOMER PAGE
+         ========================= -->
+
+    <div id="customerPage" class="hidden">
+
+        <div class="container">
+
+            <div class="section-topbar">
+                <button type="button" class="section-back-btn" onclick="showHome()" aria-label="Home">← <span>হোম</span></button>
+                <h2>গ্রাহক</h2>
+            </div>
+
+            <div class="toolbar">
+
+                <input
+                    id="customerSearch"
+                    placeholder="🔎 Customer খুঁজুন..."
+                    oninput="renderCustomers()"
+                >
+
+                <button
+                    class="primary"
+                    onclick="showAddTransaction()"
+                >
+                    ➕ নতুন লেনদেন
+                </button>
+
+            </div>
+
+
+            <div id="customerList"></div>
+
+        </div>
+
+    </div>
+
+ 
     <div id="addPage" class="hidden">
-      <div class="card">
-        <button class="gray" onclick="showCustomers()">← Back</button>
-        <br><br>
-        <div class="form-title">
-  নতুন লেনদেন
-</div>
+      <div class="new-transaction-page">
+        <div class="new-transaction-topbar">
+          <button type="button" class="new-transaction-back" onclick="showHome()" aria-label="Home">←</button>
+          <div class="new-transaction-title">নতুন লেনদেন</div>
+          <button type="button" class="new-transaction-menu" onclick="showAddTransactionMenu()" aria-label="More">⋮</button>
+          <div id="newTransactionMenu" class="new-transaction-menu-pop hidden">
+            <button type="button" onclick="showHome()">হোমে ফিরুন</button>
+          </div>
+        </div>
 
-<div class="form-subtitle">
-  Customer-এর হিসাবের নতুন লেনদেন যোগ করুন
-</div>
-        <label>Customer-এর নাম</label>
-<input id="customerName" placeholder="যেমন: Rahim">
+        <div class="new-transaction-content">
+          <div class="new-customer-card">
+            <div class="new-customer-avatar" id="newCustomerAvatar">C</div>
+            <div class="new-customer-fields">
+              <input id="customerName" class="new-customer-name-input" placeholder="Customer-এর নাম" oninput="updateNewCustomerPreview()">
+              <input
+                id="customerPhone"
+                class="new-customer-phone-input"
+                type="tel"
+                placeholder="মোবাইল নম্বর"
+                inputmode="numeric"
+                autocomplete="tel"
+              >
+            </div>
+          </div>
 
-<label>মোবাইল নম্বর</label>
-<input
-  id="customerPhone"
-  type="tel"
-  placeholder="যেমন: 01712345678"
-  inputmode="numeric"
-  autocomplete="tel"
->
+          <div class="new-type-buttons">
+            <button id="newReceiveBtn" type="button" class="new-type-btn new-type-pay" onclick="setNewTransactionType('receive')">↑ দিলাম</button>
+            <button id="newPayBtn" type="button" class="new-type-btn new-type-receive" onclick="setNewTransactionType('pay')">↓ পেলাম</button>
+          </div>
 
-<label>Amount</label>
-<input id="amount" type="number" placeholder="যেমন: 500">
-        <label>লেনদেনের ধরন</label>
-        <select id="type">
-          <option value="receive">আমি পাবো</option>
-          <option value="pay">আমি দেবো</option>
-        </select>
-        <label>তারিখ</label>
-        <input id="date" type="date">
-        <label>Note</label>
-        <textarea id="note" rows="3" placeholder="যেমন: বাজারের টাকা"></textarea>
-        <button class="primary full" onclick="addTransaction()">➕ লেনদেন যোগ করুন</button>
+          <div class="new-form-field">
+            <label for="amount">টাকার পরিমাণ</label>
+            <div class="new-input-wrap">
+              <span>৳</span>
+              <input id="amount" type="number" min="0" step="0.01" placeholder="যেমন: 500" inputmode="decimal">
+            </div>
+          </div>
+
+          <div class="new-form-field">
+            <label for="date">তারিখ</label>
+            <div class="new-input-wrap">
+              <span>▣</span>
+              <input id="date" type="date">
+            </div>
+          </div>
+
+          <div class="new-form-field">
+            <label for="note">নোট (ঐচ্ছিক)</label>
+            <textarea id="note" rows="2" placeholder="যেমন: বাজারের টাকা"></textarea>
+          </div>
+
+          <select id="type" class="hidden" aria-hidden="true">
+            <option value="receive">আমি পাবো</option>
+            <option value="pay">আমি দেবো</option>
+          </select>
+
+          <button class="new-save-btn" onclick="addTransaction()" type="button">সংরক্ষণ করুন</button>
+        </div>
       </div>
     </div>
 
     <div id="profilePage" class="hidden">
-      <div class="profile">
-        <button class="gray" onclick="showCustomers()">← Customer List</button>
-        <br><br>
+  <div class="customer-profile-page">
 
-        <div class="profile-header">
+    <div class="customer-profile-topbar">
+      <button type="button" class="profile-back-btn" onclick="showHome()" aria-label="Home">←</button>
+      <div class="profile-top-title">গ্রাহক এর হিসাব</div>
+      <button type="button" class="profile-menu-btn" onclick="toggleProfileMenu()" aria-label="More">⋮</button>
+
+      <div id="profileActionMenu" class="profile-action-menu hidden">
+        <button type="button" onclick="showEditCustomer(); toggleProfileMenu();">✎ Edit Customer</button>
+        <button type="button" onclick="shareWhatsApp(); toggleProfileMenu();">🟢 WhatsApp</button>
+        <button type="button" onclick="shareOther(); toggleProfileMenu();">↗ Share</button>
+      </div>
+    </div>
+
+    <div class="customer-profile-content">
+
+      <div class="customer-profile-info">
+        <div id="profileCustomerAvatar" class="customer-profile-avatar">R</div>
+        <div class="customer-profile-details">
+          <div id="profileName" class="customer-profile-name"></div>
+          <div id="profilePhone" class="customer-profile-phone"></div>
+        </div>
+        <button type="button" class="customer-edit-icon" onclick="showEditCustomer()" aria-label="Edit customer">✎</button>
+      </div>
+
+      <div id="profileBalanceCard" class="profile-balance-card receive">
+        <div>
+          <div id="profileBalanceLabel" class="profile-balance-label">বর্তমান হিসাব</div>
+          <div id="profileBalanceAmount" class="profile-balance-amount">৳ 0</div>
+        </div>
+        <span id="profileBalanceStatus" class="profile-balance-status">পাওনা</span>
+      </div>
+
+      <div class="profile-summary-grid">
+        <div class="profile-summary-box dilam-summary">
+          <div class="profile-summary-title">দিলাম</div>
+          <div id="profileTotalDilam" class="profile-summary-amount">৳ 0</div>
+        </div>
+        <div class="profile-summary-box pelam-summary">
+          <div class="profile-summary-title">পেলাম</div>
+          <div id="profileTotalPelam" class="profile-summary-amount">৳ 0</div>
+        </div>
+      </div>
+
+      <div class="profile-quick-actions">
+        <button type="button" class="quick-dilam" onclick="showProfileTransactionForm('receive')">↑ &nbsp;দিলাম</button>
+        <button type="button" class="quick-pelam" onclick="showProfileTransactionForm('pay')">↓ &nbsp;পেলাম</button>
+      </div>
+
+      <button type="button" class="profile-new-transaction" onclick="showProfileTransactionForm('receive')">
+        ＋ &nbsp;নতুন লেনদেন
+      </button>
+
+      <div id="profileLedgerForm" class="profile-ledger-form profile-ledger-form-modern hidden">
+        <div class="ledger-form-title">নতুন লেনদেন</div>
+
+        <div class="ledger-type-buttons">
+          <button id="profileDilamBtn" class="ledger-type-btn dilam selected" onclick="setProfileTransactionType('receive')" type="button">↑ দিলাম</button>
+          <button id="profilePelamBtn" class="ledger-type-btn pelam" onclick="setProfileTransactionType('pay')" type="button">↓ পেলাম</button>
+        </div>
+
+        <div class="ledger-form-grid">
           <div>
-  <div id="profileName" class="profile-name"></div>
-
-  <div
-    id="profilePhone"
-    class="customer-phone">
-  </div>
-
-  <div id="profileBalance"></div>
-</div>
-          <div class="profile-actions">
-
-  <button
-    class="primary"
-    onclick="showEditCustomer()">
-    Edit Customer
-  </button>
-
-  <button
-    class="red"
-    onclick="deleteCustomer()">
-    Delete
-  </button>
-
-  <button
-    class="green"
-    onclick="shareWhatsApp()">
-    WhatsApp
-  </button>
-
-  <button
-    class="blue"
-    onclick="shareOther()">
-    IMO / Share
-  </button>
-
-</div>
+            <label>Amount</label>
+            <input id="profileAmount" type="number" min="0" step="0.01" placeholder="যেমন: 500">
+          </div>
+          <div>
+            <label>তারিখ</label>
+            <input id="profileDate" type="date">
+          </div>
         </div>
 
-        <div class="profile-ledger-form">
-          <div class="ledger-form-title">নতুন লেনদেন</div>
-          <div class="ledger-type-buttons">
-            <button id="profileDilamBtn" class="ledger-type-btn dilam selected" onclick="setProfileTransactionType('receive')">↑ দিলাম</button>
-            <button id="profilePelamBtn" class="ledger-type-btn pelam" onclick="setProfileTransactionType('pay')">↓ পেলাম</button>
-          </div>
+        <label>Note</label>
+        <input id="profileNote" type="text" placeholder="যেমন: আজকের বাজারের টাকা">
 
-          <div class="ledger-form-grid">
-            <div>
-              <label>Amount</label>
-              <input id="profileAmount" type="number" min="0" step="0.01" placeholder="যেমন: 100">
-            </div>
-            <div>
-              <label>তারিখ</label>
-              <input id="profileDate" type="date">
-            </div>
-          </div>
+        <button class="primary full" onclick="addProfileTransaction()" type="button">লেনদেন যোগ করুন</button>
+      </div>
 
-          <label>Note</label>
-          <input id="profileNote" type="text" placeholder="যেমন: আজকের বাজারের টাকা">
-          <button class="primary full" onclick="addProfileTransaction()">➕ লেনদেন যোগ করুন</button>
-        </div>
+      <button type="button" class="profile-history-btn" onclick="toggleProfileHistory()">
+        <span>◷</span><span>লেনদেনের ইতিহাস</span>
+      </button>
 
-        <div class="toolbar">
+      <div id="profileHistorySection" class="profile-history-section hidden">
+        <div class="profile-history-title">লেনদেনের ইতিহাস</div>
+
+        <div class="toolbar profile-history-toolbar">
           <input id="transactionSearch" placeholder="🔎 Note / Amount search" oninput="renderProfile()">
-          <label>শুরু তারিখ</label>
-          <input id="dateFrom" type="date" onchange="renderProfile()">
-          <label>শেষ তারিখ</label>
-          <input id="dateTo" type="date" onchange="renderProfile()">
-          <button class="gray" onclick="clearFilters()">Filter Clear</button>
+          <div class="profile-date-filters">
+            <div>
+              <label>শুরু</label>
+              <input id="dateFrom" type="date" onchange="renderProfile()">
+            </div>
+            <div>
+              <label>শেষ</label>
+              <input id="dateTo" type="date" onchange="renderProfile()">
+            </div>
+          </div>
+          <button class="gray" onclick="clearFilters()" type="button">Filter Clear</button>
         </div>
 
         <div id="transactionList"></div>
       </div>
+
+      <div class="profile-share-section">
+        <button type="button" class="profile-share whatsapp-share" onclick="shareWhatsApp()"><span>🟢</span><small>WhatsApp</small></button>
+        <button type="button" class="profile-share imo-share" onclick="shareOther()"><span>🔵</span><small>IMO</small></button>
+        <button type="button" class="profile-share general-share" onclick="shareOther()"><span>↗</span><small>শেয়ার</small></button>
+        <button type="button" class="profile-share edit-share" onclick="showEditCustomer()"><span>✎</span><small>Edit</small></button>
+      </div>
+
+      <button type="button" class="profile-delete-btn" onclick="deleteCustomer()">🗑 &nbsp; গ্রাহক মুছুন</button>
+
     </div>
   </div>
+</div>
+  </div>
+<!-- =========================
+     BOTTOM NAVIGATION
+     ========================= -->
+<nav class="bottom-nav">
+  <button id="navHome" class="bottom-nav-item active" type="button" onclick="showHome()">
+    <span class="nav-icon">⌂</span>
+    <span>হোম</span>
+  </button>
+  <button id="navTransaction" class="bottom-nav-item" type="button" onclick="showAddTransaction()">
+    <span class="nav-icon">▣</span>
+    <span>লেনদেন</span>
+  </button>
+  <button id="navCustomers" class="bottom-nav-item" type="button" onclick="showCustomers()">
+    <span class="nav-icon">♧</span>
+    <span>গ্রাহক</span>
+  </button>
+  <button id="navProfile" class="bottom-nav-item" type="button" onclick="openMyProfile()">
+    <span class="nav-icon">♙</span>
+    <span>প্রোফাইল</span>
+  </button>
+</nav>
 </div>
 
 <!-- MY PROFILE MODAL -->
@@ -337,37 +665,28 @@
   </div>
 </div>
 
-<!-- TRANSACTION SUCCESS OVERLAY -->
-<div id="transactionSuccessOverlay" class="success-overlay hidden">
-  <button class="success-close" onclick="closeTransactionSuccess()" aria-label="Close">×</button>
+<!-- TRANSACTION SUCCESS SCREEN -->
+<div id="transactionSuccessOverlay" class="success-overlay hidden" role="dialog" aria-modal="true">
   <div class="success-content">
-    <div class="success-check">✓</div>
-    <h2>লেনদেনটি রেকর্ড করা হয়েছে।</h2>
+    <div class="success-check-wrap">
+      <div class="success-check">✓</div>
+      <span class="success-spark spark-1">◆</span><span class="success-spark spark-2">◆</span><span class="success-spark spark-3">◆</span><span class="success-spark spark-4">◆</span>
+    </div>
+    <h2>লেনদেন সফলভাবে<br>যোগ হয়েছে!</h2>
 
     <div class="success-summary-card">
       <div class="success-customer-row">
-        <div id="successAvatar" class="success-avatar">IS</div>
-        <div>
-          <div id="successCustomerName" class="success-customer-name">Customer</div>
-          <div id="successCustomerPhone" class="success-customer-phone"></div>
+        <div id="successAvatar" class="success-avatar">R</div>
+        <div class="success-customer-main">
+          <div id="successCustomerName" class="success-customer-name">Rahim</div>
+          <div class="success-amount-line"><strong id="successAmount">৳ 500</strong> <span id="successTypeLabel">দিলাম</span></div>
+          <div id="successDate" class="success-date">04 Oct 2026</div>
         </div>
       </div>
-
-      <div class="success-divider"></div>
-      <div class="success-row"><span>পূর্বের পাওনা</span><strong id="successPrevious">৳0.00</strong></div>
-      <div class="success-row"><span id="successTypeLabel">দিলাম</span><strong id="successAmount">৳0.00</strong></div>
-      <div class="success-row"><span>পেলাম</span><strong id="successPaid">৳0.00</strong></div>
-      <div class="success-divider"></div>
-      <div class="success-row current"><span id="successCurrentLabel">বর্তমান পাওনা</span><strong id="successCurrent">৳0.00</strong></div>
     </div>
 
-    <div class="success-share-title"><span></span><b>লেনদেন রেকর্ড শেয়ার করি</b><span></span></div>
-    <div class="success-share-buttons">
-      <button class="share-tile whatsapp" onclick="shareSuccessWhatsApp()"><span>🟢</span><small>হোয়াটসঅ্যাপ</small></button>
-      <button class="share-tile tally" onclick="shareSuccessOther()"><span>🧾</span><small>টালি-মেসেজ</small></button>
-      <button class="share-tile sms" onclick="shareSuccessSMS()"><span>💬</span><small>এসএমএস</small></button>
-      <button class="share-tile messenger" onclick="shareSuccessMessenger()"><span>🔵</span><small>মেসেঞ্জার</small></button>
-    </div>
+    <button type="button" class="success-history-btn" onclick="goToSuccessHistory()">লেনদেনের ইতিহাস দেখুন</button>
+    <button type="button" class="success-home-btn" onclick="goToSuccessHome()"><span>⌂</span> হোম স্ক্রিন</button>
   </div>
 </div>
 

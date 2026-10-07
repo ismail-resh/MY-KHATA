@@ -135,28 +135,108 @@ button{border:none;padding:10px 14px;border-radius:8px;cursor:pointer;font-size:
 }
 
 /* ================= TRANSACTION SUCCESS SCREEN ================= */
-.success-overlay{position:fixed;inset:0;background:#fff;z-index:10000;overflow:auto;padding:28px 18px 34px;display:flex;justify-content:center}
-.success-overlay.hidden{display:none}
-.success-content{width:100%;max-width:650px;text-align:center;padding-top:80px}
-.success-close{position:fixed;right:18px;top:18px;width:58px;height:58px;border:0;border-radius:50%;background:#f6f6f6;font-size:38px;line-height:1;color:#111;cursor:pointer;z-index:10001}
-.success-check{width:100px;height:100px;margin:55px auto 28px;border-radius:50%;background:#08a45b;color:#fff;display:flex;align-items:center;justify-content:center;font-size:62px;font-weight:800;box-shadow:0 0 0 5px #fff}
-.success-content h2{font-size:28px;margin:0 0 30px;color:#222}
-.success-summary-card{background:#fff;border-radius:22px;padding:24px 28px;text-align:left;box-shadow:0 8px 30px rgba(0,0,0,.08);border:1px solid #f0f0f0}
-.success-customer-row{display:flex;align-items:center;gap:16px}
-.success-avatar{width:72px;height:72px;border-radius:50%;background:#f7931e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:23px;font-weight:700;flex:none}
-.success-customer-name{font-size:24px;font-weight:500;color:#222}
-.success-customer-phone{font-size:17px;color:#666;margin-top:3px}
-.success-divider{height:1px;background:#e7e7e7;margin:20px 0}
-.success-row{display:flex;justify-content:space-between;gap:20px;font-size:22px;line-height:1.45;margin:13px 0}
-.success-row strong{font-weight:600}
-.success-row:nth-of-type(2) strong,.success-row.current strong{color:#c52b32}
-.success-row.current{font-size:23px;margin-bottom:0}
-.success-share-title{display:flex;align-items:center;gap:14px;margin:420px 0 20px;color:#222;font-size:21px}
-.success-share-title span{height:1px;background:#ddd;flex:1}
-.success-share-buttons{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
-.share-tile{border:0;border-radius:18px;padding:15px 8px;min-height:92px;background:#f5f5f5;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;font-family:inherit}
-.share-tile span{font-size:31px}.share-tile small{font-size:14px;color:#222}.share-tile.whatsapp{background:#edf9f2}.share-tile.tally{background:#fff7ef}.share-tile.sms{background:#fffbea}.share-tile.messenger{background:#f2efff}
-@media(max-width:600px){.success-content{padding-top:55px}.success-check{width:94px;height:94px;font-size:56px;margin:30px auto 24px}.success-content h2{font-size:23px;margin-bottom:25px}.success-summary-card{padding:20px 18px;border-radius:20px}.success-avatar{width:66px;height:66px}.success-customer-name{font-size:21px}.success-row{font-size:19px}.success-row.current{font-size:20px}.success-share-title{margin-top:220px;font-size:18px}.success-share-buttons{gap:8px}.share-tile{min-height:82px;padding:10px 4px}.share-tile span{font-size:27px}.share-tile small{font-size:12px}.success-close{width:52px;height:52px;font-size:34px}}
+.success-overlay{
+  position:fixed; inset:0; z-index:10000; overflow:auto;
+  display:flex; justify-content:center; align-items:flex-start;
+  padding:18px 12px 28px;
+  background:linear-gradient(180deg,#f4fbf8 0%,#f8fcfb 100%);
+}
+.success-overlay.hidden{display:none!important}
+.success-content{
+  width:min(100%,390px); min-height:100%; text-align:center;
+  padding:52px 4px 20px; display:flex; flex-direction:column; align-items:center;
+}
+.success-check-wrap{position:relative;width:112px;height:112px;margin:22px auto 24px}
+.success-check{
+  width:94px;height:94px;margin:9px auto 0;border-radius:50%;
+  background:#42bd73;color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:58px;font-weight:800;box-shadow:0 7px 20px rgba(50,174,103,.18)
+}
+.success-spark{position:absolute;color:#28bb73;font-size:12px;line-height:1}
+.spark-1{left:4px;top:45px}.spark-2{right:0;top:24px;font-size:8px}.spark-3{right:14px;bottom:11px;font-size:9px}.spark-4{left:21px;bottom:7px;font-size:8px}
+.success-content h2{font-size:23px;line-height:1.5;margin:0 0 23px;color:#137550;font-weight:800}
+.success-summary-card{
+  width:100%;background:#fff;border:1px solid #dceee8;border-radius:11px;
+  padding:15px 14px;text-align:left;box-shadow:0 2px 10px rgba(26,104,77,.04);margin-bottom:22px
+}
+.success-customer-row{display:flex;align-items:center;gap:13px}
+.success-avatar{width:48px;height:48px;border-radius:50%;background:#dff5e9;color:#087653;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;flex:none}
+.success-customer-main{min-width:0;flex:1}
+.success-customer-name{font-size:16px;font-weight:800;color:#253a35;margin-bottom:2px}
+.success-amount-line{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap}
+.success-amount-line strong{font-size:18px;color:#222}
+.success-amount-line span{font-size:15px;color:#d53a42;font-weight:800}
+.success-date{font-size:12px;color:#7b8985;margin-top:3px}
+.success-history-btn,.success-home-btn{width:100%;height:44px;border-radius:9px;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;margin:0 0 9px}
+.success-history-btn{border:0;background:#079653;color:#fff;box-shadow:0 3px 9px rgba(0,145,83,.16)}
+.success-home-btn{border:1px solid #a9ddd0;background:#f5fffb;color:#168262}
+.success-home-btn span{font-size:18px;margin-right:5px}
+
+/* Section-level back buttons */
+.section-topbar{display:flex;align-items:center;gap:10px;max-width:900px;margin:10px auto 0;padding:8px 15px}
+.section-topbar h2{font-size:20px;color:#173b32;margin:0}
+.section-back-btn{display:inline-flex;align-items:center;gap:5px;border:1px solid #cce4dc;background:#edf8f4;color:#087653;padding:9px 12px;border-radius:9px;font-family:inherit;font-weight:800;font-size:13px;cursor:pointer;margin:0}
+.section-back-btn.light{margin-bottom:18px;background:#f1f6f4}
+.add-transaction-card{max-width:650px;margin:0 auto}
+
+@media(max-width:600px){
+  .success-overlay{padding:8px 10px 22px}
+  .success-content{padding-top:32px;width:min(100%,370px)}
+  .success-check-wrap{width:102px;height:102px;margin:17px auto 19px}
+  .success-check{width:86px;height:86px;font-size:52px}
+  .success-content h2{font-size:21px;margin-bottom:20px}
+  .success-summary-card{padding:14px 12px;margin-bottom:18px}
+  .success-avatar{width:45px;height:45px}
+  .success-customer-name{font-size:15px}
+  .success-amount-line strong{font-size:17px}
+  .success-amount-line span{font-size:14px}
+  .section-topbar{padding:8px 10px;margin-top:5px}
+  .section-topbar h2{font-size:18px}
+  .add-transaction-card{margin:0 10px;padding:15px}
+}
+
+/* ================= MOBILE SAFETY / RESPONSIVENESS ================= */
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+img,video,canvas,svg{max-width:100%;height:auto}
+button,input,select,textarea{max-width:100%;font-family:inherit}
+#app{width:100%;min-width:0}
+.container{width:100%;min-width:0}
+.toolbar{width:100%;min-width:0}
+@media(max-width:600px){
+  .khata-header{padding:0 10px}
+  .home-user-name{max-width:115px}
+  .home-page{width:100%;padding:16px 10px 18px}
+  .home-summary,.balance-columns{width:100%;min-width:0}
+  .home-summary{gap:8px}
+  .summary-box{min-width:0}
+  .balance-columns{gap:7px}
+  .home-customer{min-width:0}
+  .home-customer-name{max-width:calc(100vw / 5)}
+  #customerPage .container{padding:8px 10px;margin:0 auto}
+  #customerPage .toolbar{display:flex;flex-direction:column;gap:7px}
+  #customerPage .toolbar input,#customerPage .toolbar button{width:100%;margin:0}
+  #customerPage .customer{min-width:0}
+  #customerPage .customer-top{width:100%;min-width:0}
+  #customerPage .customer-top > *{min-width:0;max-width:100%}
+  #addPage{width:100%;padding:0 0 10px}
+  #addPage .card{width:calc(100% - 20px);box-sizing:border-box}
+  #addPage input,#addPage select,#addPage textarea{font-size:16px}
+  .customer-profile-content,.profile-history-section,.profile-ledger-form-modern{min-width:0;max-width:100%}
+  .profile-history-toolbar{min-width:0}
+  .profile-history-toolbar input{font-size:16px}
+  .profile-date-filters{grid-template-columns:1fr 1fr}
+  .profile-share-section{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .profile-share{min-width:0}
+}
+@media(max-width:360px){
+  .home-user-name{max-width:95px}
+  .balance-columns{gap:5px}
+  .home-customer{padding-left:5px;padding-right:5px}
+  .home-customer-name{max-width:50px}
+  .column-heading{font-size:13px}
+  .section-back-btn{font-size:12px;padding:8px 10px}
+  .success-content h2{font-size:20px}
+}
 
 /* ================= GUEST ACCOUNT UPGRADE ================= */
 .userbar-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
@@ -208,4 +288,1884 @@ button{border:none;padding:10px 14px;border-radius:8px;cursor:pointer;font-size:
   .header-brand h1{font-size:20px}
   .header-brand p{font-size:11px}
   .header-spacer{width:42px;flex-basis:42px}
+}
+/* =========================================================
+   MY-KHATA NEW LOGIN UI
+   ========================================================= */
+
+.auth-page {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #edf8f5 0%,
+            #f8fbfa 50%,
+            #eef3f5 100%
+        );
+}
+
+
+/* Main login card */
+
+.login-card {
+    width: 100%;
+    max-width: 365px;
+
+    background: rgba(255, 255, 255, 0.98);
+
+    padding: 32px 27px 25px;
+
+    border-radius: 18px;
+
+    border: 1px solid #dfe9e6;
+
+    box-shadow:
+        0 8px 30px rgba(0, 0, 0, 0.08);
+
+    text-align: center;
+}
+
+
+/* Logo */
+
+.login-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin-bottom: 7px;
+}
+
+.logo-icon {
+    width: 76px;
+    height: 76px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 54px;
+
+    background: #e9f8f2;
+
+    border-radius: 50%;
+}
+
+
+/* MY-KHATA title */
+
+.login-card .auth-title {
+    margin: 0;
+
+    font-size: 25px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.3px;
+
+    color: #087653;
+}
+
+
+/* Subtitle */
+
+.login-card .auth-subtitle {
+    margin: 6px 0 25px;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+
+    color: #777;
+}
+
+
+/* Login input wrapper */
+
+.login-input {
+    position: relative;
+
+    width: 100%;
+
+    margin-bottom: 10px;
+}
+
+
+/* Input icon */
+
+.login-input .input-icon {
+    position: absolute;
+
+    left: 13px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    width: 20px;
+
+    color: #607d76;
+
+    font-size: 16px;
+
+    pointer-events: none;
+
+    z-index: 2;
+}
+
+
+/* Input */
+
+.login-input input {
+    width: 100%;
+
+    height: 44px;
+
+    margin: 0;
+
+    padding: 0 42px;
+
+    border: 1px solid #cbded9;
+
+    border-radius: 9px;
+
+    background: #fff;
+
+    color: #222;
+
+    font-size: 13px;
+
+    outline: none;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+
+
+/* Placeholder */
+
+.login-input input::placeholder {
+    color: #999;
+
+    opacity: 1;
+}
+
+
+/* Input focus */
+
+.login-input input:focus {
+    border-color: #0a9b5b;
+
+    box-shadow:
+        0 0 0 3px rgba(10, 155, 91, 0.10);
+}
+
+
+/* Password eye */
+
+.password-eye {
+    position: absolute;
+
+    right: 7px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    width: 35px;
+    height: 35px;
+
+    padding: 0;
+
+    margin: 0;
+
+    border: none;
+
+    background: transparent;
+
+    color: #777;
+
+    font-size: 16px;
+
+    cursor: pointer;
+}
+
+
+/* Main login button */
+
+.login-main-btn {
+    width: 100%;
+
+    height: 45px;
+
+    margin-top: 7px;
+
+    border-radius: 8px;
+
+    background: #079653;
+
+    color: #fff;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    border: none;
+
+    box-shadow: none;
+
+    transition:
+        background .2s ease,
+        transform .1s ease;
+}
+
+
+.login-main-btn:hover {
+    background: #07884c;
+}
+
+
+.login-main-btn:active {
+    transform: scale(.99);
+}
+
+
+/* Divider */
+
+.login-divider {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin: 18px 0 15px;
+
+    color: #999;
+
+    font-size: 12px;
+}
+
+
+.login-divider span {
+    flex: 1;
+
+    height: 1px;
+
+    background: #d9dfdd;
+}
+
+
+.login-divider b {
+    font-weight: 400;
+
+    color: #999;
+}
+
+
+/* Guest button */
+
+.login-guest-btn {
+    width: 100%;
+
+    height: 42px;
+
+    margin: 0;
+
+    border-radius: 8px;
+
+    background: #fff;
+
+    border: 1px solid #56b993;
+
+    color: #087653;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    transition:
+        background .2s ease,
+        border-color .2s ease;
+}
+
+
+.login-guest-btn:hover {
+    background: #effaf6;
+
+    border-color: #079653;
+}
+
+
+.login-guest-btn span {
+    margin-right: 6px;
+
+    font-size: 15px;
+}
+
+
+/* Create account */
+
+.login-create-account {
+    margin-top: 20px;
+
+    font-size: 11px;
+
+    color: #777;
+}
+
+
+.login-create-account button {
+    margin: 0;
+    padding: 0;
+
+    border: none;
+
+    background: transparent;
+
+    color: #087653;
+
+    font-family: inherit;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+.login-create-account button:hover {
+    text-decoration: underline;
+}
+
+
+/* Forgot password */
+
+.login-forgot {
+    margin-top: 12px;
+
+    color: #078a54;
+
+    font-size: 11px;
+
+    cursor: pointer;
+}
+
+
+.login-forgot:hover {
+    text-decoration: underline;
+}
+
+
+/* Login error/success message */
+
+.login-card .message {
+    margin-top: 14px;
+
+    text-align: left;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .auth-page {
+        min-height: 100dvh;
+
+        padding:
+            12px
+            10px;
+    }
+
+
+    .login-card {
+        max-width: 355px;
+
+        padding:
+            30px
+            24px
+            22px;
+
+        border-radius: 15px;
+    }
+
+
+    .logo-icon {
+        width: 72px;
+        height: 72px;
+
+        font-size: 50px;
+    }
+
+
+    .login-card .auth-title {
+        font-size: 24px;
+    }
+
+
+    .login-card .auth-subtitle {
+        font-size: 12px;
+
+        margin-bottom: 22px;
+    }
+
+
+    .login-input input {
+        height: 43px;
+
+        font-size: 13px;
+    }
+
+
+    .login-main-btn {
+        height: 44px;
+    }
+
+
+    .login-guest-btn {
+        height: 41px;
+    }
+
+}
+
+
+/* Very small phones */
+
+@media (max-width: 360px) {
+
+    .auth-page {
+        padding: 8px;
+    }
+
+
+    .login-card {
+        padding:
+            24px
+            18px
+            20px;
+    }
+
+
+    .logo-icon {
+        width: 66px;
+        height: 66px;
+
+        font-size: 45px;
+    }
+
+
+    .login-card .auth-title {
+        font-size: 22px;
+    }
+
+}
+/* =========================================================
+   MY-KHATA NEW HOME PAGE
+   ========================================================= */
+
+
+/* ---------- App background ---------- */
+
+#app {
+    min-height: 100vh;
+    padding-bottom: 78px;
+}
+
+
+/* ---------- Top Header ---------- */
+
+.khata-header {
+
+    height: 68px;
+
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 18px;
+
+    background: linear-gradient(
+        135deg,
+        #008f58,
+        #007b4d
+    );
+
+    color: #fff;
+
+    box-shadow:
+        0 2px 10px rgba(0,0,0,.12);
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 100;
+}
+
+
+/* ---------- Profile ---------- */
+
+.home-profile {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    border: none;
+
+    background: transparent;
+
+    color: #fff;
+
+    padding: 0;
+
+    cursor: pointer;
+
+    font-family: inherit;
+}
+
+
+.home-avatar {
+
+    width: 43px;
+
+    height: 43px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    overflow: hidden;
+
+    background: #fff;
+
+    color: #087653;
+
+    font-size: 17px;
+
+    font-weight: 800;
+
+    border: 2px solid rgba(255,255,255,.8);
+
+    flex-shrink: 0;
+}
+
+
+.home-avatar img {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+.home-user-name {
+
+    max-width: 150px;
+
+    overflow: hidden;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+
+    font-size: 15px;
+
+    font-weight: 700;
+}
+
+
+/* ---------- Logout ---------- */
+
+.home-logout {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    border: none;
+
+    background: transparent;
+
+    color: #fff;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    padding: 8px 4px;
+}
+
+
+.home-logout span:first-child {
+
+    font-size: 21px;
+
+    line-height: 1;
+}
+
+
+/* ---------- Home content ---------- */
+
+.home-page {
+
+    width: 100%;
+
+    max-width: 720px;
+
+    margin: 0 auto;
+
+    padding: 20px 16px 20px;
+}
+
+
+.home-title {
+
+    margin: 0 0 14px;
+
+    font-size: 19px;
+
+    font-weight: 800;
+
+    color: #1f3430;
+}
+
+
+/* ---------- Summary ---------- */
+
+.home-summary {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 14px;
+
+    margin-bottom: 18px;
+}
+
+
+.summary-box {
+
+    position: relative;
+
+    min-height: 92px;
+
+    padding: 15px 14px;
+
+    border-radius: 11px;
+
+    overflow: hidden;
+}
+
+
+.receive-summary {
+
+    background: #e9faf3;
+
+    border: 1px solid #c9efdf;
+}
+
+
+.pay-summary {
+
+    background: #fff0f1;
+
+    border: 1px solid #ffd5d8;
+}
+
+
+.summary-label {
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    margin-bottom: 5px;
+}
+
+
+.receive-summary .summary-label {
+
+    color: #09845a;
+}
+
+
+.pay-summary .summary-label {
+
+    color: #e0202c;
+}
+
+
+.summary-amount {
+
+    font-size: 21px;
+
+    font-weight: 800;
+}
+
+
+.receive-summary .summary-amount {
+
+    color: #078653;
+}
+
+
+.pay-summary .summary-amount {
+
+    color: #d91d29;
+}
+
+
+.summary-icon {
+
+    position: absolute;
+
+    right: 12px;
+
+    bottom: 12px;
+
+    width: 23px;
+
+    height: 23px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    font-size: 15px;
+
+    font-weight: 800;
+}
+
+
+.receive-summary .summary-icon {
+
+    color: #07905a;
+
+    background: #c7f2df;
+}
+
+
+.pay-summary .summary-icon {
+
+    color: #e0202c;
+
+    background: #ffd5d8;
+}
+
+
+/* =========================================================
+   DENA + PAWNA
+   ========================================================= */
+
+.balance-columns {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 12px;
+
+    margin-bottom: 17px;
+}
+
+
+.balance-column {
+
+    overflow: hidden;
+
+    border-radius: 10px;
+
+    border: 1px solid #e6e9e9;
+
+    background: #fff;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,.04);
+}
+
+
+/* ---------- Heading ---------- */
+
+.column-heading {
+
+    height: 48px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 0 9px;
+
+    font-size: 16px;
+
+    font-weight: 800;
+}
+
+
+.debt-heading {
+
+    color: #dc2731;
+
+    background: linear-gradient(
+        135deg,
+        #ffe6e8,
+        #fff1f2
+    );
+}
+
+
+.receive-heading {
+
+    color: #078653;
+
+    background: linear-gradient(
+        135deg,
+        #ddf8eb,
+        #edfcf5
+    );
+}
+
+
+.heading-icon {
+
+    width: 27px;
+
+    height: 27px;
+
+    border-radius: 6px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #fff;
+
+    font-size: 18px;
+
+    font-weight: 800;
+}
+
+
+.debt-heading .heading-icon {
+
+    background: #ee4148;
+}
+
+
+.receive-heading .heading-icon {
+
+    background: #07945a;
+}
+
+
+/* ---------- Customer list ---------- */
+
+.balance-list {
+
+    min-height: 120px;
+}
+
+
+.home-customer {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    min-height: 57px;
+
+    padding: 8px 10px;
+
+    border-bottom: 1px solid #edf0ef;
+
+    cursor: pointer;
+
+    transition: background .15s ease;
+}
+
+
+.home-customer:hover {
+
+    background: #fafafa;
+}
+
+
+.home-customer-left {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    min-width: 0;
+}
+
+
+.home-customer-avatar {
+
+    width: 30px;
+
+    height: 30px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    color: #fff;
+
+    background: #087653;
+}
+
+
+.debt-column .home-customer-avatar {
+
+    background: #e23a42;
+}
+
+
+.home-customer-info {
+
+    min-width: 0;
+}
+
+
+.home-customer-name {
+
+    display: block;
+
+    max-width: 75px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    color: #333;
+}
+
+
+.home-customer-amount {
+
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 11px;
+
+    font-weight: 700;
+}
+
+
+.debt-column .home-customer-amount {
+
+    color: #df2630;
+}
+
+
+.receive-column .home-customer-amount {
+
+    color: #07905a;
+}
+
+
+.home-customer-arrow {
+
+    font-size: 21px;
+
+    color: #9aa9a5;
+
+    line-height: 1;
+}
+
+
+/* ---------- Empty ---------- */
+
+.home-empty {
+
+    min-height: 120px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px 10px;
+
+    text-align: center;
+
+    color: #999;
+
+    font-size: 11px;
+}
+
+
+/* ---------- See all ---------- */
+
+.column-see-all {
+
+    width: 100%;
+
+    min-height: 39px;
+
+    border: none;
+
+    border-top: 1px solid #edf0ef;
+
+    background: transparent;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 10px;
+
+    font-family: inherit;
+
+    font-size: 10px;
+
+    cursor: pointer;
+}
+
+
+.debt-see-all {
+
+    color: #bd5258;
+
+    background: #fff7f7;
+}
+
+
+.receive-see-all {
+
+    color: #388b6d;
+
+    background: #f3fcf8;
+}
+
+
+.column-see-all span {
+
+    font-size: 19px;
+
+    line-height: 1;
+}
+
+
+/* =========================================================
+   NEW TRANSACTION BUTTON
+   ========================================================= */
+
+.home-new-transaction {
+
+    width: 100%;
+
+    height: 48px;
+
+    border: none;
+
+    border-radius: 9px;
+
+    background: #079653;
+
+    color: #fff;
+
+    font-family: inherit;
+
+    font-size: 15px;
+
+    font-weight: 800;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 3px 8px rgba(0,145,83,.18);
+
+    transition:
+        background .2s ease,
+        transform .1s ease;
+}
+
+
+.home-new-transaction:hover {
+
+    background: #07884c;
+}
+
+
+.home-new-transaction:active {
+
+    transform: scale(.99);
+}
+
+
+.home-new-transaction span {
+
+    font-size: 23px;
+
+    line-height: 1;
+}
+
+
+/* =========================================================
+   BOTTOM NAVIGATION
+   ========================================================= */
+
+.bottom-nav {
+
+    position: fixed;
+
+    left: 50%;
+
+    bottom: 0;
+
+    transform: translateX(-50%);
+
+    width: 100%;
+
+    max-width: 720px;
+
+    height: 67px;
+
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    background: rgba(255,255,255,.98);
+
+    border-top: 1px solid #dfe7e4;
+
+    box-shadow:
+        0 -3px 12px rgba(0,0,0,.07);
+
+    z-index: 999;
+}
+
+
+.bottom-nav-item {
+
+    border: none;
+
+    background: transparent;
+
+    color: #61736f;
+
+    font-family: inherit;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 2px;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+
+.bottom-nav-item .nav-icon {
+
+    font-size: 23px;
+
+    line-height: 1;
+
+    font-weight: 700;
+}
+
+
+.bottom-nav-item.active {
+
+    color: #078b54;
+}
+
+
+.bottom-nav-item.active .nav-icon {
+
+    transform: scale(1.05);
+}
+
+
+/* =========================================================
+   HIDE OLD HEADER / USERBAR
+   ========================================================= */
+
+#app > .header,
+#app > .userbar {
+
+    display: none !important;
+}
+
+
+/* Old summary should not appear anymore */
+
+#app > .container > .summary {
+
+    display: none !important;
+}
+
+
+/* =========================================================
+   CUSTOMER PAGE
+   ========================================================= */
+
+#customerPage {
+
+    padding-bottom: 20px;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .khata-header {
+
+        height: 64px;
+
+        padding: 0 14px;
+    }
+
+
+    .home-avatar {
+
+        width: 40px;
+
+        height: 40px;
+    }
+
+
+    .home-user-name {
+
+        max-width: 130px;
+
+        font-size: 14px;
+    }
+
+
+    .home-logout {
+
+        font-size: 12px;
+    }
+
+
+    .home-page {
+
+        padding:
+            18px
+            12px
+            15px;
+    }
+
+
+    .home-title {
+
+        font-size: 18px;
+    }
+
+
+    .home-summary {
+
+        gap: 10px;
+    }
+
+
+    .summary-box {
+
+        min-height: 88px;
+
+        padding: 13px 11px;
+    }
+
+
+    .summary-amount {
+
+        font-size: 19px;
+    }
+
+
+    .balance-columns {
+
+        gap: 8px;
+    }
+
+
+    .column-heading {
+
+        height: 45px;
+
+        font-size: 14px;
+
+        padding: 0 7px;
+    }
+
+
+    .heading-icon {
+
+        width: 25px;
+
+        height: 25px;
+
+        font-size: 16px;
+    }
+
+
+    .home-customer {
+
+        min-height: 54px;
+
+        padding: 7px 7px;
+    }
+
+
+    .home-customer-avatar {
+
+        width: 28px;
+
+        height: 28px;
+
+        font-size: 10px;
+    }
+
+
+    .home-customer-name {
+
+        max-width: 62px;
+
+        font-size: 11px;
+    }
+
+
+    .home-customer-amount {
+
+        font-size: 10px;
+    }
+
+
+    .home-customer-arrow {
+
+        font-size: 18px;
+    }
+
+
+    .home-new-transaction {
+
+        height: 46px;
+
+        font-size: 14px;
+    }
+
+
+    .bottom-nav {
+
+        height: 64px;
+    }
+
+
+    .bottom-nav-item {
+
+        font-size: 9px;
+    }
+
+
+    .bottom-nav-item .nav-icon {
+
+        font-size: 21px;
+    }
+
+}
+
+
+/* Extra small phones */
+
+@media (max-width: 360px) {
+
+    .home-page {
+
+        padding-left: 9px;
+
+        padding-right: 9px;
+    }
+
+
+    .balance-columns {
+
+        gap: 6px;
+    }
+
+
+    .home-customer-name {
+
+        max-width: 55px;
+    }
+
+
+    .summary-amount {
+
+        font-size: 17px;
+    }
+
+}
+
+/* ==================================================
+   CUSTOMER PROFILE - MODERN MOBILE UI
+================================================== */
+
+#profilePage{
+  padding:0 !important;
+  margin:0 !important;
+}
+
+.customer-profile-page{
+  min-height:calc(100vh - 0px);
+  background:#f7faf9;
+  padding-bottom:24px;
+}
+
+.customer-profile-topbar{
+  position:sticky;
+  top:0;
+  z-index:200;
+  height:56px;
+  display:flex;
+  align-items:center;
+  padding:0 12px;
+  background:linear-gradient(135deg,#008f58,#007b4d);
+  color:#fff;
+  box-shadow:0 2px 8px rgba(0,0,0,.12);
+}
+
+.profile-back-btn,
+.profile-menu-btn{
+  width:36px;
+  height:36px;
+  margin:0;
+  padding:0;
+  border:0;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:transparent;
+  color:#fff;
+  font-size:27px;
+  cursor:pointer;
+}
+
+.profile-menu-btn{font-size:25px}
+.profile-top-title{
+  flex:1;
+  padding-left:7px;
+  font-size:17px;
+  font-weight:800;
+}
+
+.profile-action-menu{
+  position:absolute;
+  top:51px;
+  right:8px;
+  width:175px;
+  background:#fff;
+  border-radius:10px;
+  box-shadow:0 8px 25px rgba(0,0,0,.16);
+  overflow:hidden;
+  z-index:500;
+}
+
+.profile-action-menu button{
+  width:100%;
+  height:42px;
+  margin:0;
+  padding:0 12px;
+  border-radius:0;
+  border-bottom:1px solid #eee;
+  background:#fff;
+  color:#333;
+  text-align:left;
+  font-family:inherit;
+  font-size:12px;
+}
+
+.customer-profile-content{
+  width:100%;
+  max-width:520px;
+  margin:0 auto;
+  padding:13px 11px 25px;
+}
+
+.customer-profile-info{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:3px 4px 14px;
+}
+
+.customer-profile-avatar{
+  width:58px;
+  height:58px;
+  flex-shrink:0;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,#e3f4f0,#ccebe3);
+  color:#087653;
+  font-size:19px;
+  font-weight:800;
+  border:1px solid #d3e9e3;
+}
+
+.customer-profile-details{flex:1;min-width:0}
+.customer-profile-name{font-size:16px;font-weight:800;color:#1e2e2b}
+.customer-profile-phone{margin-top:3px;font-size:11px;color:#58706a}
+
+.customer-edit-icon{
+  width:34px;
+  height:34px;
+  margin:0;
+  padding:0;
+  border:0;
+  background:transparent;
+  color:#165e54;
+  font-size:18px;
+}
+
+.profile-balance-card{
+  min-height:70px;
+  padding:12px 14px;
+  border-radius:7px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  color:#fff;
+  margin-bottom:0;
+}
+
+.profile-balance-card.receive{background:linear-gradient(135deg,#078d55,#04914f)}
+.profile-balance-card.pay{background:linear-gradient(135deg,#d92b34,#e63a43)}
+.profile-balance-card.zero{background:#6f7d79}
+
+.profile-balance-label{font-size:11px;font-weight:600;opacity:.95}
+.profile-balance-amount{margin-top:3px;font-size:23px;font-weight:800}
+.profile-balance-status{
+  min-width:53px;
+  padding:5px 8px;
+  border-radius:6px;
+  background:#fff;
+  color:#087653;
+  text-align:center;
+  font-size:10px;
+  font-weight:800;
+}
+.profile-balance-card.pay .profile-balance-status{color:#d62932}
+.profile-balance-card.zero .profile-balance-status{color:#555}
+
+.profile-summary-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  margin-bottom:12px;
+}
+.profile-summary-box{
+  min-height:64px;
+  padding:9px 12px;
+  background:#fff;
+  border:1px solid #e5ece9;
+}
+.dilam-summary{border-radius:0 0 0 7px;border-top:0}
+.pelam-summary{border-radius:0 0 7px 0;border-top:0;border-left:0}
+.profile-summary-title{font-size:11px;font-weight:700}
+.dilam-summary .profile-summary-title,.dilam-summary .profile-summary-amount{color:#df2730}
+.pelam-summary .profile-summary-title,.pelam-summary .profile-summary-amount{color:#078b54}
+.profile-summary-amount{margin-top:3px;font-size:18px;font-weight:800}
+
+.profile-quick-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin:12px 0;
+}
+.profile-quick-actions button{
+  height:39px;
+  margin:0;
+  border:0;
+  border-radius:7px;
+  font-family:inherit;
+  font-size:13px;
+  font-weight:800;
+}
+.quick-dilam{background:#ff3f48;color:#fff}
+.quick-pelam{background:#079653;color:#fff}
+
+.profile-new-transaction{
+  width:100%;
+  height:39px;
+  margin:0 0 9px;
+  border:1px solid #cde5de;
+  border-radius:7px;
+  background:#edf8f5;
+  color:#087653;
+  font-family:inherit;
+  font-size:13px;
+  font-weight:800;
+}
+
+.profile-ledger-form-modern{
+  margin:10px 0 12px;
+  background:#fff;
+  border:1px solid #dfeae7;
+  padding:13px;
+  border-radius:10px;
+  box-shadow:0 2px 7px rgba(0,0,0,.04);
+}
+
+.profile-ledger-form-modern .ledger-form-title{font-size:15px}
+.profile-ledger-form-modern .ledger-type-btn{font-size:13px;padding:10px}
+
+.profile-history-btn{
+  width:100%;
+  height:39px;
+  margin:0 0 12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  border:1px solid #d9e9e5;
+  border-radius:7px;
+  background:#f6fbfa;
+  color:#355f56;
+  font-family:inherit;
+  font-size:12px;
+  font-weight:700;
+}
+.profile-history-btn span:first-child{font-size:17px}
+
+.profile-history-section{
+  margin:5px 0 14px;
+  padding:10px;
+  background:#fff;
+  border:1px solid #e5ece9;
+  border-radius:10px;
+}
+.profile-history-title{
+  font-size:15px;
+  font-weight:800;
+  color:#24463e;
+  margin-bottom:10px;
+}
+.profile-history-toolbar{
+  box-shadow:none;
+  padding:0;
+  margin-bottom:10px;
+}
+.profile-date-filters{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.profile-date-filters label{
+  display:block;
+  font-size:10px;
+  color:#777;
+  margin-bottom:4px;
+}
+
+.profile-share-section{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin:15px 0 14px;
+}
+.profile-share{
+  min-height:52px;
+  margin:0;
+  padding:5px;
+  border:0;
+  border-radius:9px;
+  background:#fff;
+  box-shadow:0 1px 5px rgba(0,0,0,.05);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+}
+.profile-share span{font-size:22px;line-height:1}
+.profile-share small{font-size:9px;color:#555}
+
+.profile-delete-btn{
+  width:100%;
+  height:38px;
+  margin:0;
+  border:1px solid #ffd7d9;
+  border-radius:7px;
+  background:#fff8f8;
+  color:#df3038;
+  font-family:inherit;
+  font-size:11px;
+  font-weight:700;
+}
+
+@media(max-width:600px){
+  .customer-profile-content{padding:13px 10px 25px}
+  .profile-top-title{font-size:16px}
+  .profile-balance-amount{font-size:22px}
+  .profile-summary-amount{font-size:17px}
+  .profile-share span{font-size:20px}
+}
+
+
+/* ================= NEW TRANSACTION - SIMPLE MOBILE UI ================= */
+.new-transaction-page{
+  width:100%; min-height:calc(100vh - 70px); background:#fff;
+}
+.new-transaction-topbar{
+  position:relative; display:flex; align-items:center; justify-content:space-between;
+  height:54px; padding:0 14px; background:#078b5a; color:#fff;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+.new-transaction-title{font-size:17px;font-weight:800;flex:1;text-align:left;margin-left:14px}
+.new-transaction-back,.new-transaction-menu{
+  width:34px;height:34px;border:0;background:transparent;color:#fff;cursor:pointer;
+  font-size:28px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0
+}
+.new-transaction-menu{font-size:25px}
+.new-transaction-menu-pop{
+  position:absolute;right:10px;top:48px;z-index:30;background:#fff;color:#333;border-radius:9px;
+  box-shadow:0 8px 25px rgba(0,0,0,.18);overflow:hidden;border:1px solid #e5e5e5
+}
+.new-transaction-menu-pop button{border:0;background:#fff;padding:12px 16px;font-size:13px;cursor:pointer;white-space:nowrap}
+.new-transaction-content{width:min(100%,430px);margin:0 auto;padding:14px 16px 30px}
+.new-customer-card{
+  display:flex;align-items:center;gap:12px;padding:10px 2px 14px;border-bottom:1px solid #edf1ef;margin-bottom:14px
+}
+.new-customer-avatar{
+  width:48px;height:48px;border-radius:50%;background:#e6f4f0;color:#087653;display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:800;flex:none;border:1px solid #d1ebe3
+}
+.new-customer-fields{min-width:0;flex:1}
+.new-customer-name-input,.new-customer-phone-input{
+  display:block;width:100%;border:0!important;outline:none!important;box-shadow:none!important;background:transparent!important;
+  padding:1px 0!important;border-radius:0!important
+}
+.new-customer-name-input{font-size:16px!important;font-weight:800;color:#233833}
+.new-customer-phone-input{font-size:12px!important;color:#698078;margin-top:3px}
+.new-customer-name-input::placeholder{color:#53655f;opacity:1}
+.new-customer-phone-input::placeholder{color:#7d918a}
+.new-type-buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:4px 0 18px}
+.new-type-btn{
+  height:38px;border-radius:7px;font-size:13px;font-weight:800;background:#fff;cursor:pointer
+}
+.new-type-pay{border:1px solid #ffb9bd;color:#ef3942}
+.new-type-receive{border:1px solid #a7dfd0;color:#078b5a}
+.new-type-btn.selected.new-type-pay{background:#ff3d46;color:#fff;border-color:#ff3d46;box-shadow:0 4px 10px rgba(255,61,70,.14)}
+.new-type-btn.selected.new-type-receive{background:#eaf9f4;color:#078b5a;border-color:#8bd5c1}
+.new-form-field{margin-bottom:15px}
+.new-form-field label{display:block;font-size:13px;font-weight:700;color:#50645d;margin:0 0 7px}
+.new-input-wrap{
+  display:flex;align-items:center;gap:9px;height:38px;border:1px solid #cfe1ea;border-radius:7px;background:#fff;padding:0 11px
+}
+.new-input-wrap>span{font-size:17px;color:#49736a;line-height:1}
+.new-input-wrap input{border:0!important;outline:none!important;box-shadow:none!important;padding:0!important;height:100%;font-size:13px!important;color:#3f5d56;background:transparent!important}
+.new-form-field textarea{
+  width:100%;border:1px solid #cfe1ea;border-radius:7px;padding:10px 11px;font-size:13px;resize:vertical;min-height:58px;outline:none
+}
+.new-form-field input:focus,.new-form-field textarea:focus{border-color:#7fcbb8}
+.new-save-btn{
+  width:100%;height:38px;border:0;border-radius:7px;background:#078f58;color:#fff;font-size:13px;font-weight:800;cursor:pointer;
+  box-shadow:0 4px 10px rgba(0,143,88,.14);margin-top:2px
+}
+.balance-zero-section{
+  width:100%;background:#fff;border:1px solid #e3ebe8;border-radius:10px;overflow:hidden;margin-bottom:17px;
+  box-shadow:0 2px 8px rgba(0,0,0,.035)
+}
+.balance-zero-section.hidden{display:none!important}
+.zero-section-heading{height:44px;display:flex;align-items:center;gap:8px;padding:0 11px;background:#effaf6;color:#087653;font-size:14px;font-weight:800}
+.zero-heading-icon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#0aa061;color:#fff;font-size:14px;font-weight:900}
+.zero-customer{min-height:54px}
+.zero-avatar{background:#edf7f4;color:#087653}
+.zero-amount{color:#7a8c86!important}
+
+@media(max-width:600px){
+  .new-transaction-topbar{height:53px;padding:0 11px}
+  .new-transaction-content{padding:12px 16px 24px;width:100%}
+  .new-customer-card{padding-top:7px}
+  .new-type-buttons{gap:9px}
+  .new-type-btn{height:38px}
+  .new-form-field{margin-bottom:14px}
 }

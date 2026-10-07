@@ -63,6 +63,7 @@ async function startApp(session = null){
   // Show the main UI immediately. Customer/transaction data can load just after it appears.
   try{
     await loadTransactions();
+    showHome();
   }catch(error){
     console.error("Transaction load error:", error);
   }finally{
@@ -73,22 +74,116 @@ async function startApp(session = null){
   }
 }
 
-function showCustomers(){
-  document.getElementById("customerPage").classList.remove("hidden");
-  document.getElementById("addPage").classList.add("hidden");
-  document.getElementById("profilePage").classList.add("hidden");
+function showHome(){
+    const bottomNav = document.querySelector(".bottom-nav");
+    if(bottomNav) bottomNav.style.display = "grid";
 
-  currentCustomer = null;
-  renderCustomers();
+
+    document
+        .getElementById("homePage")
+        ?.classList.remove("hidden");
+
+
+    document
+        .getElementById("customerPage")
+        ?.classList.add("hidden");
+
+
+    document
+        .getElementById("addPage")
+        ?.classList.add("hidden");
+
+
+    document
+        .getElementById("profilePage")
+        ?.classList.add("hidden");
+
+
+    currentCustomer = null;
+
+
+    if(typeof renderHomeDashboard === "function"){
+
+        renderHomeDashboard();
+
+    }
+
+
+    setActiveBottomNav("navHome");
+
+}
+function showCustomers(){
+
+    const bottomNav = document.querySelector(".bottom-nav");
+    if(bottomNav) bottomNav.style.display = "grid";
+
+    document
+        .getElementById("homePage")
+        ?.classList.add("hidden");
+
+
+    document
+        .getElementById("customerPage")
+        ?.classList.remove("hidden");
+
+
+    document
+        .getElementById("addPage")
+        ?.classList.add("hidden");
+
+
+    document
+        .getElementById("profilePage")
+        ?.classList.add("hidden");
+
+
+    currentCustomer = null;
+
+
+    renderCustomers();
+
+
+    setActiveBottomNav("navCustomers");
+
 }
 
 function showAddTransaction(){
-  document.getElementById("customerPage").classList.add("hidden");
-  document.getElementById("profilePage").classList.add("hidden");
-  document.getElementById("addPage").classList.remove("hidden");
 
-  document.getElementById("date").value =
-    new Date().toISOString().split("T")[0];
+    const bottomNav = document.querySelector(".bottom-nav");
+    if(bottomNav) bottomNav.style.display = "grid";
+
+    document
+        .getElementById("homePage")
+        ?.classList.add("hidden");
+
+
+    document
+        .getElementById("customerPage")
+        ?.classList.add("hidden");
+
+
+    document
+        .getElementById("profilePage")
+        ?.classList.add("hidden");
+
+
+    document
+        .getElementById("addPage")
+        ?.classList.remove("hidden");
+
+
+    const dateEl = document.getElementById("date");
+    if(dateEl) dateEl.value = new Date().toISOString().split("T")[0];
+
+    const typeEl = document.getElementById("type");
+    if(typeEl) typeEl.value = "receive";
+    if(typeof setNewTransactionType === "function") setNewTransactionType("receive");
+    if(typeof updateNewCustomerPreview === "function") updateNewCustomerPreview();
+    const menu = document.getElementById("newTransactionMenu");
+    if(menu) menu.classList.add("hidden");
+
+    setActiveBottomNav("navTransaction");
+
 }
 
 async function init(){
@@ -108,3 +203,26 @@ async function init(){
 }
 
 init();
+
+function setActiveBottomNav(activeId){
+
+    document
+        .querySelectorAll(".bottom-nav-item")
+        .forEach(item => {
+
+            item.classList.remove("active");
+
+        });
+
+
+    const active =
+        document.getElementById(activeId);
+
+
+    if(active){
+
+        active.classList.add("active");
+
+    }
+
+}

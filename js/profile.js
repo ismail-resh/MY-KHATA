@@ -19,9 +19,9 @@ function renderProfile(){
   if(!currentCustomer) return;
 
   const list = document.getElementById("transactionList");
-  const search = document.getElementById("transactionSearch").value.toLowerCase().trim();
-  const from = document.getElementById("dateFrom").value;
-  const to = document.getElementById("dateTo").value;
+  const search = (document.getElementById("transactionSearch")?.value || "").toLowerCase().trim();
+  const from = document.getElementById("dateFrom")?.value || "";
+  const to = document.getElementById("dateTo")?.value || "";
 
   // IMPORTANT: Balance is always calculated from ALL transactions.
   // Search/date filters only hide rows; they never change the customer's real balance.
@@ -49,13 +49,43 @@ function renderProfile(){
     runningBalance += getLedgerBalance(t);
     balanceAfter[String(t.id)] = runningBalance;
   });
+  // Current balance is always calculated from ALL transactions.
+  const totalDilam = allPerson
+    .filter(t => t.type === "receive")
+    .reduce((sum, t) => sum + Number(t.amount || 0), 0);
 
-  const profileBalance = document.getElementById("profileBalance");
-  profileBalance.innerHTML = runningBalance > 0
-    ? `<div class="balance-label">বর্তমান পাওনা</div><div class="balance-value receive">৳${formatMoney(runningBalance)}</div>`
-    : runningBalance < 0
-      ? `<div class="balance-label">বর্তমান দেনা</div><div class="balance-value pay">৳${formatMoney(Math.abs(runningBalance))}</div>`
-      : `<div class="balance-label">বর্তমান হিসাব</div><div class="balance-value">৳0</div>`;
+  const totalPelam = allPerson
+    .filter(t => t.type === "pay")
+    .reduce((sum, t) => sum + Number(t.amount || 0), 0);
+
+  const totalDilamEl = document.getElementById("profileTotalDilam");
+  const totalPelamEl = document.getElementById("profileTotalPelam");
+  if(totalDilamEl) totalDilamEl.textContent = "৳ " + formatMoney(totalDilam);
+  if(totalPelamEl) totalPelamEl.textContent = "৳ " + formatMoney(totalPelam);
+
+  const balanceCard = document.getElementById("profileBalanceCard");
+  const balanceLabel = document.getElementById("profileBalanceLabel");
+  const balanceAmount = document.getElementById("profileBalanceAmount");
+  const balanceStatus = document.getElementById("profileBalanceStatus");
+
+  if(balanceCard) balanceCard.classList.remove("receive", "pay", "zero");
+
+  if(runningBalance > 0){
+    if(balanceCard) balanceCard.classList.add("receive");
+    if(balanceLabel) balanceLabel.textContent = "বর্তমান হিসাব";
+    if(balanceAmount) balanceAmount.textContent = "৳ " + formatMoney(runningBalance);
+    if(balanceStatus) balanceStatus.textContent = "পাওনা";
+  }else if(runningBalance < 0){
+    if(balanceCard) balanceCard.classList.add("pay");
+    if(balanceLabel) balanceLabel.textContent = "বর্তমান হিসাব";
+    if(balanceAmount) balanceAmount.textContent = "৳ " + formatMoney(Math.abs(runningBalance));
+    if(balanceStatus) balanceStatus.textContent = "দেনা";
+  }else{
+    if(balanceCard) balanceCard.classList.add("zero");
+    if(balanceLabel) balanceLabel.textContent = "বর্তমান হিসাব";
+    if(balanceAmount) balanceAmount.textContent = "৳ 0";
+    if(balanceStatus) balanceStatus.textContent = "সমান";
+  }
 
   let person = allPerson.filter(t=>{
     const searchMatch = !search ||
@@ -305,3 +335,32 @@ async function uploadProfilePhoto(event){
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("profilePhotoInput")?.addEventListener("change", uploadProfilePhoto);
 });
+
+
+/* ==================================================
+   CUSTOMER PROFILE - MODERN UI CONTROLS
+================================================== */
+
+function toggleProfileHistory(){
+  const history = document.getElementById("profileHistorySection");
+  if(!history) return;
+  history.classList.toggle("hidden");
+}
+
+function showProfileTransactionForm(type){
+  const form = document.getElementById("profileLedgerForm");
+  if(!form) return;
+
+  form.classList.remove("hidden");
+  if(typeof setProfileTransactionType === "function"){
+    setProfileTransactionType(type);
+  }
+
+  form.scrollIntoView({behavior:"smooth", block:"center"});
+}
+
+function toggleProfileMenu(){
+  const menu = document.getElementById("profileActionMenu");
+  if(!menu) return;
+  menu.classList.toggle("hidden");
+}

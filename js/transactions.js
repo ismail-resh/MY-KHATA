@@ -64,6 +64,37 @@ async function addProfileTransaction(){
   showTransactionSuccess(customer, insertedTransaction);
 }
 
+let newTransactionType = "receive";
+
+function setNewTransactionType(type){
+  if(type !== "receive" && type !== "pay") return;
+  newTransactionType = type;
+
+  const receiveBtn = document.getElementById("newReceiveBtn");
+  const payBtn = document.getElementById("newPayBtn");
+  if(receiveBtn) receiveBtn.classList.toggle("selected", type === "receive");
+  if(payBtn) payBtn.classList.toggle("selected", type === "pay");
+
+  const typeSelect = document.getElementById("type");
+  if(typeSelect) typeSelect.value = type;
+}
+
+function updateNewCustomerPreview(){
+  const input = document.getElementById("customerName");
+  const avatar = document.getElementById("newCustomerAvatar");
+  if(!input || !avatar) return;
+  const name = input.value.trim();
+  const initial = name
+    ? name.split(/\s+/).map(x => x.charAt(0)).join("").slice(0,2).toUpperCase()
+    : "C";
+  avatar.textContent = initial;
+}
+
+function showAddTransactionMenu(){
+  const menu = document.getElementById("newTransactionMenu");
+  if(menu) menu.classList.toggle("hidden");
+}
+
 async function addTransaction(){
   const {data:{user}}=await supabaseClient.auth.getUser();
   if(!user) return alert("আগে Login করুন।");
@@ -71,7 +102,7 @@ async function addTransaction(){
   const customerName=document.getElementById("customerName").value.trim();
   const customerPhone=document.getElementById("customerPhone")?.value.trim() || "";
   const amount=Number(document.getElementById("amount").value);
-  const type=document.getElementById("type").value;
+  const type=document.getElementById("type").value || newTransactionType;
   const date=document.getElementById("date").value;
   const note=document.getElementById("note").value.trim();
   if(!customerName) return alert("Customer-এর নাম দিন।");
@@ -81,17 +112,20 @@ async function addTransaction(){
   const customer=await getOrCreateCustomer(customerName,customerPhone);
   if(!customer) return alert("Customer save হয়নি। আবার চেষ্টা করুন।");
 
-  const {error}=await supabaseClient.from("transactions").insert({
+  const {data:insertedTransaction,error}=await supabaseClient.from("transactions").insert({
     user_id:user.id, customer_id:customer.id, customer_name:customer.name,
     amount,type,transaction_date:date,note
-  });
+  }).select().single();
   if(error){ alert("Save হয়নি: "+error.message); return; }
 
   document.getElementById("customerName").value="";
   if(document.getElementById("customerPhone")) document.getElementById("customerPhone").value="";
   document.getElementById("amount").value="";
   document.getElementById("note").value="";
-  await loadTransactions(); showCustomers();
+  setNewTransactionType("receive");
+  updateNewCustomerPreview();
+  await loadTransactions();
+  showTransactionSuccess(customer, insertedTransaction);
 }
 
 function editTransaction(id){
@@ -159,46 +193,58 @@ document.addEventListener("click",e=>{
 let transactionSuccessTimer = null;
 let successShareCustomer = null;
 
+function formatSuccessDate(dateValue){
+  if(!dateValue) return '';
+  const d = new Date(dateValue + (String(dateValue).length === 10 ? 'T00:00:00' : ''));
+  if(Number.isNaN(d.getTime())) return dateValue;
+  return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+}
+
 function showTransactionSuccess(customer, insertedTransaction){
   successShareCustomer = customer;
   const overlay = document.getElementById('transactionSuccessOverlay');
   if(!overlay) return;
 
   const person = transactions.filter(t => String(t.customer_id) === String(customer.id) || t.customer_name === customer.name);
-  const current = insertedTransaction || person.find(t => String(t.id) === String(insertedTransaction?.id));
+  const current = insertedTransaction || person[0];
   const newType = current?.type || profileTransactionType;
   const newAmount = Number(current?.amount || 0);
-
-  // Calculate balance before the newly-added transaction.
-  let previous = 0;
-  person.forEach(t => {
-    if(current && String(t.id) === String(current.id)) return;
-    previous += t.type === 'receive' ? Number(t.amount) : -Number(t.amount);
-  });
-
-  let currentBalance = previous + (newType === 'receive' ? newAmount : -newAmount);
-  const initial = customer.name ? customer.name.trim().split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase() : 'IS';
+  const initial = customer.name ? customer.name.trim().split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase() : 'U';
 
   document.getElementById('successAvatar').textContent = initial;
   document.getElementById('successCustomerName').textContent = customer.name || '';
-  document.getElementById('successCustomerPhone').textContent = customer.phone || '';
-  document.getElementById('successPrevious').textContent = '৳' + formatMoney(Math.abs(previous));
+  document.getElementById('successAmount').textContent = '৳ ' + formatMoney(newAmount);
   document.getElementById('successTypeLabel').textContent = newType === 'receive' ? 'দিলাম' : 'পেলাম';
-  document.getElementById('successAmount').textContent = newType === 'receive' ? '৳' + formatMoney(newAmount) : '৳0.00';
-  document.getElementById('successPaid').textContent = newType === 'pay' ? '৳' + formatMoney(newAmount) : '৳0.00';
-  document.getElementById('successCurrentLabel').textContent = currentBalance < 0 ? 'বর্তমান দেনা' : currentBalance > 0 ? 'বর্তমান পাওনা' : 'বর্তমান হিসাব';
-  document.getElementById('successCurrent').textContent = '৳' + formatMoney(Math.abs(currentBalance));
+  document.getElementById('successTypeLabel').style.color = newType === 'receive' ? '#d53a42' : '#078b54';
+  document.getElementById('successDate').textContent = formatSuccessDate(current?.transaction_date || current?.date);
 
   overlay.classList.remove('hidden');
   clearTimeout(transactionSuccessTimer);
-  transactionSuccessTimer = setTimeout(() => closeTransactionSuccess(), 4500);
+  // Keep this screen open until the user chooses an action.
 }
 
 function closeTransactionSuccess(){
   clearTimeout(transactionSuccessTimer);
   const overlay = document.getElementById('transactionSuccessOverlay');
   if(overlay) overlay.classList.add('hidden');
-  showCustomers();
+}
+
+function goToSuccessHome(){
+  closeTransactionSuccess();
+  showHome();
+}
+
+function goToSuccessHistory(){
+  closeTransactionSuccess();
+  if(successShareCustomer?.id){
+    openProfileById(successShareCustomer.id, successShareCustomer.name);
+  }else{
+    showCustomers();
+  }
+  setTimeout(()=>{
+    const history = document.getElementById('profileHistorySection');
+    if(history && history.classList.contains('hidden')) toggleProfileHistory();
+  },80);
 }
 
 function getSuccessShareText(){
