@@ -2543,3 +2543,152 @@ button,input,select,textarea{max-width:100%;font-family:inherit}
   .history-card-sub{font-size:12px}
   .history-card-time{font-size:10px}
 }
+
+/* ===== New Transaction: Screenshot-inspired UI ===== */
+
+.new-transaction-page {
+  min-height: calc(100vh - 60px);
+  background: #f5fbf9;
+}
+
+.new-transaction-topbar {
+  height: 62px;
+  padding: 0 16px;
+  background: linear-gradient(120deg, #087653, #00966b);
+}
+
+.new-transaction-title {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.new-transaction-content {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 16px 18px 105px;
+}
+
+.new-type-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  margin: 0 0 24px;
+  border: 1px solid #d9eee7;
+  border-radius: 15px;
+  background: #f2faf7;
+}
+
+.new-type-btn {
+  height: 40px;
+  border-radius: 11px;
+  border: 0;
+  font-family: "Hind Siliguri", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.new-type-btn.selected.new-type-pay {
+  background: #07845d;
+  color: #fff;
+  border-color: #07845d;
+}
+
+.new-type-btn.selected.new-type-receive {
+  background: #07845d;
+  color: #fff;
+  border-color: #07845d;
+}
+
+.new-form-field {
+  margin-bottom: 19px;
+}
+
+.new-form-field label {
+  margin-bottom: 7px;
+  color: #304e46;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.required-star {
+  color: #e53935;
+}
+
+.new-input-wrap {
+  min-height: 49px;
+  height: 49px;
+  gap: 10px;
+  padding: 0 13px;
+  border: 1px solid #d4e9e4;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.new-input-wrap > span {
+  color: #426e62;
+  font-size: 20px;
+}
+
+.new-input-wrap input {
+  min-width: 0;
+  width: 100%;
+  font-family: "Hind Siliguri", sans-serif;
+  font-size: 14px !important;
+}
+
+.new-input-wrap input::placeholder {
+  color: #9aafa8;
+  opacity: 1;
+}
+
+.new-phone-field {
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1px solid #d4e9e4;
+  border-radius: 10px;
+  background: #fff;
+  font-family: "Hind Siliguri", sans-serif;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.note-input-wrap input {
+  height: 100%;
+}
+
+.new-save-btn {
+  position: sticky;
+  bottom: 78px;
+  z-index: 2;
+  width: 100%;
+  height: 49px;
+  margin-top: 36px;
+  border-radius: 12px;
+  background: #07845d;
+  color: #fff;
+  font-family: "Hind Siliguri", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  box-shadow: 0 4px 10px rgba(0, 110, 75, 0.15);
+}
+
+@media (max-width: 600px) {
+  .new-transaction-content {
+    padding: 15px 20px 110px;
+  }
+
+  .new-form-field {
+    margin-bottom: 19px;
+  }
+
+  .new-input-wrap {
+    min-height: 49px;
+  }
+
+  .new-save-btn {
+    bottom: 76px;
+  }
+}

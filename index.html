@@ -446,55 +446,103 @@
           </div>
         </div>
 
-        <div class="new-transaction-content">
-          <div class="new-customer-card">
-            <div class="new-customer-avatar" id="newCustomerAvatar">C</div>
-            <div class="new-customer-fields">
-              <input id="customerName" class="new-customer-name-input" placeholder="Customer-এর নাম" oninput="updateNewCustomerPreview()">
-              <input
-                id="customerPhone"
-                class="new-customer-phone-input"
-                type="tel"
-                placeholder="মোবাইল নম্বর"
-                inputmode="numeric"
-                autocomplete="tel"
-              >
-            </div>
-          </div>
+        
+<div class="new-transaction-content">
 
-          <div class="new-type-buttons">
-            <button id="newReceiveBtn" type="button" class="new-type-btn new-type-pay" onclick="setNewTransactionType('receive')">↑ দিলাম</button>
-            <button id="newPayBtn" type="button" class="new-type-btn new-type-receive" onclick="setNewTransactionType('pay')">↓ পেলাম</button>
-          </div>
+  <!-- দিলাম / পেলাম -->
+  <div class="new-type-buttons">
+    <button
+      id="newReceiveBtn"
+      type="button"
+      class="new-type-btn new-type-pay selected"
+      onclick="setNewTransactionType('receive')">
+      দিলাম
+    </button>
 
-          <div class="new-form-field">
-            <label for="amount">টাকার পরিমাণ</label>
-            <div class="new-input-wrap">
-              <span>৳</span>
-              <input id="amount" type="number" min="0" step="0.01" placeholder="যেমন: 500" inputmode="decimal">
-            </div>
-          </div>
+    <button
+      id="newPayBtn"
+      type="button"
+      class="new-type-btn new-type-receive"
+      onclick="setNewTransactionType('pay')">
+      পেলাম
+    </button>
+  </div>
 
-          <div class="new-form-field">
-            <label for="date">তারিখ</label>
-            <div class="new-input-wrap">
-              <span>▣</span>
-              <input id="date" type="date">
-            </div>
-          </div>
+  <!-- গ্রাহকের নাম ও মোবাইল -->
+  <div class="new-form-field">
+    <label for="customerName">গ্রাহক নির্বাচন <span class="required-star">*</span></label>
 
-          <div class="new-form-field">
-            <label for="note">নোট (ঐচ্ছিক)</label>
-            <textarea id="note" rows="2" placeholder="যেমন: বাজারের টাকা"></textarea>
-          </div>
+    <div class="new-input-wrap">
+      <span>♙</span>
+      <input
+        id="customerName"
+        type="text"
+        placeholder="গ্রাহকের নাম লিখুন"
+        oninput="updateNewCustomerPreview()">
+    </div>
 
-          <select id="type" class="hidden" aria-hidden="true">
-            <option value="receive">আমি পাবো</option>
-            <option value="pay">আমি দেবো</option>
-          </select>
+    <input
+      id="customerPhone"
+      class="new-phone-field"
+      type="tel"
+      placeholder="মোবাইল নম্বর (ঐচ্ছিক)"
+      inputmode="numeric"
+      autocomplete="tel">
+  </div>
 
-          <button class="new-save-btn" onclick="addTransaction()" type="button">সংরক্ষণ করুন</button>
-        </div>
+  <!-- টাকার পরিমাণ -->
+  <div class="new-form-field">
+    <label for="amount">পরিমাণ <span class="required-star">*</span></label>
+
+    <div class="new-input-wrap">
+      <span>৳</span>
+      <input
+        id="amount"
+        type="number"
+        min="0"
+        step="0.01"
+        placeholder="টাকার পরিমাণ লিখুন"
+        inputmode="decimal">
+    </div>
+  </div>
+
+  <!-- নোট -->
+  <div class="new-form-field">
+    <label for="note">নোট (ঐচ্ছিক)</label>
+
+    <div class="new-input-wrap note-input-wrap">
+      <span>▤</span>
+      <input
+        id="note"
+        type="text"
+        placeholder="লেনদেনের বিবরণ লিখুন">
+    </div>
+  </div>
+
+  <!-- তারিখ -->
+  <div class="new-form-field">
+    <label for="date">তারিখ</label>
+
+    <div class="new-input-wrap">
+      <span>▦</span>
+      <input id="date" type="date">
+    </div>
+  </div>
+
+  <select id="type" class="hidden" aria-hidden="true">
+    <option value="receive">দিলাম</option>
+    <option value="pay">পেলাম</option>
+  </select>
+
+  <button
+    class="new-save-btn"
+    onclick="addTransaction()"
+    type="button">
+    ▣ &nbsp; সংরক্ষণ করুন
+  </button>
+
+</div>
+
       </div>
     </div>
 
