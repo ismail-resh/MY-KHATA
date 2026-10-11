@@ -98,6 +98,10 @@ function showHome(){
         .getElementById("profilePage")
         ?.classList.add("hidden");
 
+    document
+        .getElementById("historyPage")
+        ?.classList.add("hidden");
+
 
     currentCustomer = null;
 
@@ -136,6 +140,10 @@ function showCustomers(){
         .getElementById("profilePage")
         ?.classList.add("hidden");
 
+    document
+        .getElementById("historyPage")
+        ?.classList.add("hidden");
+
 
     currentCustomer = null;
 
@@ -145,6 +153,114 @@ function showCustomers(){
 
     setActiveBottomNav("navCustomers");
 
+}
+
+
+let globalHistoryFilter = "all";
+
+function showTransactionHistory(){
+    document.getElementById("homePage")?.classList.add("hidden");
+    document.getElementById("customerPage")?.classList.add("hidden");
+    document.getElementById("addPage")?.classList.add("hidden");
+    document.getElementById("profilePage")?.classList.add("hidden");
+    document.getElementById("historyPage")?.classList.remove("hidden");
+
+    const bottomNav = document.querySelector(".bottom-nav");
+    if(bottomNav) bottomNav.style.display = "grid";
+
+    currentCustomer = null;
+    setActiveBottomNav("navTransaction");
+    renderGlobalHistory();
+}
+
+function setGlobalHistoryFilter(filter, button){
+    globalHistoryFilter = filter;
+    document.querySelectorAll(".history-filter").forEach(btn=>{
+        btn.classList.toggle("active", btn.dataset.historyFilter === filter);
+    });
+    renderGlobalHistory();
+}
+
+function renderGlobalHistory(){
+    const list = document.getElementById("globalHistoryList");
+    if(!list) return;
+
+    const query = (document.getElementById("globalHistorySearch")?.value || "").trim().toLowerCase();
+    const selectedDate = document.getElementById("globalHistoryDate")?.value || "";
+
+    const filtered = (Array.isArray(transactions) ? transactions : []).filter(t=>{
+        const typeMatch = globalHistoryFilter === "all" || t.type === globalHistoryFilter;
+        const date = String(t.transaction_date || "");
+        const dateMatch = !selectedDate || date === selectedDate;
+        const searchText = [
+            t.customer_name || "",
+            t.note || "",
+            String(t.amount ?? ""),
+            t.type === "receive" ? "দিলাম" : "পেলাম"
+        ].join(" ").toLowerCase();
+        return typeMatch && dateMatch && (!query || searchText.includes(query));
+    }).sort((a,b)=>{
+        const dateCompare = String(b.transaction_date || "").localeCompare(String(a.transaction_date || ""));
+        if(dateCompare !== 0) return dateCompare;
+        return String(b.created_at || "").localeCompare(String(a.created_at || ""));
+    });
+
+    if(!filtered.length){
+        list.innerHTML = '<div class="history-empty">কোনো লেনদেন পাওয়া যায়নি।</div>';
+        return;
+    }
+
+    const groups = new Map();
+    filtered.forEach(t=>{
+        const date = String(t.transaction_date || "তারিখ নেই");
+        if(!groups.has(date)) groups.set(date,[]);
+        groups.get(date).push(t);
+    });
+
+    let output = "";
+    groups.forEach((items,date)=>{
+        let dateLabel = date;
+        if(/^\d{4}-\d{2}-\d{2}$/.test(date)){
+            const parts = date.split("-");
+            const dt = new Date(Number(parts[0]), Number(parts[1])-1, Number(parts[2]));
+            const today = new Date();
+            const yesterday = new Date();
+            yesterday.setDate(today.getDate()-1);
+            const sameDay = (a,b)=>a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+            const formatted = dt.toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"});
+            if(sameDay(dt,today)) dateLabel = "আজ ("+formatted+")";
+            else if(sameDay(dt,yesterday)) dateLabel = "গতকাল ("+formatted+")";
+            else dateLabel = formatted;
+        }
+
+        output += '<section class="history-date-group"><h3 class="history-date-heading">'+escapeHTML(dateLabel)+'</h3>';
+        items.forEach(t=>{
+            const isReceive = t.type === "receive";
+            const amount = formatMoney(Number(t.amount || 0));
+            const customer = escapeHTML(t.customer_name || "অজানা গ্রাহক");
+            const note = escapeHTML(t.note || (isReceive ? "টাকা লেনদেন" : "টাকা লেনদেন"));
+            const createdAt = t.created_at ? new Date(t.created_at) : null;
+            const timeLabel = createdAt && !Number.isNaN(createdAt.getTime())
+                ? createdAt.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"})
+                : "";
+            output += `
+              <article class="global-history-card">
+                <div class="history-card-icon ${isReceive ? "history-pay-icon" : "history-receive-icon"}">
+                  <span>${isReceive ? "↑" : "↓"}</span>
+                </div>
+                <div class="history-card-main">
+                  <div class="history-card-title ${isReceive ? "history-amount-pay" : "history-amount-receive"}">
+                    <span>${isReceive ? "দিলাম" : "পেলাম"}</span>
+                    <strong>৳ ${amount}</strong>
+                  </div>
+                  <div class="history-card-sub">${customer} · ${note}</div>
+                </div>
+                ${timeLabel ? `<time class="history-card-time">${timeLabel}</time>` : ""}
+              </article>`;
+        });
+        output += '</section>';
+    });
+    list.innerHTML = output;
 }
 
 function showAddTransaction(){
@@ -164,6 +280,10 @@ function showAddTransaction(){
 
     document
         .getElementById("profilePage")
+        ?.classList.add("hidden");
+
+    document
+        .getElementById("historyPage")
         ?.classList.add("hidden");
 
 

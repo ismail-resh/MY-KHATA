@@ -615,6 +615,34 @@
   </div>
 </div>
   </div>
+<!-- GLOBAL TRANSACTION HISTORY PAGE -->
+<div id="historyPage" class="history-page hidden">
+  <div class="history-topbar">
+    <button type="button" class="history-back" onclick="showHome()" aria-label="হোমে ফিরুন">←</button>
+    <h2>লেনদেনের ইতিহাস</h2>
+    <span class="history-topbar-icon" aria-hidden="true">⚑</span>
+  </div>
+
+  <div class="history-content">
+    <label class="history-search">
+      <span aria-hidden="true">⌕</span>
+      <input id="globalHistorySearch" type="search" placeholder="নাম, নোট বা পরিমাণ খুঁজুন..." oninput="renderGlobalHistory()">
+    </label>
+
+    <div class="history-filters" role="group" aria-label="লেনদেন ফিল্টার">
+      <button type="button" class="history-filter active" data-history-filter="all" onclick="setGlobalHistoryFilter('all',this)">সব</button>
+      <button type="button" class="history-filter" data-history-filter="receive" onclick="setGlobalHistoryFilter('receive',this)">দিলাম</button>
+      <button type="button" class="history-filter" data-history-filter="pay" onclick="setGlobalHistoryFilter('pay',this)">পেলাম</button>
+      <label class="history-date-filter" title="তারিখ অনুযায়ী দেখুন">
+        <span>▦</span>
+        <input id="globalHistoryDate" type="date" aria-label="তারিখ নির্বাচন" onchange="renderGlobalHistory()">
+      </label>
+    </div>
+
+    <div id="globalHistoryList" class="global-history-list"></div>
+  </div>
+</div>
+
 <!-- =========================
      BOTTOM NAVIGATION
      ========================= -->
@@ -623,9 +651,9 @@
     <span class="nav-icon">⌂</span>
     <span>হোম</span>
   </button>
-  <button id="navTransaction" class="bottom-nav-item" type="button" onclick="showAddTransaction()">
+  <button id="navTransaction" class="bottom-nav-item" type="button" onclick="showTransactionHistory()">
     <span class="nav-icon">▣</span>
-    <span>লেনদেন</span>
+    <span>ইতিহাস</span>
   </button>
   <button id="navCustomers" class="bottom-nav-item" type="button" onclick="showCustomers()">
     <span class="nav-icon">♧</span>

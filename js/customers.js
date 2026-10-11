@@ -464,7 +464,6 @@ async function renderHomeDashboard() {
     else {
 
         debtCustomers
-            .slice(0, 5)
             .forEach(item => {
 
                 const customer =
@@ -543,7 +542,6 @@ async function renderHomeDashboard() {
     else {
 
         receiveCustomers
-            .slice(0, 5)
             .forEach(item => {
 
                 const customer =
