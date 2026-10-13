@@ -3,14 +3,22 @@
 // ==================================================
 
 function hideAuthPages(){
-  document.getElementById("loginPage").classList.add("hidden");
-  document.getElementById("signupPage").classList.add("hidden");
-  document.getElementById("forgotPage").classList.add("hidden");
+  ["loginPage", "signupPage", "forgotPage"].forEach(id => {
+    document.getElementById(id)?.classList.add("hidden");
+  });
 }
 
 function showLogin(){
+  // Always hide the app before showing an authentication screen.
+  document.getElementById("app")?.classList.add("hidden");
+  document.querySelector(".bottom-nav")?.style.setProperty("display", "none");
+  // myProfilePage can be outside #app in the current HTML structure, so hide it directly.
+  document.querySelectorAll("#myProfilePage, .my-profile-page").forEach(el => el.classList.add("hidden"));
+  document.getElementById("myProfileModal")?.classList.add("hidden");
+  document.getElementById("transactionSuccessOverlay")?.classList.add("hidden");
+  document.getElementById("guestPasswordModal")?.classList.add("hidden");
   hideAuthPages();
-  document.getElementById("loginPage").classList.remove("hidden");
+  document.getElementById("loginPage")?.classList.remove("hidden");
 }
 
 function showSignup(){
@@ -294,9 +302,36 @@ async function checkPendingGuestUpgrade(session){
 }
 
 async function logout(){
-  await supabaseClient.auth.signOut();
-  transactions = [];
-  currentCustomer = null;
-  document.getElementById("app").classList.add("hidden");
-  showLogin();
+  const logoutButtons = document.querySelectorAll('[onclick="logout()"]');
+  logoutButtons.forEach(button => {
+    button.disabled = true;
+    button.dataset.originalText = button.textContent;
+  });
+
+  try {
+    // Hide app immediately to prevent the dashboard appearing behind login.
+    document.getElementById("app")?.classList.add("hidden");
+    document.querySelector(".bottom-nav")?.style.setProperty("display", "none");
+    // Hide profile independently from #app so it cannot remain below the login card.
+    document.querySelectorAll("#myProfilePage, .my-profile-page").forEach(el => el.classList.add("hidden"));
+    document.getElementById("myProfileModal")?.classList.add("hidden");
+    document.getElementById("transactionSuccessOverlay")?.classList.add("hidden");
+
+    const { error } = await supabaseClient.auth.signOut();
+    if (error) throw error;
+
+    transactions = [];
+    currentCustomer = null;
+    showLogin();
+  } catch (error) {
+    console.error("Logout error:", error);
+    // If sign-out fails, restore the app rather than leaving the user on a broken screen.
+    document.getElementById("app")?.classList.remove("hidden");
+    if (typeof showHome === "function") showHome();
+    alert("লগ আউট করা যায়নি। ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।");
+  } finally {
+    logoutButtons.forEach(button => {
+      button.disabled = false;
+    });
+  }
 }

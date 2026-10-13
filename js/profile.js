@@ -196,15 +196,83 @@ function updateMyProfileUI(user){
   if(photoHint) photoHint.textContent = guest ? "Guest account-এ profile picture দিতে আগে Account তৈরি করুন।" : "সর্বোচ্চ 2MB • JPG, PNG বা WebP";
 }
 
-async function openMyProfile(){
-  clearMessage("myProfileMessage");
 
-  const {data:{user}, error} = await supabaseClient.auth.getUser();
+async function openMyProfile(){
+
+  document.getElementById("app")?.classList.add("inner-page");
+
+  const { data: { user }, error } =
+    await supabaseClient.auth.getUser();
+
   if(error || !user) return;
 
+  // Update profile name and avatar
   updateMyProfileUI(user);
-  document.getElementById("myProfileModal")?.classList.remove("hidden");
+
+  // Hide all other app pages
+  [
+    "homePage",
+    "customerPage",
+    "addPage",
+    "profilePage",
+    "historyPage"
+  ].forEach(id => {
+    document.getElementById(id)?.classList.add("hidden");
+  });
+
+  // Show profile page
+  document.getElementById("myProfilePage")
+    ?.classList.remove("hidden");
+
+  // Update profile header
+  const name = getDisplayName(user);
+  const avatarUrl = user.user_metadata?.avatar_url || "";
+
+  const profileName =
+    document.getElementById("profileScreenName");
+
+  if(profileName){
+    profileName.textContent = name;
+  }
+
+  setAvatarElement(
+    document.getElementById("profileScreenAvatar"),
+    name,
+    avatarUrl
+  );
+
+  // Copy current dashboard totals
+  const pay = document.getElementById("homeTotalPay");
+  const receive = document.getElementById("homeTotalReceive");
+
+  const profilePay =
+    document.getElementById("profileScreenPay");
+
+  const profileReceive =
+    document.getElementById("profileScreenReceive");
+
+  if(profilePay && pay){
+    profilePay.textContent = pay.textContent;
+  }
+
+  if(profileReceive && receive){
+    profileReceive.textContent = receive.textContent;
+  }
+
+  // Show bottom navigation
+  const nav = document.querySelector(".bottom-nav");
+
+  if(nav){
+    nav.style.display = "grid";
+  }
+
+  // Highlight Profile tab
+  if(typeof setActiveBottomNav === "function"){
+    setActiveBottomNav("navProfile");
+  }
+
 }
+
 
 function closeMyProfile(){
   document.getElementById("myProfileModal")?.classList.add("hidden");
@@ -363,4 +431,76 @@ function toggleProfileMenu(){
   const menu = document.getElementById("profileActionMenu");
   if(!menu) return;
   menu.classList.toggle("hidden");
+}
+
+function showProfileNotice(message, isError = false){
+  const notice = document.getElementById("profileScreenMessage");
+  if(!notice) return;
+  notice.textContent = message;
+  notice.classList.remove("hidden");
+  notice.classList.toggle("profile-notice-error", !!isError);
+}
+
+async function openMyProfileEdit(){
+  const { data, error } = await supabaseClient.auth.getUser();
+  if(error || !data?.user){
+    showProfileNotice("আপনার account-এর তথ্য পাওয়া যায়নি। আবার লগইন করুন।", true);
+    return;
+  }
+  clearMessage("myProfileMessage");
+  updateMyProfileUI(data.user);
+  document.getElementById("myProfileModal")?.classList.remove("hidden");
+}
+
+async function showPasswordChange(){
+  const { data, error } = await supabaseClient.auth.getUser();
+  if(error || !data?.user){
+    showProfileNotice("Account-এর তথ্য পাওয়া যায়নি। আবার লগইন করুন।", true);
+    return;
+  }
+  if(data.user.is_anonymous || !data.user.email){
+    showProfileNotice("Guest account-এ password reset করা যায় না। আগে email দিয়ে account তৈরি করুন।", true);
+    return;
+  }
+
+  showProfileNotice("Password reset-এর ইমেইল পাঠানো হচ্ছে…");
+  try{
+    const { error: resetError } = await supabaseClient.auth.resetPasswordForEmail(
+      data.user.email,
+      { redirectTo: "https://ismail-resh.github.io/MY-KHATA/" }
+    );
+    if(resetError) throw resetError;
+    showProfileNotice("আপনার email-এ password পরিবর্তনের লিংক পাঠানো হয়েছে। Inbox এবং Spam folder দেখুন।");
+  }catch(error){
+    console.error("Password reset request failed:", error);
+    showProfileNotice("Password reset email পাঠানো যায়নি। ইন্টারনেট ও Supabase email settings পরীক্ষা করুন।", true);
+  }
+}
+
+function showBackupInfo(){
+  try{
+    const rows = Array.isArray(transactions) ? transactions : [];
+    const payload = {
+      app: "MY-KHATA",
+      exportedAt: new Date().toISOString(),
+      transactions: rows
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "my-khata-backup-" + new Date().toISOString().slice(0,10) + ".json";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+    showProfileNotice("লেনদেনের backup ফাইল ডাউনলোড শুরু হয়েছে। নিরাপদ জায়গায় ফাইলটি সংরক্ষণ করুন।");
+  }catch(error){
+    console.error("Backup export failed:", error);
+    showProfileNotice("Backup তৈরি করা যায়নি। আবার চেষ্টা করুন।", true);
+  }
+}
+
+function showHelpInfo(){
+  showProfileNotice("সহায়তা: কোনো সমস্যা হলে error message-এর screenshot এবং কী করলে সমস্যা হচ্ছে তা লিখে রাখুন। আপনার GitHub repository-তে issue তৈরি করেও জানাতে পারেন।");
 }

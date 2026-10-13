@@ -225,15 +225,6 @@
         </button>
 
 
-        <button
-            class="home-logout"
-            type="button"
-            onclick="logout()"
-        >
-            <span>↪</span>
-            <span>Logout</span>
-        </button>
-
     </header>
 
 
@@ -388,7 +379,7 @@
             type="button"
             onclick="showAddTransaction()"
         >
-            <span>⊕</span>
+            <svg class="icon-svg icon-plus" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
             নতুন লেনদেন
         </button>
 
@@ -406,7 +397,7 @@
         <div class="container">
 
             <div class="section-topbar">
-                <button type="button" class="section-back-btn" onclick="showHome()" aria-label="Home">← <span>হোম</span></button>
+                <button type="button" class="section-back-btn" onclick="showHome()" aria-label="হোমে ফিরুন"><svg class="icon-svg icon-back" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> <span>হোম</span></button>
                 <h2>গ্রাহক</h2>
             </div>
 
@@ -422,7 +413,7 @@
                     class="primary"
                     onclick="showAddTransaction()"
                 >
-                    ➕ নতুন লেনদেন
+                    <svg class="icon-svg icon-plus" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> নতুন লেনদেন
                 </button>
 
             </div>
@@ -438,7 +429,7 @@
     <div id="addPage" class="hidden">
       <div class="new-transaction-page">
         <div class="new-transaction-topbar">
-          <button type="button" class="new-transaction-back" onclick="showHome()" aria-label="Home">←</button>
+          <button type="button" class="new-transaction-back" onclick="showHome()" aria-label="হোমে ফিরুন"><svg class="icon-svg icon-back" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
           <div class="new-transaction-title">নতুন লেনদেন</div>
           <button type="button" class="new-transaction-menu" onclick="showAddTransactionMenu()" aria-label="More">⋮</button>
           <div id="newTransactionMenu" class="new-transaction-menu-pop hidden">
@@ -550,7 +541,7 @@
   <div class="customer-profile-page">
 
     <div class="customer-profile-topbar">
-      <button type="button" class="profile-back-btn" onclick="showHome()" aria-label="Home">←</button>
+      <button type="button" class="profile-back-btn" onclick="showHome()" aria-label="হোমে ফিরুন"><svg class="icon-svg icon-back" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
       <div class="profile-top-title">গ্রাহক এর হিসাব</div>
       <button type="button" class="profile-menu-btn" onclick="toggleProfileMenu()" aria-label="More">⋮</button>
 
@@ -651,8 +642,8 @@
       </div>
 
       <div class="profile-share-section">
-        <button type="button" class="profile-share whatsapp-share" onclick="shareWhatsApp()"><span>🟢</span><small>WhatsApp</small></button>
-        <button type="button" class="profile-share imo-share" onclick="shareOther()"><span>🔵</span><small>IMO</small></button>
+        <button type="button" class="profile-share whatsapp-share" onclick="shareWhatsApp()"><svg class="icon-svg brand-whatsapp" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 11.7a8.4 8.4 0 0 1-12.4 7.4L3 20.5l1.5-4.9A8.4 8.4 0 1 1 20.5 11.7Z"/><path d="M8.2 7.6c.2-.5.5-.5.8-.5h.5c.2 0 .4.1.5.4l.8 1.9c.1.3.1.5-.1.7l-.6.7c-.2.2-.2.4 0 .7.6 1 1.4 1.8 2.5 2.4.3.2.5.2.7-.1l.8-1c.2-.2.4-.3.7-.2l1.8.9c.3.1.4.3.4.5 0 .3-.2 1.3-.8 1.8-.6.5-1.3.7-2.1.5-1.1-.2-2.5-.9-3.8-2.1-1.5-1.3-2.5-2.9-2.8-4-.3-1.1.1-2 .7-2.6Z"/></svg><small>WhatsApp</small></button>
+        <button type="button" class="profile-share imo-share" onclick="shareOther()"><svg class="icon-svg brand-imo" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A3.5 3.5 0 0 1 7.5 2h9A3.5 3.5 0 0 1 20 5.5v6a3.5 3.5 0 0 1-3.5 3.5h-4L7 19v-4.2a3.5 3.5 0 0 1-3-3.3Z"/><path d="M8 7.5h8M8 10.5h5"/></svg><small>IMO</small></button>
         <button type="button" class="profile-share general-share" onclick="shareOther()"><span>↗</span><small>শেয়ার</small></button>
         <button type="button" class="profile-share edit-share" onclick="showEditCustomer()"><span>✎</span><small>Edit</small></button>
       </div>
@@ -665,11 +656,39 @@
   </div>
 <!-- GLOBAL TRANSACTION HISTORY PAGE -->
 <div id="historyPage" class="history-page hidden">
-  <div class="history-topbar">
-    <button type="button" class="history-back" onclick="showHome()" aria-label="হোমে ফিরুন">←</button>
-    <h2>লেনদেনের ইতিহাস</h2>
-    <span class="history-topbar-icon" aria-hidden="true">⚑</span>
-  </div>
+
+<div class="history-topbar">
+
+  <button
+    type="button"
+    class="history-home-btn"
+    onclick="showHome()"
+    aria-label="হোম পেজে ফিরে যান"
+  >
+    <svg
+      viewBox="0 0 24 24"
+      width="18"
+      height="18"
+      aria-hidden="true"
+    >
+      <path
+        d="M19 12H5M12 19l-7-7 7-7"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+    <span>হোম</span>
+  </button>
+
+  <h2>লেনদেনের ইতিহাস</h2>
+
+  <span class="history-topbar-icon" aria-hidden="true">⚑</span>
+
+</div>
+
 
   <div class="history-content">
     <label class="history-search">
@@ -694,21 +713,130 @@
 <!-- =========================
      BOTTOM NAVIGATION
      ========================= -->
+     
+<!-- MY PROFILE PAGE -->
+<section id="myProfilePage" class="my-profile-page hidden">
+
+  <!-- Profile header -->
+  <header class="profile-screen-header">
+    <div class="profile-screen-user">
+      <div id="profileScreenAvatar" class="profile-screen-avatar">
+        U
+      </div>
+
+      <div class="profile-screen-user-info">
+        <h2 id="profileScreenName">আপনার নাম</h2>
+        <p>আমার খাতা</p>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      class="profile-settings-btn"
+      onclick="openMyProfileEdit()"
+      aria-label="Profile settings">
+      ⚙
+    </button>
+  </header>
+
+  <div class="profile-screen-content">
+
+    <!-- Financial summary -->
+    <div class="profile-money-summary">
+
+      <div class="profile-money-card owe-card">
+        <span>মোট দেবো</span>
+        <strong id="profileScreenPay">৳ 0</strong>
+      </div>
+
+      <div class="profile-money-card receive-card">
+        <span>মোট পাবো</span>
+        <strong id="profileScreenReceive">৳ 0</strong>
+      </div>
+
+    </div>
+
+    <!-- Profile menu -->
+    <div class="profile-menu-list">
+
+      <button
+        type="button"
+        class="profile-menu-item"
+        onclick="openMyProfileEdit()">
+
+        <span class="profile-menu-icon"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.6-3.6 3.1-5.5 7-5.5s6.4 1.9 7 5.5"/></svg></span>
+        <span class="profile-menu-label">আমার তথ্য</span>
+        <span class="profile-menu-arrow">›</span>
+
+      </button>
+
+      <button
+        type="button"
+        class="profile-menu-item"
+        onclick="showPasswordChange()">
+
+        <span class="profile-menu-icon"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.6-3.6 3.1-5.5 7-5.5s6.4 1.9 7 5.5"/></svg></span>
+        <span class="profile-menu-label">পাসওয়ার্ড পরিবর্তন</span>
+        <span class="profile-menu-arrow">›</span>
+
+      </button>
+
+      <button
+        type="button"
+        class="profile-menu-item"
+        onclick="showBackupInfo()">
+
+        <span class="profile-menu-icon">☁</span>
+        <span class="profile-menu-label">ডেটা ব্যাকআপ</span>
+        <span class="profile-menu-arrow">›</span>
+
+      </button>
+
+      <button
+        type="button"
+        class="profile-menu-item"
+        onclick="showHelpInfo()">
+
+        <span class="profile-menu-icon">?</span>
+        <span class="profile-menu-label">সহায়তা</span>
+        <span class="profile-menu-arrow">›</span>
+
+      </button>
+
+      <button
+        type="button"
+        class="profile-menu-item profile-logout-item"
+        onclick="logout()">
+
+        <span class="profile-menu-icon">⇥</span>
+        <span class="profile-menu-label">লগ আউট</span>
+        <span class="profile-menu-arrow">›</span>
+
+      </button>
+
+    </div>
+
+    <div id="profileScreenMessage" class="profile-screen-message hidden"></div>
+
+  </div>
+
+</section>
+
 <nav class="bottom-nav">
   <button id="navHome" class="bottom-nav-item active" type="button" onclick="showHome()">
-    <span class="nav-icon">⌂</span>
+    <span class="nav-icon"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7M5.5 9v11h13V9M9.5 20v-6h5v6"/></svg></span>
     <span>হোম</span>
   </button>
   <button id="navTransaction" class="bottom-nav-item" type="button" onclick="showTransactionHistory()">
-    <span class="nav-icon">▣</span>
+    <span class="nav-icon"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5M12 7v5l3.5 2"/></svg></span>
     <span>ইতিহাস</span>
   </button>
   <button id="navCustomers" class="bottom-nav-item" type="button" onclick="showCustomers()">
-    <span class="nav-icon">♧</span>
+    <span class="nav-icon"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 20v-1.5a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4V20"/><circle cx="9.5" cy="7.5" r="3.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 6.8M18 14.5a4 4 0 0 1 3 4V20"/></svg></span>
     <span>গ্রাহক</span>
   </button>
   <button id="navProfile" class="bottom-nav-item" type="button" onclick="openMyProfile()">
-    <span class="nav-icon">♙</span>
+    <span class="nav-icon"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.6-3.6 3.1-5.5 7-5.5s6.4 1.9 7 5.5"/></svg></span>
     <span>প্রোফাইল</span>
   </button>
 </nav>

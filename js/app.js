@@ -75,6 +75,9 @@ async function startApp(session = null){
 }
 
 function showHome(){
+    document.getElementById("app")?.classList.remove("inner-page");
+    document.getElementById("myProfileHeader")?.classList.remove("hidden");
+    document.getElementById("myProfilePage")?.classList.add("hidden");
     const bottomNav = document.querySelector(".bottom-nav");
     if(bottomNav) bottomNav.style.display = "grid";
 
@@ -100,6 +103,10 @@ function showHome(){
 
     document
         .getElementById("historyPage")
+        ?.classList.add("hidden");
+
+    document
+        .getElementById("myProfilePage")
         ?.classList.add("hidden");
 
 
@@ -117,6 +124,9 @@ function showHome(){
 
 }
 function showCustomers(){
+    document.getElementById("app")?.classList.add("inner-page");
+    document.getElementById("myProfileHeader")?.classList.add("hidden");
+    document.getElementById("myProfilePage")?.classList.add("hidden");
 
     const bottomNav = document.querySelector(".bottom-nav");
     if(bottomNav) bottomNav.style.display = "grid";
@@ -143,6 +153,10 @@ function showCustomers(){
     document
         .getElementById("historyPage")
         ?.classList.add("hidden");
+    
+    document
+        .getElementById("myProfilePage")
+        ?.classList.add("hidden");
 
 
     currentCustomer = null;
@@ -159,11 +173,17 @@ function showCustomers(){
 let globalHistoryFilter = "all";
 
 function showTransactionHistory(){
+    document.getElementById("app")?.classList.add("inner-page");
+    document.getElementById("myProfileHeader")?.classList.add("hidden");
+    document.getElementById("myProfilePage")?.classList.add("hidden");
     document.getElementById("homePage")?.classList.add("hidden");
     document.getElementById("customerPage")?.classList.add("hidden");
     document.getElementById("addPage")?.classList.add("hidden");
     document.getElementById("profilePage")?.classList.add("hidden");
     document.getElementById("historyPage")?.classList.remove("hidden");
+    document
+        .getElementById("myProfilePage")
+        ?.classList.add("hidden");
 
     const bottomNav = document.querySelector(".bottom-nav");
     if(bottomNav) bottomNav.style.display = "grid";
@@ -264,6 +284,9 @@ function renderGlobalHistory(){
 }
 
 function showAddTransaction(){
+    document.getElementById("app")?.classList.add("inner-page");
+    document.getElementById("myProfileHeader")?.classList.add("hidden");
+    document.getElementById("myProfilePage")?.classList.add("hidden");
 
     const bottomNav = document.querySelector(".bottom-nav");
     if(bottomNav) bottomNav.style.display = "grid";
@@ -290,6 +313,9 @@ function showAddTransaction(){
     document
         .getElementById("addPage")
         ?.classList.remove("hidden");
+    document
+        .getElementById("myProfilePage")
+        ?.classList.add("hidden");
 
 
     const dateEl = document.getElementById("date");

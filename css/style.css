@@ -2692,3 +2692,340 @@ button,input,select,textarea{max-width:100%;font-family:inherit}
     bottom: 76px;
   }
 }
+
+
+/* =====================================
+   MY PROFILE SCREEN
+===================================== */
+
+.my-profile-page {
+  width: 100%;
+  max-width: 720px;
+  min-height: calc(100vh - 67px);
+  margin: 0 auto;
+  padding-bottom: 85px;
+  background: #f5faf8;
+}
+
+.profile-screen-header {
+  min-height: 98px;
+  padding: 17px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #fff;
+  background: linear-gradient(135deg, #008c68, #00634c);
+  border-radius: 0 0 20px 20px;
+  box-shadow: 0 3px 10px rgba(0, 70, 50, .12);
+}
+
+.profile-screen-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.profile-screen-avatar {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,.8);
+  border-radius: 50%;
+  color: #07845d;
+  background: #e4f7f0;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.profile-screen-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-screen-user-info {
+  min-width: 0;
+}
+
+.profile-screen-user-info h2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.profile-screen-user-info p {
+  margin-top: 2px;
+  color: rgba(255,255,255,.78);
+  font-size: 12px;
+}
+
+.profile-settings-btn {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 50%;
+  color: white;
+  background: transparent;
+  font-size: 24px;
+}
+
+.profile-screen-content {
+  padding: 15px 16px 24px;
+}
+
+.profile-money-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.profile-money-card {
+  min-width: 0;
+  min-height: 76px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  padding: 12px 15px;
+  border-radius: 16px;
+}
+
+.profile-money-card span {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.profile-money-card strong {
+  font-size: 21px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.owe-card {
+  background: #ffebed;
+  color: #c62828;
+}
+
+.receive-card {
+  background: #e1f7ef;
+  color: #087a52;
+}
+
+.profile-menu-list {
+  overflow: hidden;
+  border: 1px solid #e2efeb;
+  border-radius: 13px;
+  background: #fff;
+}
+
+.profile-menu-item {
+  width: 100%;
+  min-height: 43px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 13px;
+  border: 0;
+  border-bottom: 1px solid #eaf1ef;
+  border-radius: 0;
+  background: #fff;
+  color: #344a44;
+  text-align: left;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.profile-menu-item:last-child {
+  border-bottom: 0;
+}
+
+.profile-menu-item:active {
+  background: #f0f8f5;
+}
+
+.profile-menu-icon {
+  width: 24px;
+  flex-shrink: 0;
+  color: #355d50;
+  text-align: center;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.profile-menu-label {
+  flex: 1;
+  font-weight: 600;
+}
+
+.profile-menu-arrow {
+  color: #45665b;
+  font-size: 23px;
+  line-height: 1;
+}
+
+.profile-logout-item .profile-menu-icon,
+.profile-logout-item .profile-menu-label {
+  color: #344a44;
+}
+
+.profile-screen-message {
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #e1f7ef;
+  color: #075e45;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+@media (max-width: 380px) {
+  .profile-screen-content {
+    padding-right: 11px;
+    padding-left: 11px;
+  }
+
+  .profile-money-card {
+    padding: 10px;
+  }
+
+  .profile-money-card strong {
+    font-size: 18px;
+  }
+
+  .profile-screen-user-info h2 {
+    font-size: 17px;
+  }
+}
+
+
+
+/* Profile action feedback */
+.profile-notice-error {
+  background: #fff0f0 !important;
+  color: #a52222 !important;
+}
+.profile-menu-item:disabled {
+  opacity: .65;
+  cursor: wait;
+}
+
+
+/* Safety: profile screen is hidden whenever login is displayed */
+body #myProfilePage.hidden { display: none !important; }
+
+
+/* Professional, crisp SVG icons optimized for mobile screens */
+.icon-svg {
+  width: 22px; height: 22px; flex: 0 0 auto; display: inline-block;
+  fill: none; stroke: currentColor; stroke-width: 1.9;
+  stroke-linecap: round; stroke-linejoin: round; vertical-align: middle;
+}
+.icon-plus { width: 22px; height: 22px; stroke-width: 2.4; }
+.icon-back { width: 21px; height: 21px; stroke-width: 2.1; }
+.home-new-transaction .icon-svg { width: 23px; height: 23px; }
+.home-new-transaction span { font-size: inherit; }
+.bottom-nav-item .nav-icon { display:flex; align-items:center; justify-content:center; }
+.bottom-nav-item .nav-icon .icon-svg { width:22px; height:22px; stroke-width:1.8; }
+.section-back-btn .icon-svg { width:17px; height:17px; }
+.new-transaction-back .icon-svg, .profile-back-btn .icon-svg, .history-back .icon-svg { width:21px; height:21px; }
+.profile-share .icon-svg { width:27px; height:27px; stroke-width:1.8; }
+.brand-whatsapp { color:#25D366; }
+.brand-imo { color:#1688e8; }
+.profile-menu-icon .icon-svg { width:20px; height:20px; stroke-width:1.8; }
+@media (max-width: 480px) {
+  .bottom-nav-item .nav-icon .icon-svg { width:23px; height:23px; }
+  .home-new-transaction { min-height:50px; border-radius:12px; }
+  .profile-share .icon-svg { width:25px; height:25px; }
+}
+
+
+/* Transaction History: Home button */
+.history-home-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  flex-shrink: 0;
+  min-height: 36px;
+  padding: 0 11px;
+
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 9px;
+
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.2s ease;
+}
+
+.history-home-btn svg {
+  display: block;
+  flex-shrink: 0;
+}
+
+.history-home-btn:active {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.history-topbar h2 {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  text-align: center;
+  font-size: 18px;
+}
+
+.history-topbar-icon {
+  flex-shrink: 0;
+}
+
+@media (max-width: 380px) {
+  .history-topbar {
+    gap: 8px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .history-home-btn {
+    padding: 0 8px;
+    gap: 4px;
+    font-size: 12px;
+  }
+
+  .history-topbar h2 {
+    font-size: 16px;
+  }
+}
+
+
+
+
+/* FIX: hide the entire home header (including its height) on inner pages */
+#app.inner-page > .khata-header {
+  display: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
