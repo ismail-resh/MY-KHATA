@@ -126,6 +126,10 @@ const oldTotalReceive = document.getElementById("totalReceive");
 }
 
 function openProfileById(customerId,customerName){
+  // Customer profile is an inner page: hide the shared Home header completely.
+  document.getElementById("app")?.classList.add("inner-page");
+  document.getElementById("myProfileHeader")?.classList.add("hidden");
+
   document
     .getElementById("homePage")
     ?.classList.add("hidden");
