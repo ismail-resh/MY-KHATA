@@ -3029,3 +3029,182 @@ body #myProfilePage.hidden { display: none !important; }
   box-shadow: none !important;
   overflow: hidden !important;
 }
+
+
+/* Home header styled to match the Profile page header */
+#app > .khata-header {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 98px;
+  height: auto;
+  padding: 17px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #fff;
+  background: linear-gradient(135deg, #008c68, #00634c);
+  border-radius: 0 0 20px 20px;
+  box-shadow: 0 3px 10px rgba(0, 70, 50, .12);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+#app > .khata-header .home-profile {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+}
+
+#app > .khata-header .home-avatar {
+  width: 52px;
+  height: 52px;
+  flex: 0 0 52px;
+  border: 2px solid rgba(255, 255, 255, .8);
+  box-sizing: border-box;
+}
+
+#app > .khata-header .home-profile-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+
+#app > .khata-header .home-user-name {
+  display: block;
+  max-width: min(56vw, 230px);
+  color: #fff;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+#app > .khata-header .home-profile-subtitle {
+  display: block;
+  color: rgba(255, 255, 255, .78);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+#app > .khata-header .home-profile-settings {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#app > .khata-header .home-profile-settings:active {
+  background: rgba(255, 255, 255, .16);
+}
+
+@media (max-width: 380px) {
+  #app > .khata-header {
+    min-height: 92px;
+    padding: 15px 14px;
+    gap: 8px;
+  }
+
+  #app > .khata-header .home-avatar {
+    width: 50px;
+    height: 50px;
+    flex-basis: 50px;
+  }
+
+  #app > .khata-header .home-user-name {
+    max-width: 52vw;
+    font-size: 18px;
+  }
+}
+
+
+/* ==================================================
+   HOME SEARCH + CUSTOMER COUNT TOOLBAR
+   ================================================== */
+.home-search-row {
+    display: flex;
+    align-items: stretch;
+    gap: 12px;
+    width: 100%;
+    margin: 0 0 18px;
+}
+.home-search-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 54px;
+    padding: 0 12px 0 15px;
+    background: #fff;
+    border: 1px solid #d8e9e4;
+    border-radius: 15px;
+    box-shadow: 0 2px 8px rgba(8, 105, 76, .04);
+}
+.home-search-box > svg {
+    width: 22px; height: 22px; flex: 0 0 22px;
+    fill: none; stroke: #52776b; stroke-width: 2;
+    stroke-linecap: round; stroke-linejoin: round;
+}
+.home-search-box input {
+    display: block; width: 100%; min-width: 0; height: 48px;
+    border: 0 !important; outline: 0; box-shadow: none !important;
+    background: transparent !important; padding: 0 !important;
+    color: #203b33; font-family: "Hind Siliguri", Arial, sans-serif;
+    font-size: 16px !important;
+}
+.home-search-box input::placeholder { color: #879b94; opacity: 1; }
+.home-search-clear {
+    display: none; flex: 0 0 28px; width: 28px; min-height: 28px; height: 28px;
+    padding: 0; border: 0; border-radius: 50%; background: #eaf3f0;
+    color: #52776b; font-size: 22px; line-height: 1;
+}
+.home-search-box.has-value .home-search-clear { display: inline-flex; align-items: center; justify-content: center; }
+.home-customer-count {
+    display: flex; align-items: center; gap: 9px; flex: 0 0 auto;
+    min-width: 122px; padding: 8px 12px;
+    background: #eaf9f3; border: 1px solid #ccefe1; border-radius: 15px;
+    color: #087a55;
+}
+.home-customer-count-icon {
+    display: flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px; flex: 0 0 36px;
+    border-radius: 50%; background: #d4f3e6; font-size: 23px;
+}
+.home-customer-count-copy { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+.home-customer-count-label { font-size: 13px; white-space: nowrap; color: #347563; }
+.home-customer-count strong { font-size: 19px; font-weight: 800; white-space: nowrap; color: #086747; }
+.home-customer-search-empty { padding: 12px 8px; color: #82948e; text-align: center; font-size: 14px; }
+@media (max-width: 600px) {
+    .home-search-row { gap: 8px; margin-bottom: 16px; }
+    .home-search-box { min-height: 52px; padding: 0 9px 0 11px; gap: 7px; border-radius: 13px; }
+    .home-search-box > svg { width: 20px; height: 20px; flex-basis: 20px; }
+    .home-search-box input { height: 46px; font-size: 14px !important; }
+    .home-search-box input::placeholder { font-size: 13px; }
+    .home-customer-count { min-width: 112px; gap: 6px; padding: 7px 8px; border-radius: 13px; }
+    .home-customer-count-icon { width: 30px; height: 30px; flex-basis: 30px; font-size: 19px; }
+    .home-customer-count-label { font-size: 12px; }
+    .home-customer-count strong { font-size: 17px; }
+}
+@media (max-width: 360px) {
+    .home-search-row { gap: 6px; }
+    .home-customer-count { min-width: 98px; padding: 6px; }
+    .home-customer-count-icon { display: none; }
+    .home-search-box input::placeholder { font-size: 12px; }
+}

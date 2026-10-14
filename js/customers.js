@@ -378,6 +378,13 @@ async function renderHomeDashboard() {
     });
 
 
+    // মোট unique customer count (balance থাকুক বা ০ হোক)
+    const homeCustomerCount = document.getElementById("homeCustomerCount");
+    if (homeCustomerCount) {
+        const totalCustomers = Object.keys(balances).length;
+        homeCustomerCount.textContent = `${totalCustomers.toLocaleString("bn-BD")} জন`;
+    }
+
     /*
        বড় amount আগে দেখাবে
     */
@@ -649,6 +656,39 @@ async function renderHomeDashboard() {
         }
     }
 
+}
+
+
+/* Home dashboard search: customer name, phone, balance and transaction note */
+function filterHomeCustomers() {
+    const input = document.getElementById("homeCustomerSearch");
+    const query = String(input?.value || "").trim().toLocaleLowerCase();
+    const searchBox = input?.closest(".home-search-box");
+    if (searchBox) searchBox.classList.toggle("has-value", Boolean(query));
+
+    const rows = document.querySelectorAll(
+        "#homeDebtList .home-customer, #homeReceiveList .home-customer, #homeZeroList .home-customer"
+    );
+    rows.forEach(row => {
+        const name = row.querySelector(".home-customer-name")?.textContent?.trim() || "";
+        const amount = row.querySelector(".home-customer-amount")?.textContent?.trim() || "";
+        const customer = customers.find(c => String(c.name || "").trim().toLocaleLowerCase() === name.toLocaleLowerCase());
+        const phone = customer?.phone || "";
+        const notes = transactions
+            .filter(t => String(t.customer_name || "").trim().toLocaleLowerCase() === name.toLocaleLowerCase())
+            .map(t => t.note || t.description || "")
+            .join(" ");
+        const searchable = `${name} ${phone} ${amount} ${notes} ${row.textContent || ""}`.toLocaleLowerCase();
+        row.style.display = !query || searchable.includes(query) ? "" : "none";
+    });
+}
+
+function clearHomeCustomerSearch() {
+    const input = document.getElementById("homeCustomerSearch");
+    if (!input) return;
+    input.value = "";
+    filterHomeCustomers();
+    input.focus();
 }
 
 

@@ -212,18 +212,22 @@
             onclick="openMyProfile()"
             aria-label="My Profile"
         >
-
             <span id="headerAvatar" class="home-avatar">U</span>
 
-            <span
-                id="headerUserName"
-                class="home-user-name"
-            >
-                User
+            <span class="home-profile-info">
+                <span id="headerUserName" class="home-user-name">User</span>
+                <span class="home-profile-subtitle">আমার খাতা</span>
             </span>
-
         </button>
 
+        <button
+            type="button"
+            class="profile-settings-btn home-profile-settings"
+            onclick="openMyProfileEdit()"
+            aria-label="Profile settings"
+        >
+            ⚙
+        </button>
 
     </header>
 
@@ -239,9 +243,27 @@
 
         <section class="home-section">
 
-            <h2 class="home-title">
-                আজকের হিসাব
-            </h2>
+            <div class="home-search-row">
+                <label class="home-search-box" for="homeCustomerSearch">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m16 16 4 4"></path></svg>
+                    <input
+                        id="homeCustomerSearch"
+                        type="search"
+                        placeholder="নাম, মোবাইল, নোট বা পরিমাণ খুঁজুন..."
+                        autocomplete="off"
+                        oninput="filterHomeCustomers()"
+                        aria-label="গ্রাহক ও লেনদেন খুঁজুন"
+                    >
+                    <button type="button" class="home-search-clear" onclick="clearHomeCustomerSearch()" aria-label="সার্চ মুছুন">×</button>
+                </label>
+                <div class="home-customer-count" aria-live="polite">
+                    <span class="home-customer-count-icon">♙</span>
+                    <span class="home-customer-count-copy">
+                        <span class="home-customer-count-label">মোট গ্রাহক</span>
+                        <strong id="homeCustomerCount">০ জন</strong>
+                    </span>
+                </div>
+            </div>
 
 
             <div class="home-summary">

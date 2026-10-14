@@ -75,6 +75,11 @@ async function startApp(session = null){
 }
 
 function showHome(){
+    const header = document.getElementById("myProfileHeader");
+
+        if (header) {
+             header.style.removeProperty("display");
+            header.classList.remove("hidden");}
     document.getElementById("app")?.classList.remove("inner-page");
     document.getElementById("myProfileHeader")?.classList.remove("hidden");
     document.getElementById("myProfilePage")?.classList.add("hidden");

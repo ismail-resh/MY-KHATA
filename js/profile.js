@@ -196,82 +196,98 @@ function updateMyProfileUI(user){
   if(photoHint) photoHint.textContent = guest ? "Guest account-এ profile picture দিতে আগে Account তৈরি করুন।" : "সর্বোচ্চ 2MB • JPG, PNG বা WebP";
 }
 
+async function openMyProfile() {
 
-async function openMyProfile(){
-
+  // Hide the entire home header (including its green background and height)
+  // when the custom Profile page is opened.
   document.getElementById("app")?.classList.add("inner-page");
 
-  const { data: { user }, error } =
-    await supabaseClient.auth.getUser();
-
-  if(error || !user) return;
-
-  // Update profile name and avatar
-  updateMyProfileUI(user);
-
-  // Hide all other app pages
-  [
+  // ধাপ ১: আগে থেকেই Profile পেজ দেখাও
+  const pageIds = [
     "homePage",
     "customerPage",
     "addPage",
     "profilePage",
     "historyPage"
-  ].forEach(id => {
+  ];
+
+  pageIds.forEach(id => {
     document.getElementById(id)?.classList.add("hidden");
   });
 
-  // Show profile page
+  // হোমের Header লুকাও
+  document.getElementById("myProfileHeader")
+    ?.classList.add("hidden");
+
+  document.getElementById("myProfileHeader")
+    ?.style.setProperty("display", "none", "important");
+
+  // Profile পেজ সঙ্গে সঙ্গে দেখাও
   document.getElementById("myProfilePage")
     ?.classList.remove("hidden");
 
-  // Update profile header
-  const name = getDisplayName(user);
-  const avatarUrl = user.user_metadata?.avatar_url || "";
-
-  const profileName =
-    document.getElementById("profileScreenName");
-
-  if(profileName){
-    profileName.textContent = name;
-  }
-
-  setAvatarElement(
-    document.getElementById("profileScreenAvatar"),
-    name,
-    avatarUrl
-  );
-
-  // Copy current dashboard totals
-  const pay = document.getElementById("homeTotalPay");
-  const receive = document.getElementById("homeTotalReceive");
-
-  const profilePay =
-    document.getElementById("profileScreenPay");
-
-  const profileReceive =
-    document.getElementById("profileScreenReceive");
-
-  if(profilePay && pay){
-    profilePay.textContent = pay.textContent;
-  }
-
-  if(profileReceive && receive){
-    profileReceive.textContent = receive.textContent;
-  }
-
-  // Show bottom navigation
+  // Navigation ঠিক রাখো
   const nav = document.querySelector(".bottom-nav");
+  if (nav) nav.style.display = "grid";
 
-  if(nav){
-    nav.style.display = "grid";
-  }
-
-  // Highlight Profile tab
-  if(typeof setActiveBottomNav === "function"){
+  if (typeof setActiveBottomNav === "function") {
     setActiveBottomNav("navProfile");
   }
 
+  // আগে থেকে থাকা তথ্য দ্রুত দেখাও
+  const headerName = document.getElementById("headerUserName");
+  const profileName = document.getElementById("profileScreenName");
+
+  if (headerName && profileName && headerName.textContent.trim()) {
+    profileName.textContent = headerName.textContent.trim();
+  }
+
+  const pay = document.getElementById("homeTotalPay");
+  const receive = document.getElementById("homeTotalReceive");
+
+  const profilePay = document.getElementById("profileScreenPay");
+  const profileReceive = document.getElementById("profileScreenReceive");
+
+  if (profilePay && pay) {
+    profilePay.textContent = pay.textContent;
+  }
+
+  if (profileReceive && receive) {
+    profileReceive.textContent = receive.textContent;
+  }
+
+  // ধাপ ২: পেজ খোলার পরে ব্যবহারকারীর তথ্য আপডেট করো
+  try {
+    const { data, error } = await supabaseClient.auth.getUser();
+
+    if (error || !data?.user) {
+      console.error("Profile user load error:", error);
+      return;
+    }
+
+    const user = data.user;
+
+    updateMyProfileUI(user);
+
+    const name = getDisplayName(user);
+    const avatarUrl = user.user_metadata?.avatar_url || "";
+
+    if (profileName) {
+      profileName.textContent = name;
+    }
+
+    setAvatarElement(
+      document.getElementById("profileScreenAvatar"),
+      name,
+      avatarUrl
+    );
+
+  } catch (error) {
+    console.error("Profile load error:", error);
+  }
 }
+
+  
 
 
 function closeMyProfile(){
