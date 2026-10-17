@@ -3,20 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>আমার খাতা</title>
+<title>MoneyMate — হিসাব ব্যবস্থাপনা</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<link rel="icon" type="image/jpeg" href="assets/moneymate-logo.jpg">
 </head>
 <body>
 
 <!-- Startup loader: prevents the login page from flashing while Supabase checks the saved session -->
 <div id="bootLoader" class="boot-loader" aria-live="polite">
   <div class="boot-card">
-    <div class="boot-logo">📒</div>
-    <div class="boot-title">আমার খাতা</div>
+    <div class="boot-logo">
+  <img src="assets/moneymate-logo.jpg" alt="MoneyMate logo">
+</div>
+    <div class="boot-title">MoneyMate</div>
     <div class="boot-subtitle">লোড হচ্ছে...</div>
     <div class="boot-spinner"></div>
   </div>
@@ -29,10 +32,14 @@
   <div class="auth-box login-card">
 
     <div class="login-logo">
-      <div class="logo-icon">📒</div>
+      <img
+  src="assets/moneymate-logo.jpg"
+  alt="MoneyMate logo"
+  class="logo-icon-img"
+>
     </div>
 
-    <h1 class="auth-title">MY-KHATA</h1>
+    <h1 class="auth-title">MoneyMate</h1>
 
     <p class="auth-subtitle">
       সহজে রাখুন আপনার<br>
@@ -216,7 +223,7 @@
 
             <span class="home-profile-info">
                 <span id="headerUserName" class="home-user-name">User</span>
-                <span class="home-profile-subtitle">আমার খাতা</span>
+                <span class="home-profile-subtitle">MoneyMate</span>
             </span>
         </button>
 
@@ -739,7 +746,7 @@
 
       <div class="profile-screen-user-info">
         <h2 id="profileScreenName">আপনার নাম</h2>
-        <p>আমার খাতা</p>
+        <p>MoneyMate</p>
       </div>
     </div>
 
