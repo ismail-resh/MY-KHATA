@@ -3189,18 +3189,20 @@ body #myProfilePage.hidden { display: none !important; }
 }
 
 
-/* MoneyMate logo sizing refinement */
+
+
+/* MoneyMate logo - improved visible size */
 .boot-logo {
     margin-bottom: 10px;
 }
 
 .boot-logo img {
-    width: 54px;
-    height: 54px;
-    max-width: 54px;
+    width: 76px;
+    height: 76px;
+    max-width: 76px;
     object-fit: contain;
     display: block;
-    margin: 0 auto;
+    margin: 0 auto 12px;
     border-radius: 12px;
 }
 
@@ -3212,9 +3214,9 @@ body #myProfilePage.hidden { display: none !important; }
 }
 
 .login-logo .logo-icon-img {
-    width: 64px;
-    height: 64px;
-    max-width: 64px;
+    width: 104px;
+    height: 104px;
+    max-width: 104px;
     object-fit: contain;
     display: block;
     margin: 0 auto;
@@ -3223,45 +3225,14 @@ body #myProfilePage.hidden { display: none !important; }
 
 @media (max-width: 480px) {
     .login-logo .logo-icon-img {
-        width: 56px;
-        height: 56px;
-        max-width: 56px;
+        width: 88px;
+        height: 88px;
+        max-width: 88px;
     }
 
     .boot-logo img {
-        width: 48px;
-        height: 48px;
-        max-width: 48px;
+        width: 64px;
+        height: 64px;
+        max-width: 64px;
     }
-}
-
-/* MoneyMate logo - balanced size */
-
-.login-logo .logo-icon-img {
-  width: 80px;
-  height: 80px;
-  object-fit: contain;
-  display: block;
-  margin: 0 auto;
-}
-
-.boot-logo img {
-  width: 72px;
-  height: 72px;
-  object-fit: contain;
-  display: block;
-  margin: 0 auto 12px;
-}
-
-/* Mobile screen */
-@media (max-width: 600px) {
-  .login-logo .logo-icon-img {
-    width: 84px;
-    height: 84px;
-  }
-
-  .boot-logo img {
-    width: 64px;
-    height: 64px;
-  }
 }
