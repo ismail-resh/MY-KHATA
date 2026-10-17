@@ -3234,3 +3234,34 @@ body #myProfilePage.hidden { display: none !important; }
         max-width: 48px;
     }
 }
+
+/* MoneyMate logo - balanced size */
+
+.login-logo .logo-icon-img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+
+.boot-logo img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 12px;
+}
+
+/* Mobile screen */
+@media (max-width: 600px) {
+  .login-logo .logo-icon-img {
+    width: 84px;
+    height: 84px;
+  }
+
+  .boot-logo img {
+    width: 64px;
+    height: 64px;
+  }
+}
