@@ -3187,3 +3187,50 @@ body #myProfilePage.hidden { display: none !important; }
     .home-customer-count-icon { display: none; }
     .home-search-box input::placeholder { font-size: 12px; }
 }
+
+
+/* MoneyMate logo sizing refinement */
+.boot-logo {
+    margin-bottom: 10px;
+}
+
+.boot-logo img {
+    width: 54px;
+    height: 54px;
+    max-width: 54px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+    border-radius: 12px;
+}
+
+.login-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 12px;
+}
+
+.login-logo .logo-icon-img {
+    width: 64px;
+    height: 64px;
+    max-width: 64px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+    border-radius: 14px;
+}
+
+@media (max-width: 480px) {
+    .login-logo .logo-icon-img {
+        width: 56px;
+        height: 56px;
+        max-width: 56px;
+    }
+
+    .boot-logo img {
+        width: 48px;
+        height: 48px;
+        max-width: 48px;
+    }
+}
