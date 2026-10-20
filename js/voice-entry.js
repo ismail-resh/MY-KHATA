@@ -55,6 +55,13 @@
       showTransactionSuccess(customer, res.data);     // অ্যাপের নিজস্ব সফল-স্ক্রিন
     },
 
+    // নতুন গ্রাহক তৈরি করুন → { id, name } ফেরত দিন (নাম আগে থেকে থাকলে সেই গ্রাহকই ফেরত আসে)
+    createCustomer: async function (name) {
+      const c = await getOrCreateCustomer(name, ''); // js/customers.js
+      if (!c) throw new Error('নতুন গ্রাহক তৈরি হয়নি। আবার চেষ্টা করুন।');
+      return { id: c.id, name: c.name };
+    },
+
     // সেভ হওয়ার পর লিস্ট/টোটাল রিফ্রেশ করতে চাইলে এখানে কল করুন
     onSaved: function (tx) {},
 
@@ -227,14 +234,44 @@
     };
   }
 
+  // কথা থেকে সম্ভাব্য গ্রাহকের নাম বের করা (নতুন গ্রাহকের জন্য)
+  const NAME_BREAK = new Set(['কাছ', 'কাছে', 'থেকে', 'জন্য', 'বাবদ', 'টাকা'].map(N));
+  const SAFE_SUFFIXES = ['দেরকে', 'কে', 'এর', 'ের'].map(N);
+  const ALL_VERBS = GAVE.concat(GOT);
+
+  function extractName(text) {
+    const toks = N(text).replace(/[।,.?!]/g, ' ').split(/\s+/).filter(Boolean);
+    const isNum = (t) => /\d/.test(toEnDigits(t)) || wordsToNumber(t) !== null;
+    let out = [];
+    for (const t of toks) {                       // ১ম চেষ্টা: সংখ্যার আগের শব্দ
+      if (isNum(t) || ALL_VERBS.indexOf(t) >= 0) break;
+      if (STOP.has(t) && !NAME_BREAK.has(t)) continue;
+      if (NAME_BREAK.has(t)) { if (out.length) break; else continue; }
+      out.push(t);
+    }
+    if (!out.length) {                            // ২য় চেষ্টা: "৫০০ টাকা রহিমকে দিলাম"
+      out = toks.filter((t) => !isNum(t) && !STOP.has(t) && !NAME_BREAK.has(t) && ALL_VERBS.indexOf(t) < 0);
+    }
+    if (!out.length) return '';
+    let last = out[out.length - 1];
+    for (const suf of SAFE_SUFFIXES) {
+      if (last.endsWith(suf) && last.length > suf.length + 1) { last = last.slice(0, -suf.length); break; }
+    }
+    out[out.length - 1] = last;
+    return out.slice(-3).join(' ').trim();
+  }
+
   function parseTranscript(text, customers) {
     const t = N(text || '');
     const found = findCustomer(t, customers || []);
+    const near = !found.customer && found.ranked[0] && found.ranked[0].score >= 0.6 ? found.ranked[0].customer : null;
     return {
       text: t,
       amount: parseAmount(t),
       type: detectType(t),
       customer: found.customer,
+      nearCustomer: near,
+      name: extractName(t),
       score: found.score
     };
   }
@@ -276,16 +313,19 @@
   .ve-type{flex:1;padding:11px;border-radius:10px;border:1.5px solid #d5d5d5;background:#fff;font-size:16px;font-weight:600;cursor:pointer;color:#444}
   .ve-type.gave.on{background:${CONFIG.colorGave};border-color:${CONFIG.colorGave};color:#fff}
   .ve-type.got.on{background:${CONFIG.colorGot};border-color:${CONFIG.colorGot};color:#fff}
-  .ve-actions{display:flex;gap:8px;margin-top:16px}
+  .ve-actions{display:flex;gap:8px;margin-top:16px;position:sticky;bottom:calc(-20px - env(safe-area-inset-bottom,0px));padding:10px 0 calc(20px + env(safe-area-inset-bottom,0px));background:#fff}
   .ve-btn{flex:1;padding:13px;border-radius:12px;border:1.5px solid ${CONFIG.colorAccent};background:#fff;color:${CONFIG.colorAccent};font-size:16px;font-weight:700;cursor:pointer}
   .ve-btn.primary{background:${CONFIG.colorAccent};color:#fff}
   .ve-btn:disabled{opacity:.6;cursor:default}
+  #ve-info{margin-top:10px;font-size:14px;color:#0b6b43;line-height:1.45}
+  #ve-info:empty{display:none}
   #ve-error{margin-top:10px;font-size:14px;color:#c62828;min-height:18px}
   #ve-toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#222;color:#fff;padding:10px 16px;border-radius:999px;font-size:15px;z-index:10000}
   @media (prefers-color-scheme:dark){
     #ve-sheet{background:#1e1f21;color:#eee}
     #ve-sheet input,#ve-sheet select{background:#2a2b2e;color:#eee;border-color:#444}
     #ve-summary{background:#2a2b2e}
+    .ve-actions{background:#1e1f21}
     .ve-type,.ve-btn{background:#2a2b2e;color:#ddd}
     .ve-btn.primary{background:${CONFIG.colorAccent};color:#fff}
     #ve-live{color:#bbb}.ve-hint,#ve-sheet label{color:#999}
@@ -293,6 +333,7 @@
 
   const MIC_SVG = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg>';
 
+  const NEW = '__new__';
   const state = { customers: [], type: null, listening: false, rec: null, finalText: '', gotError: false };
   const $ = (id) => document.getElementById(id);
   let fab, overlay;
@@ -329,6 +370,11 @@
           '<div id="ve-summary"></div>' +
           '<label for="ve-cust">গ্রাহক</label>' +
           '<select id="ve-cust"></select>' +
+          '<div id="ve-newwrap" hidden>' +
+            '<label for="ve-newname">নতুন গ্রাহকের নাম</label>' +
+            '<input id="ve-newname" type="text" autocomplete="off">' +
+          '</div>' +
+          '<div id="ve-info"></div>' +
           '<div class="ve-types">' +
             '<button type="button" class="ve-type gave" data-type="gave">দিলাম</button>' +
             '<button type="button" class="ve-type got" data-type="got">পেলাম</button>' +
@@ -353,7 +399,8 @@
     $('ve-retry').addEventListener('click', startListening);
     $('ve-save').addEventListener('click', save);
     $('ve-text').addEventListener('change', (e) => processText(e.target.value));
-    $('ve-cust').addEventListener('change', updateSummary);
+    $('ve-cust').addEventListener('change', () => { syncNewWrap(); updateSummary(); });
+    $('ve-newname').addEventListener('input', updateSummary);
     $('ve-amount').addEventListener('input', updateSummary);
     overlay.querySelectorAll('.ve-type').forEach((b) =>
       b.addEventListener('click', () => { setType(b.dataset.type); }));
@@ -478,19 +525,39 @@
       o.textContent = c.name;
       sel.appendChild(o);
     });
-    if (p.customer) sel.value = String(p.customer.id);
+    const nw = document.createElement('option');
+    nw.value = NEW;
+    nw.textContent = '＋ নতুন গ্রাহক যোগ করুন';
+    sel.appendChild(nw);
+
+    $('ve-newname').value = '';
+    let info = '';
+    if (p.customer) {
+      sel.value = String(p.customer.id);
+    } else if (p.name) {
+      sel.value = NEW;
+      $('ve-newname').value = p.name;
+      info = '“' + p.name + '” নামে কোনো গ্রাহক নেই। সংরক্ষণ করলে নতুন গ্রাহক হিসেবে যোগ হবে।' +
+        (p.nearCustomer ? ' কাছাকাছি নাম আছে: ' + p.nearCustomer.name + ' — সেটা হলে উপরের তালিকা থেকে বেছে নিন।' : '');
+    }
+    $('ve-info').textContent = info;
+    syncNewWrap();
 
     setType(p.type);
 
     let err = errorMsg || '';
     if (!err && p.text) {
       const missing = [];
-      if (!p.customer) missing.push('গ্রাহক');
+      if (!p.customer && !p.name) missing.push('গ্রাহক');
       if (!p.amount) missing.push('পরিমাণ');
       if (!p.type) missing.push('দিলাম/পেলাম');
       if (missing.length) err = 'বোঝা যায়নি: ' + missing.join(', ') + '। নিচে ঠিক করে নিন।';
     }
     $('ve-error').textContent = err;
+  }
+
+  function syncNewWrap() {
+    $('ve-newwrap').hidden = $('ve-cust').value !== NEW;
   }
 
   function setType(t) {
@@ -502,7 +569,8 @@
 
   function updateSummary() {
     const sel = $('ve-cust');
-    const name = sel.value ? sel.options[sel.selectedIndex].textContent : '';
+    let name = sel.value ? sel.options[sel.selectedIndex].textContent : '';
+    if (sel.value === NEW) name = ($('ve-newname').value.trim() ? 'নতুন: ' + $('ve-newname').value.trim() : '');
     const amt = parseInt($('ve-amount').value, 10);
     const typeLabel = state.type === 'gave' ? 'দিলাম' : state.type === 'got' ? 'পেলাম' : '';
     const parts = [
@@ -520,15 +588,17 @@
   }
 
   async function save() {
-    const customerId = $('ve-cust').value;
+    let customerId = $('ve-cust').value;
+    const newName = $('ve-newname').value.trim();
     const amount = parseInt($('ve-amount').value, 10);
     const err = $('ve-error');
     if (!customerId) { err.textContent = 'গ্রাহক নির্বাচন করুন।'; return; }
+    if (customerId === NEW && !newName) { err.textContent = 'নতুন গ্রাহকের নাম লিখুন।'; return; }
     if (!state.type) { err.textContent = 'দিলাম নাকি পেলাম, বেছে নিন।'; return; }
     if (!(amount > 0)) { err.textContent = 'সঠিক পরিমাণ লিখুন।'; return; }
 
     const tx = {
-      customerId: customerId,
+      customerId: customerId, // নতুন গ্রাহক হলে তৈরির পর আসল id বসবে
       type: state.type,
       amount: amount,
       note: $('ve-note').value.trim(),
@@ -538,6 +608,10 @@
     btn.disabled = true;
     btn.textContent = 'সংরক্ষণ হচ্ছে…';
     try {
+      if (customerId === NEW) {
+        const created = await CONFIG.createCustomer(newName);
+        tx.customerId = created.id;
+      }
       await CONFIG.addTransaction(tx);
       try { CONFIG.onSaved(tx); } catch (e) { console.error(e); }
       closeSheet();
