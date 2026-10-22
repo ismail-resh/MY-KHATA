@@ -2,13 +2,28 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#067a4b">
+<script>
+/* Theme + language: apply before first paint (no flash) */
+(function(){try{
+  var t=localStorage.getItem('mm_theme')||'system';
+  var dark=t==='dark'||(t==='system'&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);
+  document.documentElement.setAttribute('data-theme',dark?'dark':'light');
+  var l=localStorage.getItem('mm_lang')||'bn';
+  document.documentElement.setAttribute('lang',l);
+  document.documentElement.setAttribute('dir',l==='ur'?'rtl':'ltr');
+}catch(e){}})();
+</script>
 <title>MoneyMate — হিসাব ব্যবস্থাপনা</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/dark.css">
+<link rel="stylesheet" href="css/theme.css">
 <link rel="icon" type="image/jpeg" href="assets/moneymate-logo.jpg">
 </head>
 <body>
@@ -28,6 +43,11 @@
 
 
 
+
+<div id="authTools" class="auth-tools">
+  <button type="button" class="tool-btn" onclick="openSettingsSheet()" aria-label="ভাষা ও থিম"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 2.6 4.2 5.6 4.2 9S14.800 18.400 12 21c-2.800-2.600-4.200-5.600-4.200-9S9.200 5.600 12 3z"/></svg></button>
+  <button type="button" class="tool-btn" onclick="toggleTheme()" aria-label="থিম পরিবর্তন"><svg class="icon-svg icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.500A8 8 0 0 1 9.500 4a8 8 0 1 0 10.500 10.500z"/></svg><svg class="icon-svg icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.900 4.900l1.400 1.400M17.700 17.700l1.400 1.400M4.900 19.100l1.400-1.400M17.700 6.300l1.400-1.400"/></svg></button>
+</div>
 
 <div id="loginPage" class="auth-page hidden">
   <div class="auth-box login-card">
@@ -224,9 +244,14 @@
 
             <span class="home-profile-info">
                 <span id="headerUserName" class="home-user-name">User</span>
-                <span class="home-profile-subtitle">MoneyMate</span>
+                <span class="home-profile-subtitle">স্বাগতম</span>
             </span>
         </button>
+
+        <div class="header-tools">
+            <button type="button" class="tool-btn" onclick="openSettingsSheet()" aria-label="ভাষা ও থিম"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.800 2.600 4.200 5.600 4.200 9S14.800 18.400 12 21c-2.800-2.600-4.200-5.600-4.200-9S9.200 5.600 12 3z"/></svg></button>
+            <button type="button" class="tool-btn" onclick="toggleTheme()" aria-label="থিম পরিবর্তন"><svg class="icon-svg icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.500A8 8 0 0 1 9.500 4a8 8 0 1 0 10.500 10.500z"/></svg><svg class="icon-svg icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.900 4.900l1.400 1.400M17.700 17.700l1.400 1.400M4.900 19.100l1.400-1.400M17.700 6.300l1.400-1.400"/></svg></button>
+        </div>
 
     </header>
 
@@ -241,6 +266,26 @@
         <!-- Today's summary -->
 
         <section class="home-section">
+
+            <div class="home-summary">
+                <div class="net-card">
+                    <div class="net-label">নিট হিসাব</div>
+                    <div class="net-row">
+                        <div id="homeNetAmount" class="net-amount">৳ 0</div>
+                        <span id="homeNetStatus" class="net-status">হিসাব সমান</span>
+                    </div>
+                    <div class="net-split">
+                        <div class="summary-box pay-summary">
+                            <div class="summary-label">মোট দেবো</div>
+                            <div id="homeTotalPay" class="summary-amount">৳ 0</div>
+                        </div>
+                        <div class="summary-box receive-summary">
+                            <div class="summary-label">মোট পাবো</div>
+                            <div id="homeTotalReceive" class="summary-amount">৳ 0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="home-search-row">
                 <label class="home-search-box" for="homeCustomerSearch">
@@ -263,55 +308,6 @@
                     </span>
                 </div>
             </div>
-
-
-            <div class="home-summary">
-
-    <!-- মোট দেবো -->
-
-    <div class="summary-box pay-summary">
-
-        <div class="summary-label">
-            মোট দেবো
-        </div>
-
-        <div
-            id="homeTotalPay"
-            class="summary-amount"
-        >
-            ৳ 0
-        </div>
-
-        <span class="summary-icon">
-            ↓
-        </span>
-
-    </div>
-
-
-    <!-- মোট পাবো -->
-
-    <div class="summary-box receive-summary">
-
-        <div class="summary-label">
-            মোট পাবো
-        </div>
-
-        <div
-            id="homeTotalReceive"
-            class="summary-amount"
-        >
-            ৳ 0
-        </div>
-
-        <span class="summary-icon">
-            ↑
-        </span>
-
-    </div>
-
-</div>
-
         </section>
 
 
@@ -320,7 +316,12 @@
              DENA + PAWNA
              ========================= -->
 
-        <section class="balance-columns">
+        <div class="home-tabs" role="tablist">
+            <button type="button" id="tabDebt" class="home-tab active" role="tab" onclick="setHomeTab('debt')">দেনা <span id="tabDebtCount" class="tab-count">0</span></button>
+            <button type="button" id="tabReceive" class="home-tab" role="tab" onclick="setHomeTab('receive')">পাওনা <span id="tabReceiveCount" class="tab-count">0</span></button>
+        </div>
+
+        <section id="homeBalanceColumns" class="balance-columns" data-tab="debt">
 
 
             <!-- DENa -->
@@ -570,6 +571,7 @@
         <button type="button" onclick="showEditCustomer(); toggleProfileMenu();">✎ Edit Customer</button>
         <button type="button" onclick="shareWhatsApp(); toggleProfileMenu();">🟢 WhatsApp</button>
         <button type="button" onclick="shareOther(); toggleProfileMenu();">↗ Share</button>
+        <button type="button" class="menu-danger" onclick="toggleProfileMenu(); deleteCustomer();">🗑 গ্রাহক মুছুন</button>
       </div>
     </div>
 
@@ -608,10 +610,6 @@
         <button type="button" class="quick-pelam" onclick="showProfileTransactionForm('pay')">↓ &nbsp;পেলাম</button>
       </div>
 
-      <button type="button" class="profile-new-transaction" onclick="showProfileTransactionForm('receive')">
-        ＋ &nbsp;নতুন লেনদেন
-      </button>
-
       <div id="profileLedgerForm" class="profile-ledger-form profile-ledger-form-modern hidden">
         <div class="ledger-form-title">নতুন লেনদেন</div>
 
@@ -637,15 +635,18 @@
         <button class="primary full" onclick="addProfileTransaction()" type="button">লেনদেন যোগ করুন</button>
       </div>
 
-      <button type="button" class="profile-history-btn" onclick="toggleProfileHistory()">
-        <span>◷</span><span>লেনদেনের ইতিহাস</span>
-      </button>
-
-      <div id="profileHistorySection" class="profile-history-section hidden">
-        <div class="profile-history-title">লেনদেনের ইতিহাস</div>
+      <div class="profile-share-section">
+        <button type="button" class="profile-share whatsapp-share" onclick="shareWhatsApp()"><svg class="icon-svg brand-whatsapp" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 11.7a8.4 8.4 0 0 1-12.4 7.4L3 20.5l1.5-4.9A8.4 8.4 0 1 1 20.5 11.7Z"/><path d="M8.2 7.6c.2-.5.5-.5.8-.5h.5c.2 0 .4.1.5.4l.8 1.9c.1.3.1.5-.1.7l-.6.7c-.2.2-.2.4 0 .7.6 1 1.4 1.8 2.5 2.4.3.2.5.2.7-.1l.8-1c.2-.2.4-.3.7-.2l1.8.9c.3.1.4.3.4.5 0 .3-.2 1.3-.8 1.8-.6.5-1.3.7-2.1.5-1.1-.2-2.5-.9-3.8-2.1-1.5-1.3-2.5-2.9-2.8-4-.3-1.1.1-2 .7-2.6Z"/></svg><small>WhatsApp</small></button>
+        <button type="button" class="profile-share imo-share" onclick="shareOther()"><svg class="icon-svg brand-imo" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A3.5 3.5 0 0 1 7.5 2h9A3.5 3.5 0 0 1 20 5.5v6a3.5 3.5 0 0 1-3.5 3.5h-4L7 19v-4.2a3.5 3.5 0 0 1-3-3.3Z"/><path d="M8 7.5h8M8 10.5h5"/></svg><small>IMO</small></button>
+        <button type="button" class="profile-share general-share" onclick="shareOther()"><span>↗</span><small>শেয়ার</small></button>
+        <button type="button" class="profile-share call-share" onclick="callCustomer()"><span>☎</span><small>কল</small></button>
+      </div>
+      <div id="profileHistorySection" class="profile-history-section">
+        <div class="profile-history-title">সাম্প্রতিক লেনদেন</div>
 
         <div class="toolbar profile-history-toolbar">
           <input id="transactionSearch" placeholder="🔎 Note / Amount search" oninput="renderProfile()">
+          <details class="profile-filter-more"><summary>ফিল্টার</summary>
           <div class="profile-date-filters">
             <div>
               <label>শুরু</label>
@@ -657,19 +658,12 @@
             </div>
           </div>
           <button class="gray" onclick="clearFilters()" type="button">Filter Clear</button>
+          </details>
         </div>
 
         <div id="transactionList"></div>
       </div>
 
-      <div class="profile-share-section">
-        <button type="button" class="profile-share whatsapp-share" onclick="shareWhatsApp()"><svg class="icon-svg brand-whatsapp" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 11.7a8.4 8.4 0 0 1-12.4 7.4L3 20.5l1.5-4.9A8.4 8.4 0 1 1 20.5 11.7Z"/><path d="M8.2 7.6c.2-.5.5-.5.8-.5h.5c.2 0 .4.1.5.4l.8 1.9c.1.3.1.5-.1.7l-.6.7c-.2.2-.2.4 0 .7.6 1 1.4 1.8 2.5 2.4.3.2.5.2.7-.1l.8-1c.2-.2.4-.3.7-.2l1.8.9c.3.1.4.3.4.5 0 .3-.2 1.3-.8 1.8-.6.5-1.3.7-2.1.5-1.1-.2-2.5-.9-3.8-2.1-1.5-1.3-2.5-2.9-2.8-4-.3-1.1.1-2 .7-2.6Z"/></svg><small>WhatsApp</small></button>
-        <button type="button" class="profile-share imo-share" onclick="shareOther()"><svg class="icon-svg brand-imo" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A3.5 3.5 0 0 1 7.5 2h9A3.5 3.5 0 0 1 20 5.5v6a3.5 3.5 0 0 1-3.5 3.5h-4L7 19v-4.2a3.5 3.5 0 0 1-3-3.3Z"/><path d="M8 7.5h8M8 10.5h5"/></svg><small>IMO</small></button>
-        <button type="button" class="profile-share general-share" onclick="shareOther()"><span>↗</span><small>শেয়ার</small></button>
-        <button type="button" class="profile-share edit-share" onclick="showEditCustomer()"><span>✎</span><small>Edit</small></button>
-      </div>
-
-      <button type="button" class="profile-delete-btn" onclick="deleteCustomer()">🗑 &nbsp; গ্রাহক মুছুন</button>
 
     </div>
   </div>
@@ -802,6 +796,14 @@
 
       </button>
 
+      <button
+        type="button"
+        class="profile-menu-item"
+        onclick="openSettingsSheet()">
+        <span class="profile-menu-icon">◐</span>
+        <span class="profile-menu-label">ভাষা ও থিম</span>
+        <span class="profile-menu-arrow">›</span>
+      </button>
       <button
         type="button"
         class="profile-menu-item"
@@ -1079,6 +1081,29 @@
   </div>
 
 </div>
+<!-- Language & theme sheet -->
+<div id="settingsOverlay" class="settings-overlay hidden" onclick="if(event.target===this)closeSettingsSheet()">
+  <div class="settings-sheet" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <div class="settings-head"><b id="settingsTitle">ভাষা ও থিম</b><button type="button" class="settings-x" onclick="closeSettingsSheet()" aria-label="বন্ধ করুন">×</button></div>
+    <div class="settings-label">ভাষা</div>
+    <div class="lang-grid" id="langGrid">
+      <button type="button" data-lang="bn" lang="bn" onclick="setLanguage('bn')">বাংলা</button>
+      <button type="button" data-lang="en" lang="en" onclick="setLanguage('en')">English</button>
+      <button type="button" data-lang="hi" lang="hi" onclick="setLanguage('hi')">हिन्दी</button>
+      <button type="button" data-lang="ur" lang="ur" onclick="setLanguage('ur')">اردو</button>
+    </div>
+    <div class="settings-label">থিম</div>
+    <div class="theme-seg" id="themeSeg">
+      <button type="button" data-theme-pref="light" onclick="setTheme('light')">লাইট</button>
+      <button type="button" data-theme-pref="dark" onclick="setTheme('dark')">ডার্ক</button>
+      <button type="button" data-theme-pref="system" onclick="setTheme('system')">অটো</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/i18n-dict.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/settings.js"></script>
 <script src="js/config.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/auth.js"></script>

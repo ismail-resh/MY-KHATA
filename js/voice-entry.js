@@ -12,6 +12,7 @@
      ১) CONFIG — শুধু এই অংশটা আপনার অ্যাপ অনুযায়ী বদলাতে হবে
      ================================================================ */
   const CONFIG = {
+    // ভয়েস চেনার ভাষা: অ্যাপের ভাষা অনুযায়ী (bn-BD / en-IN / hi-IN / ur-PK)
     lang: 'bn-BD',
 
     // লগইন করা থাকলে true ফেরত দিন। লগইন/সাইনআপ স্ক্রিনে মাইক বাটন লুকাবে।
@@ -82,7 +83,11 @@
   };
 
   const BN_DIGITS = '০১২৩৪৫৬৭৮৯';
-  const toEnDigits = (s) => s.replace(/[০-৯]/g, (d) => BN_DIGITS.indexOf(d));
+  const toEnDigits = (s) => s
+    .replace(/[০-৯]/g, (d) => BN_DIGITS.indexOf(d))
+    .replace(/[\u0966-\u096F]/g, (d) => d.charCodeAt(0) - 0x0966)      // Devanagari
+    .replace(/[\u0660-\u0669]/g, (d) => d.charCodeAt(0) - 0x0660)      // Arabic-Indic
+    .replace(/[\u06F0-\u06F9]/g, (d) => d.charCodeAt(0) - 0x06F0);     // Persian/Urdu
   const toBnDigits = (s) => String(s).replace(/\d/g, (d) => BN_DIGITS[d]);
 
   // কথায় বলা সংখ্যা (স্পিচ রিকগনিশন সাধারণত অঙ্কেই লেখে, এটা ব্যাকআপ)
@@ -94,7 +99,10 @@
     'পঞ্চাশ': 50, 'ষাট': 60, 'সত্তর': 70, 'আশি': 80, 'নব্বই': 90
   });
   const HALF = mk({ 'সাড়ে': 0.5, 'দেড়': 1.5, 'আড়াই': 2.5 });
-  const MULT = mk({ 'শো': 100, 'শ': 100, 'শত': 100, 'হাজার': 1000, 'লাখ': 100000, 'লক্ষ': 100000 });
+  const MULT = mk({ 'শো': 100, 'শ': 100, 'শত': 100, 'হাজার': 1000, 'লাখ': 100000, 'লক্ষ': 100000,
+    'hundred': 100, 'thousand': 1000, 'lakh': 100000, 'lac': 100000, 'k': 1000,
+    'सौ': 100, 'हज़ार': 1000, 'हजार': 1000, 'लाख': 100000, 'سو': 100, 'ہزار': 1000, 'لاکھ': 100000 });
+  const MULT_RE = '(শো|শত|শ|হাজার|লাখ|লক্ষ|hundred|thousand|lakh|lac|k|सौ|हज़ार|हजार|लाख|سو|ہزار|لاکھ)';
 
   const wordVal = (w) => (w in SMALL ? SMALL[w] : (w in HALF ? HALF[w] : null));
 
@@ -122,7 +130,7 @@
 
   function parseAmount(raw) {
     const t = toEnDigits(N(raw)).replace(/(\d),(\d)/g, '$1$2');
-    const m = t.match(/(\d+(?:\.\d+)?)\s*(শো|শত|শ|হাজার|লাখ|লক্ষ)?/);
+    const m = t.match(new RegExp('(\\d+(?:\\.\\d+)?)\\s*' + MULT_RE + '?(?![a-zA-Z])', 'i'));
     if (m) {
       let v = parseFloat(m[1]);
       if (m[2]) v *= MULT[m[2]];
@@ -132,11 +140,14 @@
   }
 
   // দিলাম / পেলাম — বাংলায় ক্রিয়া শেষে আসে, তাই যেটা পরে আছে সেটাই ধরা হয়
-  const GAVE = ['দিলাম', 'দিয়েছি', 'দিয়েছিলাম', 'দিছি', 'দিয়া', 'দিলুম'].map(N);
-  const GOT = ['পেলাম', 'পেয়েছি', 'পেয়েছিলাম', 'পাইলাম', 'পাইছি', 'পাইয়াছি', 'আদায়', 'জমা'].map(N);
+  const GAVE = ['দিলাম', 'দিয়েছি', 'দিয়েছিলাম', 'দিছি', 'দিয়া', 'দিলুম',
+    'gave', 'given', 'give', 'paid', 'lent', 'दिया', 'दिए', 'दिये', 'दी', 'دیا', 'دیے', 'دی'].map(N);
+  const GOT = ['পেলাম', 'পেয়েছি', 'পেয়েছিলাম', 'পাইলাম', 'পাইছি', 'পাইয়াছি', 'আদায়', 'জমা',
+    'got', 'received', 'collected', 'मिला', 'मिले', 'मिली', 'पाया', 'वसूल', 'ملا', 'ملے', 'وصول'].map(N);
 
   function detectType(t) {
     let g = -1, r = -1;
+    t = t.toLowerCase();
     GAVE.forEach((w) => { const i = t.lastIndexOf(w); if (i > g) g = i; });
     GOT.forEach((w) => { const i = t.lastIndexOf(w); if (i > r) r = i; });
     if (g < 0 && r < 0) return null;
@@ -168,7 +179,21 @@
       .replace(/q/g, 'k').replace(/z/g, 'j').replace(/v/g, 'b').replace(/f/g, 'p');
     return collapse(s);
   }
-  const skel = (s) => (isBangla(s) ? bnSkel(s) : enSkel(s));
+  const DEV_MAP = { 'क': 'k', 'ख': 'k', 'ग': 'g', 'घ': 'g', 'च': 'c', 'छ': 'c', 'ज': 'j', 'झ': 'j', 'ट': 't', 'ठ': 't',
+    'ड': 'd', 'ढ': 'd', 'ण': 'n', 'त': 't', 'थ': 't', 'द': 'd', 'ध': 'd', 'न': 'n', 'प': 'p', 'फ': 'p', 'ब': 'b',
+    'भ': 'b', 'म': 'm', 'र': 'r', 'ल': 'l', 'श': 's', 'ष': 's', 'स': 's', 'ह': 'h', 'ं': 'n', 'ज़': 'j', 'फ़': 'p' };
+  const AR_MAP = { 'ک': 'k', 'گ': 'g', 'چ': 'c', 'ج': 'j', 'ٹ': 't', 'ت': 't', 'ط': 't', 'ڈ': 'd', 'د': 'd', 'ن': 'n',
+    'ں': 'n', 'پ': 'p', 'ف': 'p', 'ب': 'b', 'م': 'm', 'ر': 'r', 'ڑ': 'r', 'ل': 'l', 'س': 's', 'ص': 's', 'ش': 's',
+    'ہ': 'h', 'ح': 'h', 'ھ': 'h', 'ق': 'k', 'خ': 'k', 'ز': 'j', 'ذ': 'j', 'ض': 'j', 'ظ': 'j', 'غ': 'g', 'ث': 's' };
+  const isDev = (s) => /[\u0900-\u097F]/.test(s);
+  const isAr = (s) => /[\u0600-\u06FF]/.test(s);
+  function mapSkel(s, M) {
+    s = N(s).replace(/\u095B/g, 'ज').replace(/\u095E/g, 'फ').replace(/\u0921\u093C|\u0922\u093C/g, 'र');
+    let out = '';
+    for (const ch of s) if (M[ch]) out += M[ch];
+    return collapse(out);
+  }
+  const skel = (s) => (isBangla(s) ? bnSkel(s) : isDev(s) ? mapSkel(s, DEV_MAP) : isAr(s) ? mapSkel(s, AR_MAP) : enSkel(s));
 
   function lev(a, b) {
     const dp = Array.from({ length: a.length + 1 }, (_, i) => [i]);
@@ -193,7 +218,9 @@
 
   const STOP = new Set([
     'টাকা', 'দিলাম', 'পেলাম', 'দিয়েছি', 'পেয়েছি', 'দিছি', 'পাইছি', 'বাকি', 'আজ', 'আজকে',
-    'কে', 'থেকে', 'জন্য', 'বাবদ', 'ও', 'এবং', 'আমি', 'ভাই', 'আপা', 'আপু'
+    'কে', 'থেকে', 'জন্য', 'বাবদ', 'ও', 'এবং', 'আমি', 'ভাই', 'আপা', 'আপু',
+    'to', 'from', 'taka', 'tk', 'rs', 'rupees', 'rupee', 'inr', 'bdt', 'for', 'the', 'a', 'i', 'of', 'and', 'my', 'me',
+    'को', 'से', 'रुपये', 'रुपए', 'रूपये', 'रुपया', 'ने', 'کو', 'سے', 'روپے', 'روپیہ', 'نے', 'میں'
   ].map(N));
   const SUFFIXES = ['দেরকে', 'কে', 'এর', 'ের', 'র', 'রে', 'ে'].map(N);
 
@@ -207,7 +234,7 @@
 
   function findCustomer(text, customers) {
     const tokens = N(text).replace(/[।,.?!]/g, ' ').split(/\s+/)
-      .filter((t) => t.length > 1 && !/\d/.test(toEnDigits(t)) && !STOP.has(t) && wordsToNumber(t) === null);
+      .filter((t) => t.length > 1 && !/\d/.test(toEnDigits(t)) && !STOP.has(t.toLowerCase()) && wordsToNumber(t) === null);
 
     const ranked = customers.map((c) => {
       const nameToks = String(c.name || '').split(/\s+/).filter(Boolean);
@@ -244,13 +271,13 @@
     const isNum = (t) => /\d/.test(toEnDigits(t)) || wordsToNumber(t) !== null;
     let out = [];
     for (const t of toks) {                       // ১ম চেষ্টা: সংখ্যার আগের শব্দ
-      if (isNum(t) || ALL_VERBS.indexOf(t) >= 0) break;
-      if (STOP.has(t) && !NAME_BREAK.has(t)) continue;
+      if (isNum(t) || ALL_VERBS.indexOf(t.toLowerCase()) >= 0) break;
+      if (STOP.has(t.toLowerCase()) && !NAME_BREAK.has(t)) continue;
       if (NAME_BREAK.has(t)) { if (out.length) break; else continue; }
       out.push(t);
     }
     if (!out.length) {                            // ২য় চেষ্টা: "৫০০ টাকা রহিমকে দিলাম"
-      out = toks.filter((t) => !isNum(t) && !STOP.has(t) && !NAME_BREAK.has(t) && ALL_VERBS.indexOf(t) < 0);
+      out = toks.filter((t) => !isNum(t) && !STOP.has(t.toLowerCase()) && !NAME_BREAK.has(t) && ALL_VERBS.indexOf(t.toLowerCase()) < 0);
     }
     if (!out.length) return '';
     let last = out[out.length - 1];
@@ -321,14 +348,15 @@
   #ve-info:empty{display:none}
   #ve-error{margin-top:10px;font-size:14px;color:#c62828;min-height:18px}
   #ve-toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#222;color:#fff;padding:10px 16px;border-radius:999px;font-size:15px;z-index:10000}
-  @media (prefers-color-scheme:dark){
-    #ve-sheet{background:#1e1f21;color:#eee}
-    #ve-sheet input,#ve-sheet select{background:#2a2b2e;color:#eee;border-color:#444}
-    #ve-summary{background:#2a2b2e}
-    .ve-actions{background:#1e1f21}
-    .ve-type,.ve-btn{background:#2a2b2e;color:#ddd}
-    .ve-btn.primary{background:${CONFIG.colorAccent};color:#fff}
-    #ve-live{color:#bbb}.ve-hint,#ve-sheet label{color:#999}
+  @media all{
+    html[data-theme="dark"] #ve-sheet{background:#1e1f21;color:#eee}
+    html[data-theme="dark"] #ve-sheet input,html[data-theme="dark"] #ve-sheet select{background:#2a2b2e;color:#eee;border-color:#444}
+    html[data-theme="dark"] #ve-summary{background:#2a2b2e}
+    html[data-theme="dark"] .ve-actions{background:#1e1f21}
+    html[data-theme="dark"] .ve-type,html[data-theme="dark"] .ve-btn{background:#2a2b2e;color:#ddd}
+    html[data-theme="dark"] .ve-btn.primary{background:${CONFIG.colorAccent};color:#fff}
+    html[data-theme="dark"] #ve-live{color:#bbb}
+    html[data-theme="dark"] .ve-hint,html[data-theme="dark"] #ve-sheet label{color:#999}
   }`;
 
   const MIC_SVG = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg>';
@@ -368,7 +396,7 @@
           '<label for="ve-text">আপনি বলেছেন (ভুল হলে ঠিক করুন)</label>' +
           '<input id="ve-text" type="text" autocomplete="off">' +
           '<div id="ve-summary"></div>' +
-          '<label for="ve-cust">গ্রাহক</label>' +
+          '<label for="ve-cust">গ্রাহক নির্বাচন</label>' +
           '<select id="ve-cust"></select>' +
           '<div id="ve-newwrap" hidden>' +
             '<label for="ve-newname">নতুন গ্রাহকের নাম</label>' +
@@ -457,7 +485,7 @@
     state.gotError = false;
     const rec = new SR();
     state.rec = rec;
-    rec.lang = CONFIG.lang;
+    rec.lang = (window.MM_I18N && MM_I18N.speechLang()) || CONFIG.lang;
     rec.interimResults = true;
     rec.continuous = false;
     rec.maxAlternatives = 1;

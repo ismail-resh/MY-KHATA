@@ -1,0 +1,223 @@
+/* AUTO-GENERATED dark theme for style.css — do not edit by hand (see README) */
+:where(html[data-theme="dark"]) body{background:linear-gradient(135deg,#0f1917,#15181c);color:#ededed}
+:where(html[data-theme="dark"]) .boot-loader{background:#1a231e}
+:where(html[data-theme="dark"]) .boot-title{color:#ededed}
+:where(html[data-theme="dark"]) .boot-subtitle{color:#a6a6a6}
+:where(html[data-theme="dark"]) .boot-spinner{border:3px solid #304037}
+:where(html[data-theme="dark"]) .auth-box{background:#1a231e}
+:where(html[data-theme="dark"]) .auth-title{color:#84e2d7}
+:where(html[data-theme="dark"]) .auth-subtitle{color:#a6a6a6}
+:where(html[data-theme="dark"]) input,:where(html[data-theme="dark"]) select,:where(html[data-theme="dark"]) textarea{border:1px solid #2e3d35}
+:where(html[data-theme="dark"]) .signup-btn{background:#0f1917;color:#84e2d7}
+:where(html[data-theme="dark"]) .guest-btn{background:#1d1910;color:#e0be7d;border:1px solid #393322}
+:where(html[data-theme="dark"]) .guest-note{color:#a6a6a6}
+:where(html[data-theme="dark"]) .google-btn{background:#1a231e;border:1px solid #2e3d35;color:#ededed}
+:where(html[data-theme="dark"]) .divider{color:#9e9e9e}
+:where(html[data-theme="dark"]) .divider:before,:where(html[data-theme="dark"]) .divider:after{background:#0b100d}
+:where(html[data-theme="dark"]) .link{color:#84e2d7}
+:where(html[data-theme="dark"]) .message.error{background:#1f1113;color:#dc6a6a}
+:where(html[data-theme="dark"]) .message.success{background:#0f1910;color:#83d287}
+:where(html[data-theme="dark"]) .card{background:#1a231e}
+:where(html[data-theme="dark"]) .summary h3{color:#b5b5b5}
+:where(html[data-theme="dark"]) .toolbar{background:#1a231e}
+:where(html[data-theme="dark"]) .customer{background:#1a231e}
+:where(html[data-theme="dark"]) .receive{color:#dc6a6a}
+:where(html[data-theme="dark"]) .pay{color:#6aa4dc}
+:where(html[data-theme="dark"]) .profile{background:#1a231e}
+:where(html[data-theme="dark"]) .transaction{border-top:1px solid #314139}
+:where(html[data-theme="dark"]) .small{color:#a6a6a6}
+:where(html[data-theme="dark"]) .empty{color:#a6a6a6}
+:where(html[data-theme="dark"]) .gray{background:#111714}
+:where(html[data-theme="dark"]) .customer-phone{color:#c4c4c4}
+:where(html[data-theme="dark"]) .empty-phone{color:#9e9e9e}
+:where(html[data-theme="dark"]) .form-title{color:#84e2d7}
+:where(html[data-theme="dark"]) .form-subtitle{color:#a6a6a6}
+:where(html[data-theme="dark"]) .modal-box{background:#1a231e}
+:where(html[data-theme="dark"]) .modal-title{color:#84e2d7}
+:where(html[data-theme="dark"]) .modal-subtitle{color:#a6a6a6}
+:where(html[data-theme="dark"]) .profile-ledger-form{background:#161f1c;border:1px solid #313d3a}
+:where(html[data-theme="dark"]) .ledger-form-title{color:#84e2d7}
+:where(html[data-theme="dark"]) .ledger-type-btn{border:2px solid #2e3d35;background:#1a231e}
+:where(html[data-theme="dark"]) .ledger-type-btn.dilam{color:#84e2d7}
+:where(html[data-theme="dark"]) .ledger-type-btn.pelam{color:#6aa4dc}
+:where(html[data-theme="dark"]) .ledger-type-btn.selected{background:#0f1917}
+:where(html[data-theme="dark"]) .ledger-type-btn.pelam.selected{background:#10171f}
+:where(html[data-theme="dark"]) .profile-ledger-form label{color:#c4c4c4}
+:where(html[data-theme="dark"]) .balance-label{color:#a6a6a6}
+:where(html[data-theme="dark"]) .running-balance{background:#16171a;color:#c4c4c4}
+:where(html[data-theme="dark"]) .running-balance.receive{background:#11180d;color:#83d287}
+:where(html[data-theme="dark"]) .running-balance.pay{background:#10171f;color:#6ea2dd}
+:where(html[data-theme="dark"]) .success-overlay{background:linear-gradient(180deg,#12201a 0%,#15221e 100%)}
+:where(html[data-theme="dark"]) .success-spark{color:#6bdca5}
+:where(html[data-theme="dark"]) .success-content h2{color:#7de1bb}
+:where(html[data-theme="dark"]) .success-summary-card{background:#1a231e;border:1px solid #2e413a}
+:where(html[data-theme="dark"]) .success-avatar{background:#0d1812;color:#7fe1c2}
+:where(html[data-theme="dark"]) .success-customer-name{color:#a3c5bd}
+:where(html[data-theme="dark"]) .success-amount-line strong{color:#ededed}
+:where(html[data-theme="dark"]) .success-amount-line span{color:#dc6a70}
+:where(html[data-theme="dark"]) .success-date{color:#99a4a0}
+:where(html[data-theme="dark"]) .success-home-btn{border:1px solid #253934;background:#13231d;color:#7ae0c2}
+:where(html[data-theme="dark"]) .section-topbar h2{color:#95d6c6}
+:where(html[data-theme="dark"]) .section-back-btn{border:1px solid #2c3c37;background:#101c18;color:#7fe1c2}
+:where(html[data-theme="dark"]) .section-back-btn.light{background:#141a18}
+:where(html[data-theme="dark"]) .guest-note{color:#a6a6a6}
+:where(html[data-theme="dark"]) #guestUpgradeModal label,:where(html[data-theme="dark"]) #guestPasswordModal label{color:#c4c4c4}
+:where(html[data-theme="dark"]) .header-avatar{border:2px solid rgba(53,70,61,0.75)}
+:where(html[data-theme="dark"]) .profile-modal-box{background:#1a231e}
+:where(html[data-theme="dark"]) .profile-modal-close{color:#b5b5b5}
+:where(html[data-theme="dark"]) .profile-modal-title{color:#84e2d7}
+:where(html[data-theme="dark"]) .profile-modal-subtitle{color:#a6a6a6}
+:where(html[data-theme="dark"]) .my-profile-avatar{background:#0f1910;color:#84e2d7;border:4px solid #35463d}
+:where(html[data-theme="dark"]) .change-profile-photo{background:#121b17;color:#84e2d7}
+:where(html[data-theme="dark"]) .profile-photo-hint{color:#9e9e9e}
+:where(html[data-theme="dark"]) .profile-input-group label{color:#c4c4c4}
+:where(html[data-theme="dark"]) .profile-input-group input{border:1px solid #2e3d35;background:#1a231e}
+:where(html[data-theme="dark"]) .profile-input-group input:disabled{background:#151c18;color:#a6a6a6}
+:where(html[data-theme="dark"]) .auth-page{background:linear-gradient(
+            145deg,
+            #101c19 0%,
+            #161f1c 50%,
+            #121719 100%
+        )}
+:where(html[data-theme="dark"]) .login-card{background:rgba(26,35,30,0.98);border:1px solid #323c39}
+:where(html[data-theme="dark"]) .logo-icon{background:#0f1c17}
+:where(html[data-theme="dark"]) .login-card .auth-title{color:#7fe1c2}
+:where(html[data-theme="dark"]) .login-card .auth-subtitle{color:#a6a6a6}
+:where(html[data-theme="dark"]) .login-input .input-icon{color:#a3b8b3}
+:where(html[data-theme="dark"]) .login-input input{border:1px solid #2e3936;background:#1a231e;color:#ededed}
+:where(html[data-theme="dark"]) .login-input input::placeholder{color:#9e9e9e}
+:where(html[data-theme="dark"]) .password-eye{color:#a6a6a6}
+:where(html[data-theme="dark"]) .login-divider{color:#9e9e9e}
+:where(html[data-theme="dark"]) .login-divider span{background:#0b0f0d}
+:where(html[data-theme="dark"]) .login-divider b{color:#9e9e9e}
+:where(html[data-theme="dark"]) .login-guest-btn{background:#1a231e;color:#7fe1c2}
+:where(html[data-theme="dark"]) .login-guest-btn:hover{background:#101f19}
+:where(html[data-theme="dark"]) .login-create-account{color:#a6a6a6}
+:where(html[data-theme="dark"]) .login-create-account button{color:#7fe1c2}
+:where(html[data-theme="dark"]) .login-forgot{color:#7be0b7}
+:where(html[data-theme="dark"]) .home-avatar{background:#1a231e;color:#7fe1c2;border:2px solid rgba(53,70,61,0.8)}
+:where(html[data-theme="dark"]) .home-title{color:#a3c8c1}
+:where(html[data-theme="dark"]) .receive-summary{background:#0f1c17;border:1px solid #284237}
+:where(html[data-theme="dark"]) .pay-summary{background:#211213;border:1px solid #462a2c}
+:where(html[data-theme="dark"]) .receive-summary .summary-label{color:#7ce0be}
+:where(html[data-theme="dark"]) .pay-summary .summary-label{color:#dc6a71}
+:where(html[data-theme="dark"]) .receive-summary .summary-amount{color:#7ce0b8}
+:where(html[data-theme="dark"]) .pay-summary .summary-amount{color:#dc6a72}
+:where(html[data-theme="dark"]) .receive-summary .summary-icon{color:#7ae0b8;background:#09120e}
+:where(html[data-theme="dark"]) .pay-summary .summary-icon{color:#dc6a71;background:#180d0d}
+:where(html[data-theme="dark"]) .balance-column{border:1px solid #304037;background:#1a231e}
+:where(html[data-theme="dark"]) .debt-heading{color:#dc6a71;background:linear-gradient(
+        135deg,
+        #1d1011,
+        #211213
+    )}
+:where(html[data-theme="dark"]) .receive-heading{color:#7ce0b8;background:linear-gradient(
+        135deg,
+        #0d1813,
+        #101f18
+    )}
+:where(html[data-theme="dark"]) .home-customer{border-bottom:1px solid #314139}
+:where(html[data-theme="dark"]) .home-customer:hover{background:#171f1b}
+:where(html[data-theme="dark"]) .home-customer-name{color:#ededed}
+:where(html[data-theme="dark"]) .debt-column .home-customer-amount{color:#dc6a70}
+:where(html[data-theme="dark"]) .receive-column .home-customer-amount{color:#7ae0b8}
+:where(html[data-theme="dark"]) .home-customer-arrow{color:#96a6a2}
+:where(html[data-theme="dark"]) .home-empty{color:#9e9e9e}
+:where(html[data-theme="dark"]) .column-see-all{border-top:1px solid #314139}
+:where(html[data-theme="dark"]) .debt-see-all{color:#cc7a7f;background:#241313}
+:where(html[data-theme="dark"]) .receive-see-all{color:#82cdb2;background:#12211a}
+:where(html[data-theme="dark"]) .bottom-nav{background:rgba(26,35,30,0.98);border-top:1px solid #333b38}
+:where(html[data-theme="dark"]) .bottom-nav-item{color:#abb8b5}
+:where(html[data-theme="dark"]) .bottom-nav-item.active{color:#7be0b6}
+:where(html[data-theme="dark"]) .customer-profile-page{background:#161e1b}
+:where(html[data-theme="dark"]) .profile-action-menu{background:#1a231e}
+:where(html[data-theme="dark"]) .profile-action-menu button{border-bottom:1px solid #314139;background:#1a231e;color:#ededed}
+:where(html[data-theme="dark"]) .customer-profile-avatar{background:linear-gradient(135deg,#0e1815,#0a110f);color:#7fe1c2;border:1px solid #2d3e3a}
+:where(html[data-theme="dark"]) .customer-profile-name{color:#a7c6c0}
+:where(html[data-theme="dark"]) .customer-profile-phone{color:#aec0bb}
+:where(html[data-theme="dark"]) .customer-edit-icon{color:#81e2d4}
+:where(html[data-theme="dark"]) .profile-balance-status{background:#1a231e;color:#7fe1c2}
+:where(html[data-theme="dark"]) .profile-balance-card.pay .profile-balance-status{color:#dc6a70}
+:where(html[data-theme="dark"]) .profile-balance-card.zero .profile-balance-status{color:#c4c4c4}
+:where(html[data-theme="dark"]) .profile-summary-box{background:#1a231e;border:1px solid #343c39}
+:where(html[data-theme="dark"]) .dilam-summary .profile-summary-title,:where(html[data-theme="dark"]) .dilam-summary .profile-summary-amount{color:#dc6a70}
+:where(html[data-theme="dark"]) .pelam-summary .profile-summary-title,:where(html[data-theme="dark"]) .pelam-summary .profile-summary-amount{color:#7be0b6}
+:where(html[data-theme="dark"]) .profile-new-transaction{border:1px solid #2c3d38;background:#101c19;color:#7fe1c2}
+:where(html[data-theme="dark"]) .profile-ledger-form-modern{background:#1a231e;border:1px solid #313d3a}
+:where(html[data-theme="dark"]) .profile-history-btn{border:1px solid #2f3d3a;background:#14201e;color:#96c5bb}
+:where(html[data-theme="dark"]) .profile-history-section{background:#1a231e;border:1px solid #343c39}
+:where(html[data-theme="dark"]) .profile-history-title{color:#9acbc0}
+:where(html[data-theme="dark"]) .profile-date-filters label{color:#a6a6a6}
+:where(html[data-theme="dark"]) .profile-share{background:#1a231e}
+:where(html[data-theme="dark"]) .profile-share small{color:#c4c4c4}
+:where(html[data-theme="dark"]) .profile-delete-btn{border:1px solid #472a2c;background:#241414;color:#dc6a6f}
+:where(html[data-theme="dark"]) .new-transaction-page{background:#1a231e}
+:where(html[data-theme="dark"]) .new-transaction-menu-pop{background:#1a231e;color:#ededed;border:1px solid #2f3f37}
+:where(html[data-theme="dark"]) .new-transaction-menu-pop button{background:#1a231e}
+:where(html[data-theme="dark"]) .new-customer-card{border-bottom:1px solid #363d39}
+:where(html[data-theme="dark"]) .new-customer-avatar{background:#0f1815;color:#7fe1c2;border:1px solid #2b403a}
+:where(html[data-theme="dark"]) .new-customer-name-input{color:#a3c6be}
+:where(html[data-theme="dark"]) .new-customer-phone-input{color:#9fb1ab}
+:where(html[data-theme="dark"]) .new-customer-name-input::placeholder{color:#b8c4c0}
+:where(html[data-theme="dark"]) .new-customer-phone-input::placeholder{color:#96a6a1}
+:where(html[data-theme="dark"]) .new-type-btn{background:#1a231e}
+:where(html[data-theme="dark"]) .new-type-pay{border:1px solid #422829}
+:where(html[data-theme="dark"]) .new-type-receive{border:1px solid #243a34;color:#7be0bb}
+:where(html[data-theme="dark"]) .new-type-btn.selected.new-type-receive{background:#0f1c18;color:#7be0bb}
+:where(html[data-theme="dark"]) .new-form-field label{color:#b9c7c2}
+:where(html[data-theme="dark"]) .new-input-wrap{border:1px solid #2b3940;background:#1a231e}
+:where(html[data-theme="dark"]) .new-input-wrap>span{color:#95bcb3}
+:where(html[data-theme="dark"]) .new-input-wrap input{color:#9dbcb5}
+:where(html[data-theme="dark"]) .new-form-field textarea{border:1px solid #2b3940}
+:where(html[data-theme="dark"]) .balance-zero-section{background:#1a231e;border:1px solid #333c39}
+:where(html[data-theme="dark"]) .zero-section-heading{background:#101f19;color:#7fe1c2}
+:where(html[data-theme="dark"]) .zero-avatar{background:#111b18;color:#7fe1c2}
+:where(html[data-theme="dark"]) .zero-amount{color:#97a5a0 !important}
+:where(html[data-theme="dark"]) .history-page{background:#141e1c}
+:where(html[data-theme="dark"]) .history-search{border:1px solid #313d3a;background:#1a231e;color:#aac1b9}
+:where(html[data-theme="dark"]) .history-search input{color:#a3c5ba}
+:where(html[data-theme="dark"]) .history-filter,:where(html[data-theme="dark"]) .history-date-filter{border:1px solid #313d3a;background:#1a231e;color:#99baaf}
+:where(html[data-theme="dark"]) .history-date-filter input{color:#99baaf}
+:where(html[data-theme="dark"]) .history-date-heading{color:#9bc1b3}
+:where(html[data-theme="dark"]) .global-history-card{border:1px solid #313e39;background:#1a231e}
+:where(html[data-theme="dark"]) .history-pay-icon{background:#211213;color:#dc6a74}
+:where(html[data-theme="dark"]) .history-receive-icon{background:#0f1b15;color:#7de0b8}
+:where(html[data-theme="dark"]) .history-amount-pay{color:#dc6a75}
+:where(html[data-theme="dark"]) .history-amount-receive{color:#7de0b8}
+:where(html[data-theme="dark"]) .history-card-sub{color:#97a5a0}
+:where(html[data-theme="dark"]) .history-card-time{color:#97a5a0}
+:where(html[data-theme="dark"]) .history-empty{border:1px solid #313e39;background:#1a231e;color:#99a6a1}
+:where(html[data-theme="dark"]) .new-transaction-page{background:#13201c}
+:where(html[data-theme="dark"]) .new-type-buttons{border:1px solid #2c413a;background:#121f1a}
+:where(html[data-theme="dark"]) .new-form-field label{color:#9dc3b9}
+:where(html[data-theme="dark"]) .required-star{color:#dc6d6a}
+:where(html[data-theme="dark"]) .new-input-wrap{border:1px solid #2d3e3a;background:#1a231e}
+:where(html[data-theme="dark"]) .new-input-wrap > span{color:#95bfb4}
+:where(html[data-theme="dark"]) .new-input-wrap input::placeholder{color:#93a9a2}
+:where(html[data-theme="dark"]) .new-phone-field{border:1px solid #2d3e3a;background:#1a231e}
+:where(html[data-theme="dark"]) .my-profile-page{background:#141e1a}
+:where(html[data-theme="dark"]) .profile-screen-avatar{border:2px solid rgba(53,70,61,0.8);color:#7de0c1;background:#0e1a15}
+:where(html[data-theme="dark"]) .owe-card{background:#1f1112;color:#dc6a6a}
+:where(html[data-theme="dark"]) .receive-card{background:#0d1915;color:#7ee1be}
+:where(html[data-theme="dark"]) .profile-menu-list{border:1px solid #30403b;background:#1a231e}
+:where(html[data-theme="dark"]) .profile-menu-item{border-bottom:1px solid #333f3c;background:#1a231e;color:#eaf0ef}
+:where(html[data-theme="dark"]) .profile-menu-item:active{background:#121c19}
+:where(html[data-theme="dark"]) .profile-menu-icon{color:#97c4b5}
+:where(html[data-theme="dark"]) .profile-menu-arrow{color:#9abbb0}
+:where(html[data-theme="dark"]) .profile-logout-item .profile-menu-icon,:where(html[data-theme="dark"]) .profile-logout-item .profile-menu-label{color:#eaf0ef}
+:where(html[data-theme="dark"]) .profile-screen-message{background:#0d1915;color:#84e2c7}
+:where(html[data-theme="dark"]) .profile-notice-error{background:#211212 !important;color:#de7070 !important}
+:where(html[data-theme="dark"]) .brand-whatsapp{color:#6adc95}
+:where(html[data-theme="dark"]) .brand-imo{color:#6aa8dc}
+:where(html[data-theme="dark"]) #app > .khata-header .home-avatar{border:2px solid rgba(53,70,61,0.8)}
+:where(html[data-theme="dark"]) .home-search-box{background:#1a231e;border:1px solid #2f3e39}
+:where(html[data-theme="dark"]) .home-search-box > svg{stroke:#97b7ac}
+:where(html[data-theme="dark"]) .home-search-box input{color:#9ecbbe}
+:where(html[data-theme="dark"]) .home-search-box input::placeholder{color:#95a7a1}
+:where(html[data-theme="dark"]) .home-search-clear{background:#111815;color:#97b7ac}
+:where(html[data-theme="dark"]) .home-customer-count{background:#0f1c17;border:1px solid #284338;color:#7ee1c1}
+:where(html[data-theme="dark"]) .home-customer-count-icon{background:#0b1410}
+:where(html[data-theme="dark"]) .home-customer-count-label{color:#8acbb9}
+:where(html[data-theme="dark"]) .home-customer-count strong{color:#82e2c2}
+:where(html[data-theme="dark"]) .home-customer-search-empty{color:#97a6a1}
+:where(html[data-theme="dark"]) .boot-loader{background:#132315}

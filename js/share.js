@@ -2,20 +2,21 @@
 // SHARE: WHATSAPP / IMO / DEVICE SHARE
 // ==================================================
 
+const _tr = (x) => (window.MM_I18N ? window.MM_I18N.t(x) : x);
 function createShareMessageForCustomer(customerName){
   const list = transactions.filter(t=>t.customer_name === customerName);
   let balance = 0;
 
-  let message = "📒 হিসাবের আপডেট\n\n";
-  message += "👤 নাম: " + customerName + "\n\n";
+  let message = _tr("📒 হিসাবের আপডেট") + "\n\n";
+  message += _tr("👤 নাম:") + " " + customerName + "\n\n";
 
   list.forEach(t=>{
     if(t.type === "receive"){
       balance += Number(t.amount);
-      message += "↑ দিলাম: ৳" + t.amount + "\n";
+      message += _tr("↑ দিলাম: ৳") + t.amount + "\n";
     }else{
       balance -= Number(t.amount);
-      message += "↓ পেলাম: ৳" + t.amount + "\n";
+      message += _tr("↓ পেলাম: ৳") + t.amount + "\n";
     }
 
     if(t.note) message += "📝 " + t.note + "\n";
@@ -24,9 +25,9 @@ function createShareMessageForCustomer(customerName){
 
   message += "--------------------\n";
 
-  if(balance > 0) message += "💰 বর্তমান পাওনা: ৳" + balance;
-  else if(balance < 0) message += "💸 বর্তমান দেনা: ৳" + Math.abs(balance);
-  else message += "✅ হিসাব সমান";
+  if(balance > 0) message += _tr("💰 বর্তমান পাওনা: ৳") + balance;
+  else if(balance < 0) message += _tr("💸 বর্তমান দেনা: ৳") + Math.abs(balance);
+  else message += _tr("✅ হিসাব সমান");
 
   return message;
 }
@@ -45,7 +46,7 @@ async function shareOther(){
 
   if(navigator.share){
     try{
-      await navigator.share({title:"হিসাবের আপডেট",text:message});
+      await navigator.share({title:_tr("হিসাবের আপডেট"),text:message});
     }catch(e){}
   }else{
     await navigator.clipboard.writeText(message);

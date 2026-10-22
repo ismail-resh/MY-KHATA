@@ -278,7 +278,7 @@ function renderGlobalHistory(){
                     <span>${isReceive ? "দিলাম" : "পেলাম"}</span>
                     <strong>৳ ${amount}</strong>
                   </div>
-                  <div class="history-card-sub">${customer} · ${note}</div>
+                  <div class="history-card-sub">${customer} · <span>${note}</span></div>
                 </div>
                 ${timeLabel ? `<time class="history-card-time">${timeLabel}</time>` : ""}
               </article>`;

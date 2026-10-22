@@ -167,7 +167,8 @@ function openProfileById(customerId,customerName){
   if(toEl) toEl.value = "";
 
   const history = document.getElementById("profileHistorySection");
-  if(history) history.classList.add("hidden");
+  if(history) history.classList.remove("hidden");
+  document.querySelector(".profile-filter-more")?.removeAttribute("open");
 
   const menu = document.getElementById("profileActionMenu");
   if(menu) menu.classList.add("hidden");
@@ -448,11 +449,29 @@ async function renderHomeDashboard() {
 
 
     if (payTotalElement) {
-
         payTotalElement.innerText =
             "৳ " + formatMoney(totalPay);
-
     }
+
+    /* Net balance card + tab counts (redesigned home) */
+    const net = totalReceive - totalPay;
+    const netAmountEl = document.getElementById("homeNetAmount");
+    const netStatusEl = document.getElementById("homeNetStatus");
+    if (netAmountEl) {
+        netAmountEl.innerText = "৳ " + formatMoney(Math.abs(net));
+        netAmountEl.classList.toggle("is-pay", net < 0);
+        netAmountEl.classList.toggle("is-receive", net > 0);
+    }
+    if (netStatusEl) {
+        netStatusEl.innerText = net < 0 ? "দেনা" : (net > 0 ? "পাওনা" : "হিসাব সমান");
+        netStatusEl.classList.toggle("is-pay", net < 0);
+        netStatusEl.classList.toggle("is-receive", net > 0);
+    }
+    const tabDebtCount = document.getElementById("tabDebtCount");
+    const tabReceiveCount = document.getElementById("tabReceiveCount");
+    if (tabDebtCount) tabDebtCount.textContent = debtCustomers.length;
+    if (tabReceiveCount) tabReceiveCount.textContent = receiveCustomers.length;
+    applyHomeTab();
 
 
     /*
@@ -509,7 +528,8 @@ async function renderHomeDashboard() {
                                     ${escapeHTML(name)}
                                 </span>
 
-                                <span class="home-customer-amount">
+                                <span class="home-customer-last">${lastActivityLabel(name)}</span>
+<span class="home-customer-amount">
                                     ৳ ${formatMoney(
                                         Math.abs(item.balance)
                                     )}
@@ -587,7 +607,8 @@ async function renderHomeDashboard() {
                                     ${escapeHTML(name)}
                                 </span>
 
-                                <span class="home-customer-amount">
+                                <span class="home-customer-last">${lastActivityLabel(name)}</span>
+<span class="home-customer-amount">
                                     ৳ ${formatMoney(item.balance)}
                                 </span>
 
@@ -712,4 +733,60 @@ function getCustomerInitial(name) {
         .slice(0,2)
         .toUpperCase();
 
+}
+
+/* ==================================================
+   HOME: tabs (দেনা | পাওনা) + "last activity" label
+   ================================================== */
+function applyHomeTab() {
+    let tab = "debt";
+    try { tab = localStorage.getItem("mm_home_tab") || "debt"; } catch (e) {}
+    if (tab !== "debt" && tab !== "receive") tab = "debt";
+    const cols = document.getElementById("homeBalanceColumns");
+    if (cols) cols.setAttribute("data-tab", tab);
+    document.getElementById("tabDebt")?.classList.toggle("active", tab === "debt");
+    document.getElementById("tabReceive")?.classList.toggle("active", tab === "receive");
+    document.getElementById("tabDebt")?.setAttribute("aria-selected", tab === "debt");
+    document.getElementById("tabReceive")?.setAttribute("aria-selected", tab === "receive");
+}
+
+function setHomeTab(tab) {
+    try { localStorage.setItem("mm_home_tab", tab); } catch (e) {}
+    applyHomeTab();
+}
+
+/* "সর্বশেষ: আজ / গতকাল / N দিন আগে" — customer-এর শেষ লেনদেন থেকে */
+function lastActivityLabel(customerName) {
+    try {
+        const list = (typeof transactions !== "undefined" ? transactions : [])
+            .filter(t => String(t.customer_name || "") === String(customerName || ""));
+        if (!list.length) return "";
+        let latest = 0;
+        list.forEach(t => {
+            const d = new Date(t.transaction_date || t.created_at || 0).getTime();
+            if (d > latest) latest = d;
+        });
+        if (!latest) return "";
+        const startOfDay = x => { const d = new Date(x); d.setHours(0,0,0,0); return d.getTime(); };
+        const days = Math.max(0, Math.round((startOfDay(Date.now()) - startOfDay(latest)) / 86400000));
+        let label;
+        if (days === 0) label = "আজ";
+        else if (days === 1) label = "গতকাল";
+        else if (days < 7) label = days + " দিন আগে";
+        else if (days < 30) label = Math.floor(days / 7) + " সপ্তাহ আগে";
+        else if (days < 365) label = Math.floor(days / 30) + " মাস আগে";
+        else label = Math.floor(days / 365) + " বছর আগে";
+        return "সর্বশেষ: " + label;
+    } catch (e) {
+        return "";
+    }
+}
+
+/* গ্রাহককে ফোন করা */
+function callCustomer() {
+    const c = (customers || []).find(x => String(x.id) === String(currentCustomerId))
+        || (typeof findCustomerByName === "function" ? findCustomerByName(currentCustomer || "") : null);
+    const phone = String(c?.phone || "").replace(/[^\d+]/g, "");
+    if (!phone) { alert("মোবাইল নম্বর দেওয়া নেই"); return; }
+    window.location.href = "tel:" + phone;
 }
