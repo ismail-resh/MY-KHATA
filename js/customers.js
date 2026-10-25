@@ -6,12 +6,21 @@ let customers = [];
 let currentCustomerId = null;
 
 async function loadCustomers(){
-  const {data,error} = await supabaseClient
-    .from("customers")
-    .select("*")
-    .order("name",{ascending:true});
-  if(error){ console.error("Customer load error:",error); return; }
-  customers = data || [];
+  // Offline-aware: নেট থাকলে সার্ভার থেকে, না থাকলে লোকাল ক্যাশ থেকে
+  if (window.offlineSupport && typeof offlineSupport.loadCustomersOfflineAware === "function") {
+    await offlineSupport.loadCustomersOfflineAware();
+    return;
+  }
+  try {
+    const {data,error} = await supabaseClient
+      .from("customers")
+      .select("*")
+      .order("name",{ascending:true});
+    if(error){ console.error("Customer load error:",error); return; }
+    customers = data || [];
+  } catch (e) {
+    console.error("Customer load error:", e);
+  }
 }
 
 function findCustomerByName(name){
@@ -212,12 +221,14 @@ async function saveCustomerEdit(){
   const duplicate=customers.find(c=>c.id!==currentCustomerId && c.name.trim().toLowerCase()===newName.toLowerCase());
   if(duplicate) return showMessage("customerEditMessage","এই নামে আরেকটি Customer আছে।",false);
 
-  const oldName=currentCustomer;
-  const {error}=await supabaseClient.from("customers").update({name:newName,phone:newPhone,updated_at:new Date().toISOString()}).eq("id",currentCustomerId);
-  if(error) return showMessage("customerEditMessage","Customer update হয়নি: "+error.message,false);
-
-  const {error:txError}=await supabaseClient.from("transactions").update({customer_name:newName}).eq("customer_id",currentCustomerId);
-  if(txError) console.warn("Transaction name update warning:",txError);
+  if (window.offlineSupport && typeof offlineSupport.offlineAwareUpdateCustomer === "function") {
+    await offlineSupport.offlineAwareUpdateCustomer(currentCustomerId, { name: newName, phone: newPhone });
+  } else {
+    const {error}=await supabaseClient.from("customers").update({name:newName,phone:newPhone,updated_at:new Date().toISOString()}).eq("id",currentCustomerId);
+    if(error) return showMessage("customerEditMessage","Customer update হয়নি: "+error.message,false);
+    const {error:txError}=await supabaseClient.from("transactions").update({customer_name:newName}).eq("customer_id",currentCustomerId);
+    if(txError) console.warn("Transaction name update warning:",txError);
+  }
 
   currentCustomer=newName;
   closeEditCustomer();
@@ -233,9 +244,15 @@ async function deleteCustomer(){
   const count=transactions.filter(t=>t.customer_name===name).length;
   const msg=`Customer '${name}' delete করতে চান?\n\n${count} টি transaction-ও delete হবে।\n\nএই কাজটি undo করা যাবে না।`;
   if(!confirm(msg)) return;
-  const {error}=await supabaseClient.from("customers").delete().eq("id",currentCustomerId);
-  if(error) return alert("Customer delete হয়নি:\n"+error.message);
-  currentCustomer=null; currentCustomerId=null; customers=[];
+
+  if (window.offlineSupport && typeof offlineSupport.offlineAwareDeleteCustomer === "function") {
+    await offlineSupport.offlineAwareDeleteCustomer(currentCustomerId);
+  } else {
+    const {error}=await supabaseClient.from("customers").delete().eq("id",currentCustomerId);
+    if(error) return alert("Customer delete হয়নি:\n"+error.message);
+  }
+
+  currentCustomer=null; currentCustomerId=null;
   await loadCustomers(); await loadTransactions(); showCustomers();
 }
 
@@ -245,13 +262,28 @@ async function getOrCreateCustomer(name,phone=""){
   let c=findCustomerByName(cleanName);
   if(c){
     if(phone && !c.phone){
-      const {error}=await supabaseClient.from("customers").update({phone,updated_at:new Date().toISOString()}).eq("id",c.id);
-      if(!error) c.phone=phone;
+      if (window.offlineSupport && typeof offlineSupport.offlineAwareUpdateCustomer === "function") {
+        await offlineSupport.offlineAwareUpdateCustomer(c.id, { phone });
+        c.phone = phone;
+      } else {
+        const {error}=await supabaseClient.from("customers").update({phone,updated_at:new Date().toISOString()}).eq("id",c.id);
+        if(!error) c.phone=phone;
+      }
     }
     return c;
   }
-  const {data:{user}}=await supabaseClient.auth.getUser();
+  const {data:{session}}=await supabaseClient.auth.getSession();
+  const user = session?.user || null;
   if(!user) return null;
+
+  if (window.offlineSupport && typeof offlineSupport.offlineAwareInsertCustomer === "function") {
+    return await offlineSupport.offlineAwareInsertCustomer({
+      user_id: user.id,
+      name: cleanName,
+      phone: phone || ""
+    });
+  }
+
   const {data,error}=await supabaseClient.from("customers").insert({user_id:user.id,name:cleanName,phone:phone||""}).select().single();
   if(error){ console.error("Customer create error:",error); return null; }
   customers.push(data); return data;

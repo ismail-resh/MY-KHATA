@@ -31,17 +31,17 @@
     // tx = { customerId, type: 'gave' | 'got', amount: 500, note: '...', date: '2026-10-21' }
     //   gave = দিলাম, got = পেলাম
     addTransaction: async function (tx) {
-      const auth = await supabaseClient.auth.getUser();
-      const user = auth.data && auth.data.user;
-      if (!user) throw new Error('আগে Login করুন।');
+      // getSession reads the locally restored session; getUser requires a server check.
+      const auth = await supabaseClient.auth.getSession();
+      const user = auth.data && auth.data.session && auth.data.session.user;
+      if (!user) throw new Error('আগে অনলাইনে Login করুন। Offline ব্যবহারের জন্য আগে থেকে Login করা থাকতে হবে।');
 
       const customer = (customers || []).find(function (c) { return String(c.id) === String(tx.customerId); });
       if (!customer) throw new Error('গ্রাহক পাওয়া যায়নি।');
 
       // এই অ্যাপে: দিলাম = "receive", পেলাম = "pay"
       const dbType = tx.type === 'gave' ? 'receive' : 'pay';
-
-      const res = await supabaseClient.from('transactions').insert({
+      const payload = {
         user_id: user.id,
         customer_id: customer.id,
         customer_name: customer.name,
@@ -49,11 +49,19 @@
         type: dbType,
         transaction_date: tx.date,
         note: tx.note || ''
-      }).select().single();
-      if (res.error) throw new Error(res.error.message);
+      };
+      let saved;
+      if (window.offlineSupport && typeof offlineSupport.offlineAwareInsertTransaction === 'function') {
+        saved = await offlineSupport.offlineAwareInsertTransaction(payload);
+      } else {
+        const res = await supabaseClient.from('transactions').insert(payload).select().single();
+        if (res.error) throw new Error(res.error.message);
+        saved = res.data;
+      }
+      if (!saved) throw new Error('লেনদেন Save হয়নি। আবার চেষ্টা করুন।');
 
       await loadTransactions();                       // লিস্ট ও টোটাল রিফ্রেশ
-      showTransactionSuccess(customer, res.data);     // অ্যাপের নিজস্ব সফল-স্ক্রিন
+      showTransactionSuccess(customer, saved);        // অ্যাপের নিজস্ব সফল-স্ক্রিন
     },
 
     // নতুন গ্রাহক তৈরি করুন → { id, name } ফেরত দিন (নাম আগে থেকে থাকলে সেই গ্রাহকই ফেরত আসে)

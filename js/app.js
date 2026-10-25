@@ -63,6 +63,10 @@ async function startApp(session = null){
   // Show the main UI immediately. Customer/transaction data can load just after it appears.
   try{
     await loadTransactions();
+    // নেট থাকলে pending outbox সিঙ্ক করো
+    if (window.offlineSupport && typeof offlineSupport.processOutbox === "function") {
+      offlineSupport.processOutbox().catch(function(e){ console.warn("sync", e); });
+    }
     showHome();
   }catch(error){
     console.error("Transaction load error:", error);

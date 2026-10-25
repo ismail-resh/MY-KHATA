@@ -309,6 +309,16 @@ async function logout(){
   });
 
   try {
+    // Do not lose unsynced offline changes: try to sync first, block logout if anything is still pending.
+    const off = window.offlineSupport;
+    if (off && typeof off.hasPendingChanges === "function") {
+      if (navigator.onLine && await off.hasPendingChanges()) { try { await off.processOutbox(); } catch (_) {} }
+      if (await off.hasPendingChanges()) {
+        alert("কিছু পরিবর্তন এখনো সিঙ্ক হয়নি। ইন্টারনেট চালু করে সিঙ্ক শেষ হওয়া পর্যন্ত অপেক্ষা করুন, তারপর লগ আউট করুন — নইলে ডেটা হারাবে।");
+        return;
+      }
+      var logoutOwnerId = await off.currentOwnerId();
+    }
     // Hide app immediately to prevent the dashboard appearing behind login.
     document.getElementById("app")?.classList.add("hidden");
     document.querySelector(".bottom-nav")?.style.setProperty("display", "none");
@@ -319,6 +329,7 @@ async function logout(){
 
     const { error } = await supabaseClient.auth.signOut();
     if (error) throw error;
+    if (window.offlineSupport && logoutOwnerId) await offlineSupport.clearLocalDataForCurrentUser(logoutOwnerId);
 
     transactions = [];
     currentCustomer = null;

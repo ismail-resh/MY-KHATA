@@ -5,9 +5,18 @@
 let profileTransactionType = "receive"; // receive = দিলাম, pay = পেলাম
 
 async function loadTransactions(){
-  const {data,error}=await supabaseClient.from("transactions").select("*").order("transaction_date",{ascending:false});
-  if(error){ alert("Database error: "+error.message); return; }
-  transactions=data||[];
+  // Offline-aware: নেট থাকলে সার্ভার থেকে, না থাকলে লোকাল ক্যাশ থেকে
+  if (window.offlineSupport && typeof offlineSupport.loadTransactionsOfflineAware === "function") {
+    await offlineSupport.loadTransactionsOfflineAware();
+  } else {
+    try {
+      const {data,error}=await supabaseClient.from("transactions").select("*").order("transaction_date",{ascending:false});
+      if(error){ alert("Database error: "+error.message); return; }
+      transactions=data||[];
+    } catch (e) {
+      console.error("loadTransactions error", e);
+    }
+  }
   await renderCustomers();
 }
 
@@ -32,7 +41,8 @@ function resetProfileTransactionForm(){
 }
 
 async function addProfileTransaction(){
-  const {data:{user}}=await supabaseClient.auth.getUser();
+  const {data:{session}}=await supabaseClient.auth.getSession();
+  const user = session?.user || null;
   if(!user) return alert("আগে Login করুন।");
   if(!currentCustomer) return alert("Customer নির্বাচন করুন।");
 
@@ -46,7 +56,7 @@ async function addProfileTransaction(){
   const customer = customers.find(c => String(c.id) === String(currentCustomerId)) || findCustomerByName(currentCustomer);
   if(!customer) return alert("Customer পাওয়া যায়নি।");
 
-  const {data:insertedTransaction,error}=await supabaseClient.from("transactions").insert({
+  const payload = {
     user_id:user.id,
     customer_id:customer.id,
     customer_name:customer.name,
@@ -54,9 +64,18 @@ async function addProfileTransaction(){
     type:profileTransactionType,
     transaction_date:date,
     note
-  }).select().single();
+  };
 
-  if(error){ alert("Save হয়নি: "+error.message); return; }
+  let insertedTransaction;
+  if (window.offlineSupport && typeof offlineSupport.offlineAwareInsertTransaction === "function") {
+    insertedTransaction = await offlineSupport.offlineAwareInsertTransaction(payload);
+  } else {
+    const {data,error}=await supabaseClient.from("transactions").insert(payload).select().single();
+    if(error){ alert("Save হয়নি: "+error.message); return; }
+    insertedTransaction = data;
+  }
+
+  if(!insertedTransaction){ alert("Save হয়নি।"); return; }
 
   resetProfileTransactionForm();
   await loadTransactions();
@@ -96,7 +115,8 @@ function showAddTransactionMenu(){
 }
 
 async function addTransaction(){
-  const {data:{user}}=await supabaseClient.auth.getUser();
+  const {data:{session}}=await supabaseClient.auth.getSession();
+  const user = session?.user || null;
   if(!user) return alert("আগে Login করুন।");
 
   const customerName=document.getElementById("customerName").value.trim();
@@ -112,11 +132,20 @@ async function addTransaction(){
   const customer=await getOrCreateCustomer(customerName,customerPhone);
   if(!customer) return alert("Customer save হয়নি। আবার চেষ্টা করুন।");
 
-  const {data:insertedTransaction,error}=await supabaseClient.from("transactions").insert({
+  const payload = {
     user_id:user.id, customer_id:customer.id, customer_name:customer.name,
     amount,type,transaction_date:date,note
-  }).select().single();
-  if(error){ alert("Save হয়নি: "+error.message); return; }
+  };
+
+  let insertedTransaction;
+  if (window.offlineSupport && typeof offlineSupport.offlineAwareInsertTransaction === "function") {
+    insertedTransaction = await offlineSupport.offlineAwareInsertTransaction(payload);
+  } else {
+    const {data,error}=await supabaseClient.from("transactions").insert(payload).select().single();
+    if(error){ alert("Save হয়নি: "+error.message); return; }
+    insertedTransaction = data;
+  }
+  if(!insertedTransaction){ alert("Save হয়নি।"); return; }
 
   document.getElementById("customerName").value="";
   if(document.getElementById("customerPhone")) document.getElementById("customerPhone").value="";
@@ -158,16 +187,16 @@ async function saveTransactionEdit(){
   if(type!=="receive" && type!=="pay") return showMessage("transactionEditMessage","সঠিক লেনদেনের ধরন নির্বাচন করুন।",false);
   if(!date) return showMessage("transactionEditMessage","তারিখ দিন।",false);
 
-  const {error}=await supabaseClient.from("transactions").update({
-    amount,
-    type,
-    transaction_date:date,
-    note
-  }).eq("id",id);
+  const updates = { amount, type, transaction_date: date, note };
 
-  if(error){
-    showMessage("transactionEditMessage","Update হয়নি: "+error.message,false);
-    return;
+  if (window.offlineSupport && typeof offlineSupport.offlineAwareUpdateTransaction === "function") {
+    await offlineSupport.offlineAwareUpdateTransaction(id, updates);
+  } else {
+    const {error}=await supabaseClient.from("transactions").update(updates).eq("id",id);
+    if(error){
+      showMessage("transactionEditMessage","Update হয়নি: "+error.message,false);
+      return;
+    }
   }
 
   closeEditTransaction();
@@ -177,8 +206,14 @@ async function saveTransactionEdit(){
 
 async function deleteTransaction(id){
   if(!confirm("এই লেনদেনটি delete করতে চান?")) return;
-  const {error}=await supabaseClient.from("transactions").delete().eq("id",id);
-  if(error){ alert("Delete হয়নি: "+error.message); return; }
+
+  if (window.offlineSupport && typeof offlineSupport.offlineAwareDeleteTransaction === "function") {
+    await offlineSupport.offlineAwareDeleteTransaction(id);
+  } else {
+    const {error}=await supabaseClient.from("transactions").delete().eq("id",id);
+    if(error){ alert("Delete হয়নি: "+error.message); return; }
+  }
+
   await loadTransactions(); openProfile(currentCustomer);
 }
 
