@@ -558,6 +558,16 @@ async function exportFailed() {
 async function hasPendingChanges() {
   try { return (await getPendingOps()).length > 0; } catch (_) { return false; }
 }
+// Account deletion must fail closed if the pending queue cannot be inspected.
+async function getPendingChangesStatus() {
+  try {
+    const queue = await getPendingOps();
+    return { known: true, count: queue.length };
+  } catch (error) {
+    console.warn("Could not inspect pending offline changes", error);
+    return { known: false, count: null };
+  }
+}
 // Remove ONLY the current user's cached rows, outbox items and id-maps (call before signOut, while session exists).
 async function clearLocalDataForCurrentUser(knownOwnerId) {
   const ownerId = knownOwnerId || await currentOwnerId();
@@ -636,5 +646,5 @@ window.offlineSupport = {
   offlineAwareInsertTransaction, offlineAwareUpdateTransaction, offlineAwareDeleteTransaction,
   processOutbox, updateOfflineUI, initOfflineSupport, cacheCustomersLocally, cacheTransactionsLocally,
   retryFailed, getFailedOps, exportFailed,
-  hasPendingChanges, clearLocalDataForCurrentUser, currentOwnerId, registerServiceWorker
+  hasPendingChanges, getPendingChangesStatus, clearLocalDataForCurrentUser, currentOwnerId, registerServiceWorker
 };

@@ -1,6 +1,6 @@
 /* MY-KHATA PWA Service Worker */
 const CACHE_PREFIX = "my-khata-shell-";
-const CACHE_NAME = "my-khata-shell-v5";
+const CACHE_NAME = "my-khata-shell-v6";
 const APP_SHELL = [
   "./", "./index.html", "./manifest.webmanifest",
   "./css/style.css", "./css/dark.css", "./css/theme.css",

@@ -835,6 +835,15 @@
 
       <button
         type="button"
+        class="profile-menu-item profile-delete-account-item"
+        onclick="openDeleteAccountDialog()">
+        <span class="profile-menu-icon" aria-hidden="true">♲</span>
+        <span class="profile-menu-label">অ্যাকাউন্ট ডিলিট</span>
+        <span class="profile-menu-arrow">›</span>
+      </button>
+
+      <button
+        type="button"
         class="profile-menu-item profile-logout-item"
         onclick="logout()">
 
@@ -1088,6 +1097,24 @@
   </div>
 
 </div>
+<!-- Delete account confirmation dialog -->
+<div id="deleteAccountOverlay" class="delete-account-overlay hidden" role="presentation" onclick="if(event.target===this)closeDeleteAccountDialog()">
+  <section class="delete-account-dialog" role="dialog" aria-modal="true" aria-labelledby="deleteAccountTitle" aria-describedby="deleteAccountDescription">
+    <button type="button" class="delete-account-close" onclick="closeDeleteAccountDialog()" aria-label="বন্ধ করুন">×</button>
+    <div class="delete-account-symbol" aria-hidden="true">!</div>
+    <h2 id="deleteAccountTitle">অ্যাকাউন্ট ডিলিট করবেন?</h2>
+    <p id="deleteAccountDescription">এই কাজটি করলে আপনার অ্যাকাউন্টের সঙ্গে যুক্ত গ্রাহক ও লেনদেনের তথ্য সার্ভার থেকে মুছে ফেলার চেষ্টা করা হবে। সফল হলে কাজটি ফিরিয়ে নেওয়া যাবে না।</p>
+    <div class="delete-account-warning">ডিলিট করার আগে প্রয়োজনীয় হিসাবের ব্যাকআপ নিয়ে নিন। সিঙ্ক না হওয়া লোকাল পরিবর্তনও হারিয়ে যেতে পারে।</div>
+    <label class="delete-account-field" for="deleteAccountPassword">বর্তমান পাসওয়ার্ড <span>(Guest account হলে প্রয়োজন নেই)</span></label>
+    <input id="deleteAccountPassword" type="password" autocomplete="current-password" placeholder="ইমেইল অ্যাকাউন্টের পাসওয়ার্ড">
+    <label class="delete-account-field" for="deleteAccountConfirmText">নিশ্চিত করতে DELETE লিখুন</label>
+    <input id="deleteAccountConfirmText" type="text" autocomplete="off" maxlength="6" placeholder="DELETE">
+    <div id="deleteAccountMessage" class="delete-account-message hidden" role="status"></div>
+    <button id="deleteAccountConfirmButton" type="button" class="delete-account-confirm" onclick="confirmDeleteAccount()">অ্যাকাউন্ট স্থায়ীভাবে ডিলিট করুন</button>
+    <button id="deleteAccountCancelButton" type="button" class="delete-account-cancel" onclick="closeDeleteAccountDialog()">বাতিল</button>
+  </section>
+</div>
+
 <!-- Language & theme sheet -->
 <div id="settingsOverlay" class="settings-overlay hidden" onclick="if(event.target===this)closeSettingsSheet()">
   <div class="settings-sheet" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">

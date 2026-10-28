@@ -520,3 +520,76 @@ function showBackupInfo(){
 function showHelpInfo(){
   showProfileNotice("সহায়তা: কোনো সমস্যা হলে error message-এর screenshot এবং কী করলে সমস্যা হচ্ছে তা লিখে রাখুন। আপনার GitHub repository-তে issue তৈরি করেও জানাতে পারেন।");
 }
+
+
+// ==================================================
+// ACCOUNT DELETION (requires deployed Supabase Edge Function)
+// ==================================================
+function openDeleteAccountDialog(){
+  const overlay = document.getElementById("deleteAccountOverlay");
+  const message = document.getElementById("deleteAccountMessage");
+  const password = document.getElementById("deleteAccountPassword");
+  const confirmText = document.getElementById("deleteAccountConfirmText");
+  if(message){ message.textContent = ""; message.classList.add("hidden"); }
+  if(password) password.value = "";
+  if(confirmText) confirmText.value = "";
+  if(overlay) overlay.classList.remove("hidden");
+}
+function closeDeleteAccountDialog(){
+  document.getElementById("deleteAccountOverlay")?.classList.add("hidden");
+}
+function showDeleteAccountMessage(message){
+  const el = document.getElementById("deleteAccountMessage");
+  if(el){ el.textContent = message; el.classList.remove("hidden"); }
+}
+async function confirmDeleteAccount(){
+  const button = document.getElementById("deleteAccountConfirmButton");
+  const password = document.getElementById("deleteAccountPassword")?.value || "";
+  const confirmation = document.getElementById("deleteAccountConfirmText")?.value.trim() || "";
+  if(confirmation !== "DELETE") return showDeleteAccountMessage("নিশ্চিত করতে ইংরেজিতে DELETE লিখুন।");
+  if(button){ button.disabled = true; button.textContent = "অ্যাকাউন্ট ডিলিট হচ্ছে…"; }
+  try {
+    if (!navigator.onLine) throw new Error("অ্যাকাউন্ট ডিলিট করতে ইন্টারনেট সংযোগ প্রয়োজন। সংযোগ ফিরে এলে আবার চেষ্টা করুন।");
+    if (!window.offlineSupport?.getPendingChangesStatus) throw new Error("Offline queue যাচাই করা যাচ্ছে না। নিরাপত্তার জন্য ডিলিট বন্ধ রাখা হয়েছে। পেজ রিফ্রেশ করে আবার চেষ্টা করুন।");
+    const pendingStatus = await window.offlineSupport.getPendingChangesStatus();
+    if (!pendingStatus.known) throw new Error("Pending offline changes যাচাই করা যায়নি। নিরাপত্তার জন্য ডিলিট বন্ধ রাখা হয়েছে। ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।");
+    if (pendingStatus.count > 0) throw new Error(`আপনার ${pendingStatus.count}টি পরিবর্তন এখনো সিঙ্ক হয়নি। আগে অনলাইনে গিয়ে সিঙ্ক সম্পন্ন করুন অথবা ডেটার backup নিন, তারপর আবার অ্যাকাউন্ট ডিলিট করুন।`);
+    const { data: userData, error: userError } = await supabaseClient.auth.getUser();
+    if(userError || !userData?.user) throw new Error("আপনার লগইন সেশন পাওয়া যায়নি। আবার লগইন করে চেষ্টা করুন।");
+    const user = userData.user;
+    if(!user.is_anonymous){
+      if(!user.email) throw new Error("এই অ্যাকাউন্টের পরিচয় যাচাই করা যাচ্ছে না। সহায়তার সঙ্গে যোগাযোগ করুন।");
+      if(!password) throw new Error("ডিলিট করার আগে বর্তমান পাসওয়ার্ড দিন।");
+      const { error: reauthError } = await supabaseClient.auth.signInWithPassword({ email: user.email, password });
+      if(reauthError) throw new Error("পাসওয়ার্ড সঠিক নয়। আবার চেষ্টা করুন।");
+    }
+    // Keep the owner ID before the server removes the Auth user.
+    const ownerId = user.id;
+    const { data: sessionData } = await supabaseClient.auth.getSession();
+    const token = sessionData?.session?.access_token;
+    if(!token) throw new Error("লগইন সেশন পাওয়া যায়নি। আবার লগইন করুন।");
+    const { data, error } = await supabaseClient.functions.invoke("delete-account", {
+      body: { confirmation: "DELETE" },
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if(error) {
+      let detail = error.message || "সার্ভার অনুরোধটি গ্রহণ করেনি।";
+      try { const ctx = error.context; if(ctx && typeof ctx.json === "function"){ const body = await ctx.json(); if(body?.error) detail = body.error; } } catch(_) {}
+      throw new Error(detail + " Supabase-এ delete-account Edge Function deploy করা আছে কি না দেখুন।");
+    }
+    if(!data?.success) throw new Error(data?.error || "সার্ভার অ্যাকাউন্ট ডিলিট নিশ্চিত করেনি।");
+    // Clear only this account's offline rows/outbox. Never clear another user's cache.
+    if(window.offlineSupport?.clearLocalDataForCurrentUser) await window.offlineSupport.clearLocalDataForCurrentUser(ownerId);
+    try { await supabaseClient.auth.signOut({ scope: "local" }); } catch(_) {}
+    transactions = []; currentCustomer = null;
+    closeDeleteAccountDialog();
+    showLogin();
+    const loginMessage = document.getElementById("loginMessage");
+    if(loginMessage){ loginMessage.textContent = "আপনার অ্যাকাউন্ট ও সংশ্লিষ্ট সার্ভার ডেটা ডিলিট করা হয়েছে।"; loginMessage.classList.remove("hidden"); }
+  } catch(error) {
+    console.error("Account deletion failed:", error);
+    showDeleteAccountMessage(error?.message || "অ্যাকাউন্ট ডিলিট করা যায়নি। ইন্টারনেট ও Supabase সেটআপ পরীক্ষা করুন।");
+  } finally {
+    if(button){ button.disabled = false; button.textContent = "অ্যাকাউন্ট স্থায়ীভাবে ডিলিট করুন"; }
+  }
+}
