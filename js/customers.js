@@ -121,7 +121,7 @@ const oldTotalReceive = document.getElementById("totalReceive");
       : `<div class="customer-phone empty-phone">মোবাইল নম্বর দেওয়া নেই</div>`;
 
     list.innerHTML += `
-      <div class="customer" onclick='openProfileById(${JSON.stringify(customer.id||"")},${JSON.stringify(name)})'>
+      <div class="customer" data-open-profile="1" data-customer-id="${escapeHTML(String(customer.id||""))}" data-customer-name="${escapeHTML(name)}">
         <div class="customer-top">
           <div>
             <div class="customer-name">${escapeHTML(name)}</div>
@@ -224,9 +224,11 @@ async function saveCustomerEdit(){
   if (window.offlineSupport && typeof offlineSupport.offlineAwareUpdateCustomer === "function") {
     await offlineSupport.offlineAwareUpdateCustomer(currentCustomerId, { name: newName, phone: newPhone });
   } else {
-    const {error}=await supabaseClient.from("customers").update({name:newName,phone:newPhone,updated_at:new Date().toISOString()}).eq("id",currentCustomerId);
+    const uid=await currentUserIdOrNull();
+    if(!uid) return showMessage("customerEditMessage","লগইন সেশন পাওয়া যায়নি। আবার লগইন করুন।",false);
+    const {error}=await supabaseClient.from("customers").update({name:newName,phone:newPhone,updated_at:new Date().toISOString()}).eq("id",currentCustomerId).eq("user_id",uid);
     if(error) return showMessage("customerEditMessage","Customer update হয়নি: "+error.message,false);
-    const {error:txError}=await supabaseClient.from("transactions").update({customer_name:newName}).eq("customer_id",currentCustomerId);
+    const {error:txError}=await supabaseClient.from("transactions").update({customer_name:newName}).eq("customer_id",currentCustomerId).eq("user_id",uid);
     if(txError) console.warn("Transaction name update warning:",txError);
   }
 
@@ -248,7 +250,9 @@ async function deleteCustomer(){
   if (window.offlineSupport && typeof offlineSupport.offlineAwareDeleteCustomer === "function") {
     await offlineSupport.offlineAwareDeleteCustomer(currentCustomerId);
   } else {
-    const {error}=await supabaseClient.from("customers").delete().eq("id",currentCustomerId);
+    const uid=await currentUserIdOrNull();
+    if(!uid) return alert("লগইন সেশন পাওয়া যায়নি। আবার লগইন করুন।");
+    const {error}=await supabaseClient.from("customers").delete().eq("id",currentCustomerId).eq("user_id",uid);
     if(error) return alert("Customer delete হয়নি:\n"+error.message);
   }
 
@@ -266,7 +270,10 @@ async function getOrCreateCustomer(name,phone=""){
         await offlineSupport.offlineAwareUpdateCustomer(c.id, { phone });
         c.phone = phone;
       } else {
-        const {error}=await supabaseClient.from("customers").update({phone,updated_at:new Date().toISOString()}).eq("id",c.id);
+        const uid=await currentUserIdOrNull();
+        const {error}=uid
+          ? await supabaseClient.from("customers").update({phone,updated_at:new Date().toISOString()}).eq("id",c.id).eq("user_id",uid)
+          : {error:new Error("no session")};
         if(!error) c.phone=phone;
       }
     }
@@ -294,6 +301,13 @@ function formatMoney(amount){ return Number(amount).toLocaleString("en-US"); }
 document.addEventListener("click",e=>{
   const modal=document.getElementById("editCustomerModal");
   if(e.target===modal) closeEditCustomer();
+});
+
+// Inline onclick-এর বদলে data-attribute + event delegation (নামে ' " < > থাকলেও নিরাপদ)।
+document.addEventListener("click",e=>{
+  const el=e.target.closest && e.target.closest("[data-open-profile]");
+  if(!el) return;
+  openProfileById(el.dataset.customerId||"", el.dataset.customerName||"");
 });
 
 /* =========================================================
@@ -542,10 +556,9 @@ async function renderHomeDashboard() {
 
                     <div
                         class="home-customer"
-                        onclick='openProfileById(
-                            ${JSON.stringify(customer.id || "")},
-                            ${JSON.stringify(name)}
-                        )'
+                        data-open-profile="1"
+                        data-customer-id="${escapeHTML(String(customer.id || ""))}"
+                        data-customer-name="${escapeHTML(name)}"
                     >
 
                         <div class="home-customer-left">
@@ -621,10 +634,9 @@ async function renderHomeDashboard() {
 
                     <div
                         class="home-customer"
-                        onclick='openProfileById(
-                            ${JSON.stringify(customer.id || "")},
-                            ${JSON.stringify(name)}
-                        )'
+                        data-open-profile="1"
+                        data-customer-id="${escapeHTML(String(customer.id || ""))}"
+                        data-customer-name="${escapeHTML(name)}"
                     >
 
                         <div class="home-customer-left">
@@ -688,10 +700,9 @@ async function renderHomeDashboard() {
                     zeroList.innerHTML += `
                         <div
                             class="home-customer zero-customer"
-                            onclick='openProfileById(
-                                ${JSON.stringify(customer.id || "")},
-                                ${JSON.stringify(name)}
-                            )'
+                            data-open-profile="1"
+                        data-customer-id="${escapeHTML(String(customer.id || ""))}"
+                        data-customer-name="${escapeHTML(name)}"
                         >
                             <div class="home-customer-left">
                                 <div class="home-customer-avatar zero-avatar">
@@ -758,12 +769,13 @@ function getCustomerInitial(name) {
 
     if (!text) return "C";
 
-    return text
+    // innerHTML-এ বসানো হয়, তাই escape করা হলো (নামের প্রথম অক্ষর "<" হলেও নিরাপদ)।
+    return escapeHTML(text
         .split(/\s+/)
         .map(word => word.charAt(0))
         .join("")
         .slice(0,2)
-        .toUpperCase();
+        .toUpperCase());
 
 }
 

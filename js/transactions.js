@@ -35,7 +35,7 @@ function resetProfileTransactionForm(){
   const date = document.getElementById("profileDate");
   const note = document.getElementById("profileNote");
   if(amount) amount.value = "";
-  if(date) date.value = new Date().toISOString().split("T")[0];
+  if(date) date.value = localDateString();
   if(note) note.value = "";
   setProfileTransactionType("receive");
 }
@@ -192,7 +192,9 @@ async function saveTransactionEdit(){
   if (window.offlineSupport && typeof offlineSupport.offlineAwareUpdateTransaction === "function") {
     await offlineSupport.offlineAwareUpdateTransaction(id, updates);
   } else {
-    const {error}=await supabaseClient.from("transactions").update(updates).eq("id",id);
+    const uid=await currentUserIdOrNull();
+    if(!uid) return showMessage("transactionEditMessage","লগইন সেশন পাওয়া যায়নি। আবার লগইন করুন।",false);
+    const {error}=await supabaseClient.from("transactions").update(updates).eq("id",id).eq("user_id",uid);
     if(error){
       showMessage("transactionEditMessage","Update হয়নি: "+error.message,false);
       return;
@@ -210,7 +212,9 @@ async function deleteTransaction(id){
   if (window.offlineSupport && typeof offlineSupport.offlineAwareDeleteTransaction === "function") {
     await offlineSupport.offlineAwareDeleteTransaction(id);
   } else {
-    const {error}=await supabaseClient.from("transactions").delete().eq("id",id);
+    const uid=await currentUserIdOrNull();
+    if(!uid){ alert("লগইন সেশন পাওয়া যায়নি। আবার লগইন করুন।"); return; }
+    const {error}=await supabaseClient.from("transactions").delete().eq("id",id).eq("user_id",uid);
     if(error){ alert("Delete হয়নি: "+error.message); return; }
   }
 

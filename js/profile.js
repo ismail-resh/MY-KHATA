@@ -131,8 +131,8 @@ function renderProfile(){
             <div class="small">📅 ${formatDate(t.transaction_date)}</div>
           </div>
           <div class="transaction-actions">
-            <button class="primary" onclick="editTransaction('${t.id}')">✏️ Edit</button>
-            <button class="red" onclick="deleteTransaction('${t.id}')">🗑️ Delete</button>
+            <button class="primary" type="button" data-tx-action="edit" data-tx-id="${escapeHTML(String(t.id))}">✏️ Edit</button>
+            <button class="red" type="button" data-tx-action="delete" data-tx-id="${escapeHTML(String(t.id))}">🗑️ Delete</button>
           </div>
         </div>
         ${t.note ? `<div class="small">📝 ${escapeHTML(t.note)}</div>` : ""}
@@ -505,7 +505,7 @@ function showBackupInfo(){
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = "my-khata-backup-" + new Date().toISOString().slice(0,10) + ".json";
+    link.download = "my-khata-backup-" + localDateString() + ".json";
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -569,7 +569,8 @@ async function confirmDeleteAccount(){
     const token = sessionData?.session?.access_token;
     if(!token) throw new Error("লগইন সেশন পাওয়া যায়নি। আবার লগইন করুন।");
     const { data, error } = await supabaseClient.functions.invoke("delete-account", {
-      body: { confirmation: "DELETE" },
+      // সার্ভারও password যাচাই করবে (token চুরি হলেও password ছাড়া ডিলিট হবে না)। Guest-এর জন্য খালি।
+      body: { confirmation: "DELETE", password: user.is_anonymous ? "" : password },
       headers: { Authorization: `Bearer ${token}` }
     });
     if(error) {
@@ -593,3 +594,12 @@ async function confirmDeleteAccount(){
     if(button){ button.disabled = false; button.textContent = "অ্যাকাউন্ট স্থায়ীভাবে ডিলিট করুন"; }
   }
 }
+
+// Inline onclick-এর বদলে event delegation (transaction id কখনো HTML/JS হিসেবে চলবে না)।
+document.addEventListener("click", e => {
+  const btn = e.target.closest && e.target.closest("[data-tx-action]");
+  if(!btn) return;
+  const id = btn.dataset.txId;
+  if(btn.dataset.txAction === "edit") editTransaction(id);
+  else if(btn.dataset.txAction === "delete") deleteTransaction(id);
+});

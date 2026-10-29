@@ -1,7 +1,7 @@
 // Deploy with: supabase functions deploy delete-account
 // Configure SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY as function secrets.
 // Never expose the service-role key in browser code.
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -28,9 +28,26 @@ Deno.serve(async (req: Request) => {
   const user = userResult?.user;
   if (userError || !user) return response(401, { success: false, error: "সেশন যাচাই করা যায়নি। আবার লগইন করুন।" });
 
-  let body: { confirmation?: string } = {};
+  let body: { confirmation?: string; password?: string } = {};
   try { body = await req.json(); } catch { return response(400, { success: false, error: "অনুরোধটি সঠিক নয়।" }); }
   if (body.confirmation !== "DELETE") return response(400, { success: false, error: "অ্যাকাউন্ট ডিলিট নিশ্চিত করা হয়নি।" });
+
+  // সার্ভার-সাইড পরিচয় যাচাই: শুধু ক্লায়েন্টের password check-এর ওপর ভরসা করা হয় না।
+  // সেশন token চুরি হলেও password ছাড়া অ্যাকাউন্ট ডিলিট করা যাবে না।
+  // Guest (anonymous) অ্যাকাউন্টে password নেই, তাই সেখানে এই ধাপ বাদ।
+  if (!user.is_anonymous) {
+    if (!user.email) return response(403, { success: false, error: "এই অ্যাকাউন্টের পরিচয় যাচাই করা যাচ্ছে না।" });
+    if (!body.password) return response(403, { success: false, error: "ডিলিট করার আগে বর্তমান পাসওয়ার্ড দিন।" });
+    const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
+    if (!anonKey) return response(500, { success: false, error: "সার্ভারের SUPABASE_ANON_KEY সেট করা নেই।" });
+    // আলাদা, session-হীন client; admin client বা ব্যবহারকারীর বর্তমান session প্রভাবিত হয় না।
+    const verifier = createClient(url, anonKey, { auth: { autoRefreshToken: false, persistSession: false } });
+    const { error: pwError } = await verifier.auth.signInWithPassword({ email: user.email, password: body.password });
+    if (pwError) {
+      console.warn("Delete-account password verification failed", { userId: user.id });
+      return response(403, { success: false, error: "পাসওয়ার্ড সঠিক নয়।" });
+    }
+  }
 
   // Remove only this user's avatar objects before deleting database rows/Auth.
   // If storage cleanup fails, stop here so the user can retry without losing ledger data.

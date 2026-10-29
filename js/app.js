@@ -328,7 +328,7 @@ function showAddTransaction(){
 
 
     const dateEl = document.getElementById("date");
-    if(dateEl) dateEl.value = new Date().toISOString().split("T")[0];
+    if(dateEl) dateEl.value = localDateString();
 
     const typeEl = document.getElementById("type");
     if(typeEl) typeEl.value = "receive";

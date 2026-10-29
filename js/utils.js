@@ -49,3 +49,27 @@ function translateAuthError(message){
   if(m.includes("rate limit")) return "অনেকবার চেষ্টা করা হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করুন।";
   return message;
 }
+
+// ==================================================
+// SECURITY / DATE HELPERS (added)
+// ==================================================
+
+// ব্যবহারকারীর local তারিখ (YYYY-MM-DD)।
+// toISOString() UTC দেয়; বাংলাদেশে (UTC+6) মাঝরাত ১২টা থেকে ভোর ৬টা পর্যন্ত গতকালের তারিখ আসত।
+function localDateString(d){
+  d = d || new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return y + "-" + m + "-" + day;
+}
+
+// বর্তমান লগইন করা user-এর id (RLS-এর পাশাপাশি client-এও user_id দিয়ে scope করার জন্য)।
+async function currentUserIdOrNull(){
+  try{
+    const { data:{ session } } = await supabaseClient.auth.getSession();
+    return session?.user?.id || null;
+  }catch(e){
+    return null;
+  }
+}
