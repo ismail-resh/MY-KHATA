@@ -31,6 +31,81 @@
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/dark.css">
 <link rel="stylesheet" href="css/theme.css">
+<style id="authV2Style">
+/* ===== Login & Signup — v2 design (scoped: only #loginPage / #signupPage) ===== */
+#loginPage .av2-card,#signupPage .av2-card{position:relative;overflow:hidden;width:100%;max-width:400px;box-sizing:border-box;padding:28px 22px 86px;border-radius:24px;background:linear-gradient(180deg,#ffffff 0%,#f6fbf9 100%);border:1px solid #e1eeea;box-shadow:0 16px 44px rgba(7,70,55,.13);text-align:start}
+#loginPage .av2-body,#signupPage .av2-body{position:relative;z-index:1}
+#loginPage .av2-wave,#signupPage .av2-wave{position:absolute;left:0;right:0;bottom:0;width:100%;height:96px;z-index:0;pointer-events:none;display:block}
+#loginPage .av2-w1,#signupPage .av2-w1{fill:#e4f6ef}
+#loginPage .av2-w2,#signupPage .av2-w2{fill:#cfeee1;opacity:.92}
+#loginPage .av2-logo,#signupPage .av2-logo{position:relative;width:136px;height:136px;margin:0 auto 4px;border-radius:50%;background:radial-gradient(circle at 50% 42%,#f4fcf8 0%,#e1f4ec 60%,rgba(225,244,236,0) 100%)}
+#loginPage .av2-logo img,#signupPage .av2-logo img{position:absolute;left:50%;top:50%;width:204px;height:204px;max-width:none;transform:translate(-51.2%,-52.5%);pointer-events:none;user-select:none;-webkit-user-select:none}
+#loginPage .av2-title,#signupPage .av2-title{margin:6px 0 2px;text-align:center;font-size:27px;font-weight:700;line-height:1.3;letter-spacing:.2px;color:#075e54}
+#loginPage .av2-sub,#signupPage .av2-sub{margin:4px 0 22px;text-align:center;font-size:14.5px;line-height:1.6;color:#667a72}
+#loginPage .av2-group,#signupPage .av2-group{margin:0 0 14px}
+#loginPage .av2-group label,#signupPage .av2-group label{display:block;margin:0 0 7px;font-size:14.5px;font-weight:700;line-height:1.4;color:#14231c}
+#loginPage .av2-field,#signupPage .av2-field{position:relative}
+#loginPage .av2-ico,#signupPage .av2-ico{position:absolute;inset-inline-start:15px;top:50%;width:20px;height:20px;margin-top:-10px;fill:none;stroke:#2f5d51;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none;z-index:2}
+#loginPage .av2-field input,#signupPage .av2-field input{display:block;width:100%;height:50px;box-sizing:border-box;margin:0;padding:0 14px 0 47px;border:1px solid #dbe8e3;border-radius:14px;background:#ffffff;color:#14231c;font-family:inherit;font-size:15px;outline:none;box-shadow:0 1px 3px rgba(7,70,55,.06);transition:border-color .2s ease,box-shadow .2s ease}
+#loginPage .av2-pw input,#signupPage .av2-pw input{padding-right:50px}
+html[dir="rtl"] #loginPage .av2-field input,html[dir="rtl"] #signupPage .av2-field input{padding:0 47px 0 14px}
+html[dir="rtl"] #loginPage .av2-pw input,html[dir="rtl"] #signupPage .av2-pw input{padding-left:50px}
+#loginPage .av2-field input::placeholder,#signupPage .av2-field input::placeholder{color:#8a9a94;opacity:1}
+#loginPage .av2-field input:focus,#signupPage .av2-field input:focus{border-color:#0a9b6b;box-shadow:0 0 0 3px rgba(10,155,107,.14)}
+#loginPage .av2-field input:-webkit-autofill,#signupPage .av2-field input:-webkit-autofill{-webkit-box-shadow:0 0 0 50px #ffffff inset;-webkit-text-fill-color:#14231c;caret-color:#14231c}
+#loginPage .av2-eye,#signupPage .av2-eye{position:absolute;inset-inline-end:5px;top:50%;margin-top:-20px;width:40px;height:40px;padding:0;border:0;border-radius:11px;background:transparent;color:#4a6b61;font-size:0;line-height:0;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#loginPage .av2-eye::before,#signupPage .av2-eye::before{content:"";display:block;width:21px;height:21px;background-color:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E") center/contain no-repeat}
+#loginPage .av2-field input[type="text"] ~ .av2-eye::before,#signupPage .av2-field input[type="text"] ~ .av2-eye::before{-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17.9 17.9A10.5 10.5 0 0 1 12 19C5.6 19 2 12 2 12a18.5 18.5 0 0 1 4.1-5.1M9.9 5.2A9.7 9.7 0 0 1 12 5c6.4 0 10 7 10 7a18.6 18.6 0 0 1-2.2 3.2M14.1 14.1a3 3 0 1 1-4.2-4.2'/%3E%3Cpath d='M1 1l22 22'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17.9 17.9A10.5 10.5 0 0 1 12 19C5.6 19 2 12 2 12a18.5 18.5 0 0 1 4.1-5.1M9.9 5.2A9.7 9.7 0 0 1 12 5c6.4 0 10 7 10 7a18.6 18.6 0 0 1-2.2 3.2M14.1 14.1a3 3 0 1 1-4.2-4.2'/%3E%3Cpath d='M1 1l22 22'/%3E%3C/svg%3E") center/contain no-repeat}
+#loginPage .av2-eye:focus-visible,#signupPage .av2-eye:focus-visible{outline:2px solid #0a9b6b;outline-offset:1px}
+#loginPage .av2-btn,#signupPage .av2-btn{display:block;width:100%;height:52px;margin:20px 0 0;padding:0;border:0;border-radius:14px;background:linear-gradient(135deg,#0d8a6a 0%,#075e54 100%);color:#ffffff;font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 8px 18px rgba(7,94,84,.28);transition:transform .1s ease,filter .2s ease}
+#loginPage .av2-btn:hover,#signupPage .av2-btn:hover{filter:brightness(1.06)}
+#loginPage .av2-btn:active,#signupPage .av2-btn:active{transform:scale(.99)}
+#loginPage .av2-btn:disabled,#signupPage .av2-btn:disabled{opacity:.65;cursor:wait}
+#loginPage .av2-sep,#signupPage .av2-sep{height:1px;margin:22px 2px 6px;background:linear-gradient(90deg,rgba(214,230,224,0),#d6e6e0,rgba(214,230,224,0))}
+#loginPage .av2-link,#signupPage .av2-link{margin:10px 0 0;padding:6px;text-align:center;font-size:14.5px;font-weight:600;color:#075e54;cursor:pointer}
+#loginPage .av2-divider,#signupPage .av2-divider{display:flex;align-items:center;gap:12px;margin:18px 0 14px;font-size:13px;color:#8a9a94}
+#loginPage .av2-divider span,#signupPage .av2-divider span{flex:1;height:1px;background:#dbe8e3}
+#loginPage .av2-divider b,#signupPage .av2-divider b{font-weight:500;color:#8a9a94}
+#loginPage .av2-guest,#signupPage .av2-guest{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:50px;margin:0;padding:0 12px;border:1.5px solid #8fcdb4;border-radius:14px;background:#ffffff;color:#075e54;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;transition:background .2s ease,border-color .2s ease}
+#loginPage .av2-guest:hover,#signupPage .av2-guest:hover{background:#effaf6;border-color:#0a9b6b}
+#loginPage .av2-guest:disabled,#signupPage .av2-guest:disabled{opacity:.65;cursor:wait}
+#loginPage .av2-gicon,#signupPage .av2-gicon{display:inline-flex;align-items:center}
+#loginPage .av2-gicon svg,#signupPage .av2-gicon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#loginPage .av2-create,#signupPage .av2-create{margin-top:20px;text-align:center;font-size:14.5px;color:#667a72}
+#loginPage .av2-create button,#signupPage .av2-create button{margin:0;padding:0 4px;border:0;background:transparent;color:#075e54;font-family:inherit;font-size:14.5px;font-weight:700;cursor:pointer}
+#loginPage .av2-create button:hover,#signupPage .av2-create button:hover{text-decoration:underline}
+#loginPage .av2-forgot,#signupPage .av2-forgot{margin-top:12px;text-align:center;font-size:14px;font-weight:500;color:#0a8a5c;cursor:pointer}
+#loginPage .av2-forgot:hover,#signupPage .av2-forgot:hover{text-decoration:underline}
+#loginPage .message,#signupPage .message{border-radius:12px;font-size:13.5px;text-align:start}
+@media (max-width:380px){#loginPage .av2-card,#signupPage .av2-card{padding:24px 16px 84px;border-radius:20px}
+#loginPage .av2-title,#signupPage .av2-title{font-size:24px}
+#loginPage .av2-field input,#signupPage .av2-field input{font-size:14.5px}
+}
+html[data-theme="dark"] #loginPage .av2-card,html[data-theme="dark"] #signupPage .av2-card{background:linear-gradient(180deg,#1a231e 0%,#151d19 100%);border-color:#2a3a33;box-shadow:0 16px 44px rgba(0,0,0,.45)}
+html[data-theme="dark"] #loginPage .av2-w1,html[data-theme="dark"] #signupPage .av2-w1{fill:#1b3a31}
+html[data-theme="dark"] #loginPage .av2-w2,html[data-theme="dark"] #signupPage .av2-w2{fill:#16302a;opacity:1}
+html[data-theme="dark"] #loginPage .av2-logo,html[data-theme="dark"] #signupPage .av2-logo{background:radial-gradient(circle at 50% 42%,#f1faf6 0%,#d6eee3 62%,rgba(214,238,227,0) 100%)}
+html[data-theme="dark"] #loginPage .av2-title,html[data-theme="dark"] #signupPage .av2-title{color:#7fe1c2}
+html[data-theme="dark"] #loginPage .av2-sub,html[data-theme="dark"] #signupPage .av2-sub{color:#9db0a6}
+html[data-theme="dark"] #loginPage .av2-group label,html[data-theme="dark"] #signupPage .av2-group label{color:#e8f1ec}
+html[data-theme="dark"] #loginPage .av2-ico,html[data-theme="dark"] #signupPage .av2-ico{stroke:#8fc4b3}
+html[data-theme="dark"] #loginPage .av2-field input,html[data-theme="dark"] #signupPage .av2-field input{background:#111915;border-color:#2e3d35;color:#ededed;box-shadow:none}
+html[data-theme="dark"] #loginPage .av2-field input::placeholder,html[data-theme="dark"] #signupPage .av2-field input::placeholder{color:#7f8f88}
+html[data-theme="dark"] #loginPage .av2-field input:focus,html[data-theme="dark"] #signupPage .av2-field input:focus{border-color:#4fd29a;box-shadow:0 0 0 3px rgba(79,210,154,.16)}
+html[data-theme="dark"] #loginPage .av2-field input:-webkit-autofill,html[data-theme="dark"] #signupPage .av2-field input:-webkit-autofill{-webkit-box-shadow:0 0 0 50px #111915 inset;-webkit-text-fill-color:#ededed;caret-color:#ededed}
+html[data-theme="dark"] #loginPage .av2-eye,html[data-theme="dark"] #signupPage .av2-eye{color:#9db0a6}
+html[data-theme="dark"] #loginPage .av2-btn,html[data-theme="dark"] #signupPage .av2-btn{background:linear-gradient(135deg,#0c9a77 0%,#06594f 100%);box-shadow:0 8px 18px rgba(0,0,0,.4)}
+html[data-theme="dark"] #loginPage .av2-sep,html[data-theme="dark"] #signupPage .av2-sep{background:linear-gradient(90deg,rgba(46,61,53,0),#2e3d35,rgba(46,61,53,0))}
+html[data-theme="dark"] #loginPage .av2-link,html[data-theme="dark"] #signupPage .av2-link{color:#84e2d7}
+html[data-theme="dark"] #loginPage .av2-divider,html[data-theme="dark"] #signupPage .av2-divider{color:#9db0a6}
+html[data-theme="dark"] #loginPage .av2-divider span,html[data-theme="dark"] #signupPage .av2-divider span{background:#2e3d35}
+html[data-theme="dark"] #loginPage .av2-divider b,html[data-theme="dark"] #signupPage .av2-divider b{color:#9db0a6}
+html[data-theme="dark"] #loginPage .av2-guest,html[data-theme="dark"] #signupPage .av2-guest{background:#16201b;border-color:#3b6f5d;color:#7fe1c2}
+html[data-theme="dark"] #loginPage .av2-guest:hover,html[data-theme="dark"] #signupPage .av2-guest:hover{background:#101f19;border-color:#4fd29a}
+html[data-theme="dark"] #loginPage .av2-create,html[data-theme="dark"] #signupPage .av2-create{color:#9db0a6}
+html[data-theme="dark"] #loginPage .av2-create button,html[data-theme="dark"] #signupPage .av2-create button{color:#7fe1c2}
+html[data-theme="dark"] #loginPage .av2-forgot,html[data-theme="dark"] #signupPage .av2-forgot{color:#4fd29a}
+</style>
 <link rel="icon" type="image/jpeg" href="assets/moneymate-logo.jpg">
 </head>
 <body>
@@ -57,120 +132,146 @@
 </div>
 
 <div id="loginPage" class="auth-page hidden">
-  <div class="auth-box login-card">
+  <div class="auth-box av2-card">
+    <div class="av2-body">
 
-    <div class="login-logo">
-      <img
-  src="assets/moneymate-logo.jpg"
-  alt="MoneyMate logo"
-  class="logo-icon-img"
->
-    </div>
+      <div class="av2-logo">
+        <img src="assets/moneymate-logo.jpg" alt="MoneyMate logo" width="204" height="204" decoding="async">
+      </div>
 
-    <h1 class="auth-title">MoneyMate</h1>
+      <h1 class="auth-title av2-title">MoneyMate</h1>
 
-    <p class="auth-subtitle">
-      সহজে রাখুন আপনার<br>
-      প্রতিদিনের হিসাব
-    </p>
+      <p class="auth-subtitle av2-sub">
+        সহজে রাখুন আপনার<br>
+        প্রতিদিনের হিসাব
+      </p>
 
-    <div class="login-input">
-      <span class="input-icon">✉</span>
-      <input
-        id="loginEmail"
-        type="email"
-        placeholder="ইমেইল ঠিকানা"
-        autocomplete="email">
-    </div>
+      <div class="av2-group">
+        <div class="av2-field">
+          <svg class="av2-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.6"/><path d="M3.8 7.6l8.2 5.9 8.2-5.9"/></svg>
+          <input
+            id="loginEmail"
+            type="email"
+            placeholder="ইমেইল ঠিকানা"
+            autocomplete="email">
+        </div>
+      </div>
 
-    <div class="login-input">
-      <span class="input-icon">🔒</span>
-      <input
-        id="loginPassword"
-        type="password"
-        placeholder="পাসওয়ার্ড"
-        autocomplete="current-password">
+      <div class="av2-group">
+        <div class="av2-field av2-pw">
+          <svg class="av2-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="10.5" rx="2.6"/><path d="M8 10.5V7.6a4 4 0 0 1 8 0v2.9"/><circle cx="12" cy="15.7" r="1.1"/></svg>
+          <input
+            id="loginPassword"
+            type="password"
+            placeholder="পাসওয়ার্ড"
+            autocomplete="current-password">
+          <button
+            type="button"
+            class="av2-eye"
+            onclick="togglePassword('loginPassword',this)"
+            aria-label="পাসওয়ার্ড দেখুন">👁️</button>
+        </div>
+      </div>
+
       <button
         type="button"
-        class="password-eye"
-        onclick="togglePassword('loginPassword',this)"
-        aria-label="পাসওয়ার্ড দেখুন">👁️</button>
-    </div>
-
-    <button
-      type="button"
-      class="btn login-btn login-main-btn"
-      onclick="login()">
-      লগইন করুন
-    </button>
-
-    <div class="login-divider">
-      <span></span>
-      <b>অথবা</b>
-      <span></span>
-    </div>
-
-    <button
-      type="button"
-      class="btn guest-btn login-guest-btn"
-      onclick="guestLogin()">
-      <span>♙</span>
-      Guest হিসেবে ব্যবহার করুন
-    </button>
-
-    <div class="login-create-account">
-      নতুন ব্যবহারকারী?
-      <button type="button" onclick="showSignup()">
-        অ্যাকাউন্ট তৈরি করুন
+        class="btn login-btn av2-btn"
+        onclick="login()">
+        লগইন করুন
       </button>
+
+      <div class="av2-divider">
+        <span></span>
+        <b>অথবা</b>
+        <span></span>
+      </div>
+
+      <button
+        type="button"
+        class="btn guest-btn av2-guest"
+        onclick="guestLogin()">
+        <span class="av2-gicon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7.5" r="3.8"/></svg></span>
+        Guest হিসেবে ব্যবহার করুন
+      </button>
+
+      <div class="av2-create">
+        নতুন ব্যবহারকারী?
+        <button type="button" onclick="showSignup()">
+          অ্যাকাউন্ট তৈরি করুন
+        </button>
+      </div>
+
+      <div
+        class="av2-forgot"
+        onclick="showForgotPassword()">
+        পাসওয়ার্ড ভুলে গেছেন?
+      </div>
+
+      <div id="loginMessage" class="message"></div>
+
     </div>
-
-    <div
-      class="login-forgot"
-      onclick="showForgotPassword()">
-      পাসওয়ার্ড ভুলে গেছেন?
-    </div>
-
-    <div id="loginMessage" class="message"></div>
-
+    <svg class="av2-wave" viewBox="0 0 400 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <path class="av2-w1" d="M0 44 C62 14 128 18 198 44 S334 80 400 38 V100 H0 Z"/>
+      <path class="av2-w2" d="M0 66 C72 42 134 52 204 70 S338 94 400 62 V100 H0 Z"/>
+    </svg>
   </div>
 </div>
 
 <div id="signupPage" class="auth-page hidden">
-  <div class="auth-box">
-    <div class="logo">খাতা</div>
-    <h1 class="auth-title">নতুন Account</h1>
-    <p class="auth-subtitle">আপনার নিজের খাতা তৈরি করুন</p>
+  <div class="auth-box av2-card">
+    <div class="av2-body">
 
-    <div class="input-group">
-      <label>আপনার নাম</label>
-      <input id="signupName" type="text" placeholder="যেমন: Ismail Hossain" autocomplete="name">
-    </div>
-
-    <div class="input-group">
-      <label>Email</label>
-      <input id="signupEmail" type="email" placeholder="আপনার email" autocomplete="email">
-    </div>
-
-    <div class="input-group">
-      <label>Password</label>
-      <div class="password-box">
-        <input id="signupPassword" type="password" placeholder="কমপক্ষে ৬ অক্ষর" autocomplete="new-password">
-        <button class="show-password" onclick="togglePassword('signupPassword',this)">👁️</button>
+      <div class="av2-logo">
+        <img src="assets/moneymate-logo.jpg" alt="MoneyMate logo" width="204" height="204" decoding="async">
       </div>
-    </div>
 
-    <div class="input-group">
-      <label>🔒 Password আবার লিখুন</label>
-      <div class="password-box">
-        <input id="signupConfirm" type="password" placeholder="Password আবার লিখুন" autocomplete="new-password">
-        <button class="show-password" onclick="togglePassword('signupConfirm',this)">👁️</button>
+      <h1 class="auth-title av2-title">নতুন Account</h1>
+      <p class="auth-subtitle av2-sub">আপনার নিজের খাতা তৈরি করুন</p>
+
+      <div class="av2-group">
+        <label for="signupName">আপনার নাম</label>
+        <div class="av2-field">
+          <svg class="av2-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7.5" r="3.8"/></svg>
+          <input id="signupName" type="text" placeholder="যেমন: Ismail Hossain" autocomplete="name">
+        </div>
       </div>
-    </div>
 
-    <button class="btn login-btn" onclick="signup()">✨ Account তৈরি করুন</button>
-    <div class="link" onclick="showLogin()">← Login-এ ফিরে যান</div>
-    <div id="signupMessage" class="message"></div>
+      <div class="av2-group">
+        <label for="signupEmail">Email</label>
+        <div class="av2-field">
+          <svg class="av2-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.6"/><path d="M3.8 7.6l8.2 5.9 8.2-5.9"/></svg>
+          <input id="signupEmail" type="email" placeholder="আপনার email" autocomplete="email">
+        </div>
+      </div>
+
+      <div class="av2-group">
+        <label for="signupPassword">Password</label>
+        <div class="av2-field av2-pw">
+          <svg class="av2-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="10.5" rx="2.6"/><path d="M8 10.5V7.6a4 4 0 0 1 8 0v2.9"/><circle cx="12" cy="15.7" r="1.1"/></svg>
+          <input id="signupPassword" type="password" placeholder="কমপক্ষে ৬ অক্ষর" autocomplete="new-password">
+          <button type="button" class="av2-eye" onclick="togglePassword('signupPassword',this)" aria-label="পাসওয়ার্ড দেখুন">👁️</button>
+        </div>
+      </div>
+
+      <div class="av2-group">
+        <label for="signupConfirm">Password আবার লিখুন</label>
+        <div class="av2-field av2-pw">
+          <svg class="av2-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="10.5" rx="2.6"/><path d="M8 10.5V7.6a4 4 0 0 1 8 0v2.9"/><circle cx="12" cy="15.7" r="1.1"/></svg>
+          <input id="signupConfirm" type="password" placeholder="Password আবার লিখুন" autocomplete="new-password">
+          <button type="button" class="av2-eye" onclick="togglePassword('signupConfirm',this)" aria-label="পাসওয়ার্ড দেখুন">👁️</button>
+        </div>
+      </div>
+
+      <button class="btn login-btn av2-btn" onclick="signup()">Account তৈরি করুন</button>
+      <div class="av2-sep"></div>
+      <div class="link av2-link" onclick="showLogin()">← Login-এ ফিরে যান</div>
+      <div id="signupMessage" class="message"></div>
+
+    </div>
+    <svg class="av2-wave" viewBox="0 0 400 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <path class="av2-w1" d="M0 44 C62 14 128 18 198 44 S334 80 400 38 V100 H0 Z"/>
+      <path class="av2-w2" d="M0 66 C72 42 134 52 204 70 S338 94 400 62 V100 H0 Z"/>
+    </svg>
   </div>
 </div>
 
