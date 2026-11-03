@@ -1,13 +1,13 @@
 /* MY-KHATA PWA Service Worker */
 const CACHE_PREFIX = "my-khata-shell-";
-const CACHE_NAME = "my-khata-shell-v8";
+const CACHE_NAME = "my-khata-shell-v9";
 const APP_SHELL = [
   "./", "./index.html", "./manifest.webmanifest",
-  "./css/style.css", "./css/dark.css", "./css/theme.css",
+  "./css/style.css", "./css/dark.css", "./css/theme.css", "./css/report.css",
   "./js/config.js", "./js/utils.js", "./js/offline.js",
   "./js/i18n-dict.js", "./js/i18n.js", "./js/settings.js",
   "./js/auth.js", "./js/customers.js", "./js/transactions.js",
-  "./js/profile.js", "./js/share.js", "./js/app.js", "./js/voice-entry.js",
+  "./js/profile.js", "./js/share.js", "./js/app.js", "./js/report.js", "./js/voice-entry.js",
   "./assets/moneymate-logo.jpg", "./assets/moneymate-splash.png",
   "./icons/icon-192.png", "./icons/icon-512.png", "./icons/icon-maskable-512.png"
 ];
