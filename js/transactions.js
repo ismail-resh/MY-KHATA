@@ -12,7 +12,9 @@ async function loadTransactions(){
     try {
       const {data,error}=await supabaseClient.from("transactions").select("*").order("transaction_date",{ascending:false});
       if(error){ alert("Database error: "+error.message); return; }
-      transactions=data||[];
+      const ids = new Set((deletedCustomers||[]).map(c=>String(c.id)));
+      transactions=(data||[]).filter(t=>!ids.has(String(t.customer_id)));
+      deletedTransactions=(data||[]).filter(t=>ids.has(String(t.customer_id)));
     } catch (e) {
       console.error("loadTransactions error", e);
     }

@@ -12,4 +12,7 @@ const supabaseClient = window.supabase.createClient(
 );
 
 let transactions = [];
+// রিসাইকেল বিন: ডিলিট করা গ্রাহক ও তাদের লেনদেন (সাধারণ তালিকা থেকে আলাদা রাখা হয়)
+let deletedCustomers = [];
+let deletedTransactions = [];
 let currentCustomer = null;

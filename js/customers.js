@@ -17,7 +17,8 @@ async function loadCustomers(){
       .select("*")
       .order("name",{ascending:true});
     if(error){ console.error("Customer load error:",error); return; }
-    customers = data || [];
+    customers = (data || []).filter(c => !c.deleted_at);
+    deletedCustomers = (data || []).filter(c => c.deleted_at);
   } catch (e) {
     console.error("Customer load error:", e);
   }
@@ -239,25 +240,10 @@ async function saveCustomerEdit(){
   openProfileById(currentCustomerId,newName);
 }
 
-async function deleteCustomer(){
-  if(!currentCustomerId) return alert("Customer ID পাওয়া যায়নি।");
-  const c=customers.find(x=>String(x.id)===String(currentCustomerId));
-  const name=c?.name||currentCustomer;
-  const count=transactions.filter(t=>t.customer_name===name).length;
-  const msg=`Customer '${name}' delete করতে চান?\n\n${count} টি transaction-ও delete হবে।\n\nএই কাজটি undo করা যাবে না।`;
-  if(!confirm(msg)) return;
-
-  if (window.offlineSupport && typeof offlineSupport.offlineAwareDeleteCustomer === "function") {
-    await offlineSupport.offlineAwareDeleteCustomer(currentCustomerId);
-  } else {
-    const uid=await currentUserIdOrNull();
-    if(!uid) return alert("লগইন সেশন পাওয়া যায়নি। আবার লগইন করুন।");
-    const {error}=await supabaseClient.from("customers").delete().eq("id",currentCustomerId).eq("user_id",uid);
-    if(error) return alert("Customer delete হয়নি:\n"+error.message);
-  }
-
-  currentCustomer=null; currentCustomerId=null;
-  await loadCustomers(); await loadTransactions(); showCustomers();
+// গ্রাহক ডিলিট এখন রিসাইকেল বিনে যায় (js/recycle.js-এ আছে)।
+function deleteCustomer(){
+  if(typeof openDeleteToBinDialog === "function") return openDeleteToBinDialog();
+  alert("রিসাইকেল বিন লোড হয়নি। পেজ রিফ্রেশ করে আবার চেষ্টা করুন।");
 }
 
 async function getOrCreateCustomer(name,phone=""){

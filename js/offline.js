@@ -186,7 +186,9 @@ async function cacheCustomersLocally(list) {
     const ops = await getPendingOps();
     const pendingIds = new Set(ops.flatMap(o => [o.id, o.localId]).filter(v => v != null).map(String));
     const current = (await idbGetAll(STORE_CUSTOMERS)).filter(x => ownedBy(x, ownerId));
-    const map = new Map((list || []).filter(x => !x.user_id || String(x.user_id) === String(ownerId)).map(x => [String(x.id), { ...x, owner_id: ownerId, user_id: x.user_id || ownerId }]));
+    // রিসাইকেল বিনের গ্রাহকও ক্যাশে থাকবে, নইলে অফলাইনে ফিরিয়ে আনা যাবে না।
+    const withBin = [...(list || []), ...deletedCustomers.filter(d => !(list || []).some(x => String(x.id) === String(d.id)))];
+    const map = new Map(withBin.filter(x => !x.user_id || String(x.user_id) === String(ownerId)).map(x => [String(x.id), { ...x, owner_id: ownerId, user_id: x.user_id || ownerId }]));
     for (const old of current) if ((old._local || old._pending || pendingIds.has(String(old.id))) && !map.has(String(old.id))) map.set(String(old.id), old);
     const hidden = new Set(ops.filter(o => o.type === "delete_customer").map(o => String(o.id)));
     for (const id of hidden) map.delete(id);
@@ -205,7 +207,8 @@ async function cacheTransactionsLocally(list) {
     const ops = await getPendingOps();
     const pendingIds = new Set(ops.flatMap(o => [o.id, o.localId]).filter(v => v != null).map(String));
     const current = (await idbGetAll(STORE_TRANSACTIONS)).filter(x => ownedBy(x, ownerId));
-    const map = new Map((list || []).filter(x => !x.user_id || String(x.user_id) === String(ownerId)).map(x => [String(x.id), { ...x, owner_id: ownerId, user_id: x.user_id || ownerId }]));
+    const withBin = [...(list || []), ...deletedTransactions.filter(d => !(list || []).some(x => String(x.id) === String(d.id)))];
+    const map = new Map(withBin.filter(x => !x.user_id || String(x.user_id) === String(ownerId)).map(x => [String(x.id), { ...x, owner_id: ownerId, user_id: x.user_id || ownerId }]));
     for (const old of current) if ((old._local || old._pending || pendingIds.has(String(old.id))) && !map.has(String(old.id))) map.set(String(old.id), old);
     const hidden = new Set(ops.filter(o => o.type === "delete_transaction").map(o => String(o.id)));
     for (const id of hidden) map.delete(id);
@@ -236,6 +239,24 @@ async function addOwnerToRow(row) {
   const ownerId = await currentOwnerId();
   return ownerId ? { ...row, owner_id: ownerId, user_id: row.user_id || ownerId } : row;
 }
+// ---- Recycle bin helpers: deleted_at থাকা গ্রাহক সাধারণ তালিকা থেকে আলাদা হয় ----
+function splitRecycleBin(all) {
+  const active = [], deleted = [];
+  (all || []).forEach(c => (c && c.deleted_at ? deleted : active).push(c));
+  deletedCustomers = deleted;
+  return active;
+}
+async function splitRecycleTransactions(all) {
+  const ids = new Set(deletedCustomers.map(c => String(c.id)));
+  try {
+    const ownerId = await currentOwnerId();
+    if (ownerId) (await idbGetAll(STORE_CUSTOMERS)).forEach(c => { if (ownedBy(c, ownerId) && c.deleted_at) ids.add(String(c.id)); });
+  } catch (e) { console.warn("recycle cache read failed", e); }
+  const keep = [], hidden = [];
+  (all || []).forEach(t => (t && t.customer_id != null && ids.has(String(t.customer_id)) ? hidden : keep).push(t));
+  deletedTransactions = hidden;
+  return keep;
+}
 async function loadCustomersOfflineAware() {
   if (isOnline()) {
     try {
@@ -244,13 +265,13 @@ async function loadCustomersOfflineAware() {
       if (user?.id) query = query.eq("user_id", user.id);
       const { data, error } = await query;
       if (!error && data) {
-        customers = await mergeRemoteSnapshot(STORE_CUSTOMERS, data, "customer");
+        customers = splitRecycleBin(await mergeRemoteSnapshot(STORE_CUSTOMERS, data, "customer"));
         return customers;
       }
       if (error) console.warn("Remote customers unavailable; using local cache", error.message);
     } catch(e) { console.warn("Online loadCustomers failed; using cache", e); }
   }
-  customers = await loadCustomersFromCache();
+  customers = splitRecycleBin(await loadCustomersFromCache());
   return customers;
 }
 async function loadTransactionsOfflineAware() {
@@ -261,13 +282,13 @@ async function loadTransactionsOfflineAware() {
       if (user?.id) query = query.eq("user_id", user.id);
       const { data, error } = await query;
       if (!error && data) {
-        transactions = await mergeRemoteSnapshot(STORE_TRANSACTIONS, data, "transaction");
+        transactions = await splitRecycleTransactions(await mergeRemoteSnapshot(STORE_TRANSACTIONS, data, "transaction"));
         return transactions;
       }
       if (error) console.warn("Remote transactions unavailable; using local cache", error.message);
     } catch(e) { console.warn("Online loadTransactions failed; using cache", e); }
   }
-  transactions = await loadTransactionsFromCache();
+  transactions = await splitRecycleTransactions(await loadTransactionsFromCache());
   return transactions;
 }
 
@@ -585,7 +606,7 @@ async function clearLocalDataForCurrentUser(knownOwnerId) {
       tx.oncomplete = resolve; tx.onerror = () => reject(tx.error); tx.onabort = () => reject(tx.error);
     });
   } catch (e) { console.warn("clearLocalDataForCurrentUser failed", e); }
-  customers = []; transactions = [];
+  customers = []; transactions = []; deletedCustomers = []; deletedTransactions = [];
 }
 // Shows "update available" bar when a new service worker is waiting.
 function showUpdateBanner(reg) {
