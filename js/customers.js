@@ -58,19 +58,20 @@ transactions.forEach(t => {
 
   if (!customerName) return;
 
-  if (!customerBalances[customerName]) {
-    customerBalances[customerName] = 0;
+  const cbKey = bizBalKey(t, customerName);
+  if (!customerBalances[cbKey]) {
+    customerBalances[cbKey] = 0;
   }
 
   const amount = Number(t.amount) || 0;
 
   if (t.type === "receive") {
     // দিলাম → customer-এর কাছে আমাদের পাওনা বাড়বে
-    customerBalances[customerName] += amount;
+    customerBalances[cbKey] += amount;
   } 
   else if (t.type === "pay") {
     // পেলাম → customer-এর কাছে আমাদের পাওনা কমবে
-    customerBalances[customerName] -= amount;
+    customerBalances[cbKey] -= amount;
   }
 });
 
@@ -277,7 +278,7 @@ async function getOrCreateCustomer(name,phone=""){
     });
   }
 
-  const {data,error}=await supabaseClient.from("customers").insert({user_id:user.id,name:cleanName,phone:phone||""}).select().single();
+  const {data,error}=await supabaseClient.from("customers").insert({user_id:user.id,name:cleanName,phone:phone||"",...(typeof bizWriteId==="function"&&bizWriteId()?{business_id:bizWriteId()}:{})}).select().single();
   if(error){ console.error("Customer create error:",error); return null; }
   customers.push(data); return data;
 }
@@ -323,7 +324,7 @@ async function renderHomeDashboard() {
 
     customers.forEach(customer => {
 
-        balances[customer.name] = {
+        balances[bizBalKey(customer, customer.name)] = {
             customer: customer,
             balance: 0
         };
@@ -338,10 +339,11 @@ async function renderHomeDashboard() {
 
         if (!name) return;
 
+        const bKey = bizBalKey(transaction, name);
 
-        if (!balances[name]) {
+        if (!balances[bKey]) {
 
-            balances[name] = {
+            balances[bKey] = {
 
                 customer: {
                     id: transaction.customer_id,
@@ -367,7 +369,7 @@ async function renderHomeDashboard() {
               → আমাদের পাওনা বাড়বে
             */
 
-            balances[name].balance += amount;
+            balances[bKey].balance += amount;
 
         }
 
@@ -379,7 +381,7 @@ async function renderHomeDashboard() {
               → আমাদের পাওনা কমবে
             */
 
-            balances[name].balance -= amount;
+            balances[bKey].balance -= amount;
 
         }
 

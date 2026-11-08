@@ -397,6 +397,7 @@ function downloadReportPdf(){
     </div>
     <div class="rp-meta">
       <div><small>ব্যবহারকারী</small><b>${escapeHTML(user || "—")}</b></div>
+      ${(typeof bizActiveName === "function" && bizActiveName()) ? `<div><small>ব্যবসা</small><b>${escapeHTML(bizActiveName())}</b></div>` : ""}
       <div><small>সময়কাল</small><b>${escapeHTML(fmtLongDate(from))} – ${escapeHTML(fmtLongDate(to))}</b></div>
       <div><small>রিপোর্ট তৈরি</small><b>${escapeHTML(fmtLongDate(localDateString()))}</b></div>
     </div>`;

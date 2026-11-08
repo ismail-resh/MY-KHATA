@@ -187,7 +187,7 @@ async function cacheCustomersLocally(list) {
     const pendingIds = new Set(ops.flatMap(o => [o.id, o.localId]).filter(v => v != null).map(String));
     const current = (await idbGetAll(STORE_CUSTOMERS)).filter(x => ownedBy(x, ownerId));
     // রিসাইকেল বিনের গ্রাহকও ক্যাশে থাকবে, নইলে অফলাইনে ফিরিয়ে আনা যাবে না।
-    const withBin = [...(list || []), ...deletedCustomers.filter(d => !(list || []).some(x => String(x.id) === String(d.id)))];
+    const withBin = [...(list || []), ...[...deletedCustomers, ...bizOutCustomers].filter(d => !(list || []).some(x => String(x.id) === String(d.id)))];
     const map = new Map(withBin.filter(x => !x.user_id || String(x.user_id) === String(ownerId)).map(x => [String(x.id), { ...x, owner_id: ownerId, user_id: x.user_id || ownerId }]));
     for (const old of current) if ((old._local || old._pending || pendingIds.has(String(old.id))) && !map.has(String(old.id))) map.set(String(old.id), old);
     const hidden = new Set(ops.filter(o => o.type === "delete_customer").map(o => String(o.id)));
@@ -207,7 +207,7 @@ async function cacheTransactionsLocally(list) {
     const ops = await getPendingOps();
     const pendingIds = new Set(ops.flatMap(o => [o.id, o.localId]).filter(v => v != null).map(String));
     const current = (await idbGetAll(STORE_TRANSACTIONS)).filter(x => ownedBy(x, ownerId));
-    const withBin = [...(list || []), ...deletedTransactions.filter(d => !(list || []).some(x => String(x.id) === String(d.id)))];
+    const withBin = [...(list || []), ...[...deletedTransactions, ...bizOutTransactions].filter(d => !(list || []).some(x => String(x.id) === String(d.id)))];
     const map = new Map(withBin.filter(x => !x.user_id || String(x.user_id) === String(ownerId)).map(x => [String(x.id), { ...x, owner_id: ownerId, user_id: x.user_id || ownerId }]));
     for (const old of current) if ((old._local || old._pending || pendingIds.has(String(old.id))) && !map.has(String(old.id))) map.set(String(old.id), old);
     const hidden = new Set(ops.filter(o => o.type === "delete_transaction").map(o => String(o.id)));
@@ -240,20 +240,27 @@ async function addOwnerToRow(row) {
   return ownerId ? { ...row, owner_id: ownerId, user_id: row.user_id || ownerId } : row;
 }
 // ---- Recycle bin helpers: deleted_at থাকা গ্রাহক সাধারণ তালিকা থেকে আলাদা হয় ----
-function splitRecycleBin(all) {
+async function splitRecycleBin(all) {
+  if (typeof bizEnsureLoaded === "function") await bizEnsureLoaded();
+  const inScope = r => (typeof bizInScope === "function" ? bizInScope(r) : true);
+  bizOutCustomers = (all || []).filter(r => r && !inScope(r));
   const active = [], deleted = [];
-  (all || []).forEach(c => (c && c.deleted_at ? deleted : active).push(c));
+  (all || []).filter(r => r && inScope(r)).forEach(c => (c.deleted_at ? deleted : active).push(c));
   deletedCustomers = deleted;
   return active;
 }
 async function splitRecycleTransactions(all) {
-  const ids = new Set(deletedCustomers.map(c => String(c.id)));
+  if (typeof bizEnsureLoaded === "function") await bizEnsureLoaded();
+  const inScope = r => (typeof bizInScope === "function" ? bizInScope(r) : true);
+  // বিনে থাকা গ্রাহকদের id (সব ব্যবসা মিলিয়ে)
+  const ids = new Set([...deletedCustomers, ...bizOutCustomers.filter(c => c.deleted_at)].map(c => String(c.id)));
   try {
     const ownerId = await currentOwnerId();
     if (ownerId) (await idbGetAll(STORE_CUSTOMERS)).forEach(c => { if (ownedBy(c, ownerId) && c.deleted_at) ids.add(String(c.id)); });
   } catch (e) { console.warn("recycle cache read failed", e); }
+  bizOutTransactions = (all || []).filter(t => t && !inScope(t));
   const keep = [], hidden = [];
-  (all || []).forEach(t => (t && t.customer_id != null && ids.has(String(t.customer_id)) ? hidden : keep).push(t));
+  (all || []).filter(t => t && inScope(t)).forEach(t => (t.customer_id != null && ids.has(String(t.customer_id)) ? hidden : keep).push(t));
   deletedTransactions = hidden;
   return keep;
 }
@@ -265,13 +272,13 @@ async function loadCustomersOfflineAware() {
       if (user?.id) query = query.eq("user_id", user.id);
       const { data, error } = await query;
       if (!error && data) {
-        customers = splitRecycleBin(await mergeRemoteSnapshot(STORE_CUSTOMERS, data, "customer"));
+        customers = await splitRecycleBin(await mergeRemoteSnapshot(STORE_CUSTOMERS, data, "customer"));
         return customers;
       }
       if (error) console.warn("Remote customers unavailable; using local cache", error.message);
     } catch(e) { console.warn("Online loadCustomers failed; using cache", e); }
   }
-  customers = splitRecycleBin(await loadCustomersFromCache());
+  customers = await splitRecycleBin(await loadCustomersFromCache());
   return customers;
 }
 async function loadTransactionsOfflineAware() {
@@ -297,6 +304,7 @@ async function offlineAwareInsertCustomer(payload) {
   if (!ownerId) throw new Error("কাস্টমার যোগ করার আগে লগইন করুন।");
   const operationId = makeOperationId("customer");
   payload = { ...payload, user_id: ownerId, client_operation_id: operationId };
+  if (!payload.business_id && typeof bizWriteId === "function" && bizWriteId()) payload.business_id = bizWriteId();
   if (isOnline()) {
     try {
       const { data, error } = await supabaseClient.from("customers").upsert(payload, { onConflict: "client_operation_id" }).select().single();
@@ -373,6 +381,11 @@ async function offlineAwareInsertTransaction(payload) {
   if (!ownerId) throw new Error("লেনদেন যোগ করার আগে লগইন করুন।");
   const operationId = makeOperationId("transaction");
   payload = { ...payload, user_id: ownerId, client_operation_id: operationId };
+  if (!payload.business_id) {
+    const owner = [...customers, ...deletedCustomers, ...bizOutCustomers].find(c => String(c.id) === String(payload.customer_id));
+    const bid = (owner && owner.business_id) || (typeof bizWriteId === "function" ? bizWriteId() : null);
+    if (bid) payload.business_id = bid;
+  }
   if (isOnline() && !isLocalId(payload.customer_id, "cust")) {
     try {
       const { data, error } = await supabaseClient.from("transactions").upsert(payload, { onConflict: "client_operation_id" }).select().single();
@@ -607,6 +620,7 @@ async function clearLocalDataForCurrentUser(knownOwnerId) {
     });
   } catch (e) { console.warn("clearLocalDataForCurrentUser failed", e); }
   customers = []; transactions = []; deletedCustomers = []; deletedTransactions = [];
+  bizOutCustomers = []; bizOutTransactions = []; if (typeof bizResetState === "function") bizResetState();
 }
 // Shows "update available" bar when a new service worker is waiting.
 function showUpdateBanner(reg) {

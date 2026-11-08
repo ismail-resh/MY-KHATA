@@ -88,6 +88,10 @@ Deno.serve(async (req: Request) => {
     return response(500, { success: false, error: "গ্রাহকের ডেটা ডিলিট করা যায়নি। টেবিলের user_id কলাম ও database schema পরীক্ষা করুন।" });
   }
 
+  // মাল্টি ব্যবসা: businesses table না থাকলেও যেন ব্যর্থ না হয় (non-fatal)
+  const { error: bizError } = await admin.from("businesses").delete().eq("user_id", user.id);
+  if (bizError) console.warn("Delete businesses skipped", { userId: user.id, message: bizError.message });
+
   const { error: deleteUserError } = await admin.auth.admin.deleteUser(user.id);
   if (deleteUserError) {
     console.error("Delete auth user failed", { userId: user.id, message: deleteUserError.message });
